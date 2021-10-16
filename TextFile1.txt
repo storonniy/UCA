@@ -1,0 +1,29 @@
+        [TestMethod]
+        public void TestPSP()
+        {
+            PSP405 psp = new PSP405(serialPort);
+            psp.SetVoltage(9);
+            var actualVoltage = psp.GetOutputVoltage(); 
+            Assert.AreEqual(9, actualVoltage);
+        }
+
+        [TestMethod]
+        public void TestTestr1r2()
+        {
+            Commutator comm = new Commutator(serialPort);
+            var actualNames = comm.GetClosedRelayNames();
+            var expectedNames = new string[] { "none" };
+            CollectionAssert.AreEqual(expectedNames, actualNames);
+        }
+
+        [TestMethod]
+        public void Test()
+        {
+            serialPort.Open();
+            serialPort.WriteLine("*idn?");
+            Thread.Sleep(1000);
+            var answer = serialPort.ReadLine();
+            var request = "meow";
+            Assert.AreEqual(request, answer);
+            serialPort.Close();
+        }
