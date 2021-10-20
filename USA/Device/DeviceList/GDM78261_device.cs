@@ -3,6 +3,8 @@ using System.Globalization;
 using System.IO;
 using System.IO.Ports;
 using UCA.DeviceDrivers;
+using UCA.Auxiliary;
+using static UCA.Auxiliary.UnitValuePair;
 
 namespace UCA.Devices
 {
@@ -27,19 +29,19 @@ namespace UCA.Devices
                     if (lessThan)
                     {
                         if (actualVoltage < expectedVoltage)
-                            return DeviceResult.ResultOk($"Измерение напряжения {actualVoltage} прошло успешно");
+                            return DeviceResult.ResultOk($"Измерение напряжения {GetValueUnitPair(actualVoltage, UnitType.Voltage)} прошло успешно");
                         else
-                            return DeviceResult.ResultError($"ОШИБКА: Измерено напряжение {actualVoltage}, ожидалось {expectedVoltage}");
+                            return DeviceResult.ResultError($"ОШИБКА: Измерено напряжение {GetValueUnitPair(actualVoltage, UnitType.Voltage)}, ожидалось {GetValueUnitPair(expectedVoltage, UnitType.Voltage)}");
                     }
                     else
                     {
                         if (Math.Abs(expectedVoltage - actualVoltage) < 0.1 * Math.Abs(expectedVoltage))
                         {
-                            return DeviceResult.ResultOk($"Измерение напряжения {actualVoltage} прошло успешно");
+                            return DeviceResult.ResultOk($"Измерение напряжения {GetValueUnitPair(actualVoltage, UnitType.Voltage)} прошло успешно");
                         }
                         else
                         {
-                            return DeviceResult.ResultError($"ОШИБКА: Измерено напряжение {actualVoltage}, ожидалось {expectedVoltage}");
+                            return DeviceResult.ResultError($"ОШИБКА: Измерено напряжение {GetValueUnitPair(actualVoltage, UnitType.Voltage)}, ожидалось {GetValueUnitPair(expectedVoltage, UnitType.Voltage)}");
                         }
                     }
                 case DeviceCommands.GetCurrent:
@@ -47,16 +49,16 @@ namespace UCA.Devices
                     var actualCurrent = gdm78261.MeasureCurrentDC();
                     if (Math.Abs(expectedCurrent - actualCurrent) < 0.1 * Math.Abs(expectedCurrent))
                     {
-                        return DeviceResult.ResultOk($"Измерение тока {actualCurrent} прошло успешно");
+                        return DeviceResult.ResultOk($"Измерение тока {GetValueUnitPair(actualCurrent, UnitType.Current)} прошло успешно");
                     }
                     else
                     {
-                        return DeviceResult.ResultError($"ОШИБКА: Измерен ток {actualCurrent}, ожидалось значение {expectedCurrent}");
+                        return DeviceResult.ResultError($"ОШИБКА: Измерен ток {GetValueUnitPair(actualCurrent, UnitType.Current)}, ожидалось значение {GetValueUnitPair(expectedCurrent, UnitType.Current)}");
                     }
                 case DeviceCommands.SetMeasurementToCurrent:
                     var currentRange = double.Parse(deviceData.Argument, CultureInfo.InvariantCulture);
                     gdm78261.SetMeasurementToCurrentDC(currentRange);
-                    return DeviceResult.ResultOk($"Измерение напряжения {currentRange} прошло успешно");
+                    return DeviceResult.ResultOk($"{deviceData.DeviceName} успешно переведен в режим измерения тока");
                 default:
                     return DeviceResult.ResultError($"Неизвестная команда {deviceData.Command}");
             }

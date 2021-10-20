@@ -1,0 +1,49 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace UCA.Auxiliary
+{
+    public class UnitValuePair
+    {
+        public static string GetValueUnitPair(double value, UnitType unitType)
+        {
+            if (value * Math.Pow(10, 6) < 1000)
+            {
+                return $"{value * Math.Pow(10, 6)} мк{GetUnit(value, unitType)}";
+            }
+            else if (value * Math.Pow(10, 3) < 1000)
+            {
+                return $"{value * Math.Pow(10, 3)} м{GetUnit(value, unitType)}";
+            }
+            else
+            {
+                return $"{value} {GetUnit(value, unitType)}";
+            }
+        }
+
+        private static string GetUnit(double value, UnitType unitType)
+        {
+            switch (unitType)
+            {
+                case UnitType.Current:
+                    return "А";
+                case UnitType.Voltage:
+                    return "В";
+                case UnitType.Power:
+                    return "Вт";
+                default:
+                    throw new Exception("Неизвестный тип величины");
+            }
+        }
+
+        public enum UnitType
+        {
+            Voltage, 
+            Current,
+            Power
+        }
+    }
+}

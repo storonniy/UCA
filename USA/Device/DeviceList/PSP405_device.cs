@@ -5,6 +5,8 @@ using UCA.DeviceDrivers;
 using static UCA.Devices.DeviceResult;
 using System.Threading;
 using System.Globalization;
+using static UCA.Auxiliary.UnitValuePair;
+
 
 namespace UCA.Devices
 {
@@ -32,25 +34,26 @@ namespace UCA.Devices
                     var actualVoltage = Psp405.GetOutputVoltage();
                     if (Math.Abs(voltage - actualVoltage) < 0.1 * Math.Abs(voltage))
                     {
-                        return ResultOk($"Установка напряжения {voltage} прошла успешно");
+                        return ResultOk($"Установка напряжения {GetValueUnitPair(voltage, UnitType.Voltage)} прошла успешно");
                     }
                     else
                     {
-                        return ResultError($"Установлено неверное напряжение {actualVoltage}");
+                        return ResultError($"Установлено неверное напряжение {GetValueUnitPair(voltage, UnitType.Voltage)}");
                     }
                 case DeviceCommands.SetCurrent:
                     double current = Math.Abs(double.Parse(deviceData.Argument)); // мкА
                     Thread.Sleep(delay);
-                    double voltage1 = current * 480000;
+                    double resistance = 480000;
+                    double voltage1 = current * resistance;
                     Psp405.SetVoltage(voltage1);
                     var actualVolt = Psp405.GetOutputVoltage();
                     if (Math.Abs(actualVolt - voltage1) < 0.1 * Math.Abs(actualVolt))
                     {
-                        return ResultOk($"Установка тока {current} прошла успешно");
+                        return ResultOk($"Установка тока {GetValueUnitPair(actualVolt / resistance, UnitType.Current)} прошла успешно");
                     }
                     else
                     {
-                        return ResultError($"Установлено неверное значение напряжения {actualVolt}");
+                        return ResultError($"Установлено неверное значение тока {GetValueUnitPair(actualVolt / resistance, UnitType.Current)}");
                     }
                 case DeviceCommands.PowerOn:
                     Psp405.TurnOn();
@@ -79,13 +82,13 @@ namespace UCA.Devices
                     Psp405.SetCurrentLimit(currentLimit);
                     Thread.Sleep(delay);
                     var actualCurrentLimit = Psp405.GetCurrentLimit();
-                    if (Math.Abs(currentLimit - actualCurrentLimit) < 0.1)
+                    if (Math.Abs(currentLimit - actualCurrentLimit) < 0.1 * Math.Abs(currentLimit))
                     {
-                        return ResultOk("Установка предела по току прошла успешно");
+                        return ResultOk($"Установка предела по току {GetValueUnitPair(actualCurrentLimit, UnitType.Current)} прошла успешно");
                     }
                     else
                     {
-                        return ResultError($"ОШИБКА: установлен неверный предел по току: {actualCurrentLimit}, необходим {currentLimit}");
+                        return ResultError($"ОШИБКА: установлен неверный предел по току: {GetValueUnitPair(actualCurrentLimit, UnitType.Current)}, необходим {GetValueUnitPair(currentLimit, UnitType.Current)}");
                     }
                 default:
                     return ResultError($"Неизвестная команда {deviceData.Command}");
