@@ -1,29 +1,9 @@
-        [TestMethod]
-        public void TestPSP()
-        {
-            PSP405 psp = new PSP405(serialPort);
-            psp.SetVoltage(9);
-            var actualVoltage = psp.GetOutputVoltage(); 
-            Assert.AreEqual(9, actualVoltage);
-        }
+min
+nom
+max
 
-        [TestMethod]
-        public void TestTestr1r2()
-        {
-            Commutator comm = new Commutator(serialPort);
-            var actualNames = comm.GetClosedRelayNames();
-            var expectedNames = new string[] { "none" };
-            CollectionAssert.AreEqual(expectedNames, actualNames);
-        }
+переводить вольтметр в нужный режим измерения
+учитывать единицы измерения
+, CultureInfo.InvariantCulture в Parse
 
-        [TestMethod]
-        public void Test()
-        {
-            serialPort.Open();
-            serialPort.WriteLine("*idn?");
-            Thread.Sleep(1000);
-            var answer = serialPort.ReadLine();
-            var request = "meow";
-            Assert.AreEqual(request, answer);
-            serialPort.Close();
-        }
+BAD ARGUMENT на FormatException срабатывает, даже если в таблице всё нормально.

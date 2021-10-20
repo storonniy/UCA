@@ -17,7 +17,7 @@ namespace UCA.Devices
             this.pst3201 = new PST_3201(serialPort);
         }
 
-        public DeviceResult DoCommand (DeviceData deviceData)
+        public override DeviceResult DoCommand (DeviceData deviceData)
         {
             switch (deviceData.Command)
             {

@@ -13,7 +13,7 @@ namespace UCA.Devices
             this.keysight34410 = new Keysight34410(serialPort);
         }
 
-        public DeviceResult DoCommand(DeviceData deviceData)
+        public override DeviceResult DoCommand(DeviceData deviceData)
         {
             switch (deviceData.Command)
             {
@@ -39,8 +39,6 @@ namespace UCA.Devices
                     {
                         return DeviceResult.ResultError($"Измерено напряжение {actualVoltage}, ожидалось {expectedVoltage}");
                     }
-
-                    break;
                 default:
                     return DeviceResult.ResultError($"Неизвестная команда {deviceData.Command}");
             }

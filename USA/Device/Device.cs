@@ -1,10 +1,25 @@
-﻿using System.IO.Ports;
+﻿using System.Collections.Generic;
+using System.IO.Ports;
 
 namespace UCA.Devices
 {
-    public interface IDeviceInterface
+    public abstract class IDeviceInterface
     {
-        DeviceResult DoCommand(DeviceData deviceData);
+        public abstract DeviceResult DoCommand(DeviceData deviceData);
+
+        public struct InputData
+        {
+            public int channel;
+            public double InputVoltage;
+        }
+        public struct OutputData
+        {
+            public double OutputVoltage;
+            public double OutputVoltageAtZeroInput;
+            public double MeasuredInputVoltage;
+            public double InputVoltageAtZeroInput;
+        }
+        public Dictionary<InputData, OutputData> coefficientData;
     }
 
     public struct Device
@@ -43,6 +58,9 @@ namespace UCA.Devices
     public enum DeviceCommands
     {
         // УСА
+        SetCurrentLimit,
+        SetPowerLimit,
+        SetVoltageLimit,
         SetVoltage,
         SetCurrent,
         PowerOn,
@@ -51,6 +69,7 @@ namespace UCA.Devices
         OpenRelays,
         CheckClosedRelays,
         OpenAllRelays,
+        GetSignals,
         GetVoltage,
         GetCurrent,
         CalculateCoefficient,
@@ -64,7 +83,9 @@ namespace UCA.Devices
         // PCI_1762
         Commutate_0,
         Commutate_1,
-        CalculateCoeff_UCA_T
+        CalculateCoeff_UCA_T,
+        SetMeasurementToCurrent, // GDM
+        SetMeasurementToVoltage
     }
 
     public enum DeviceNames

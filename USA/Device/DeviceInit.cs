@@ -89,10 +89,12 @@ namespace UCA.Devices
             {
                 return DeviceResult.ResultError($"NOT_CONNECTED: Порт {deviceData.DeviceName} закрыт");
             }
+            /*
             catch (FormatException)
             {
-                return DeviceResult.ResultError($"BAD_ARGUMENT: Аргумент команды имеет неверный формат: {deviceData.Argument})");
+                return DeviceResult.ResultError($"BAD_ARGUMENT: Аргумент команды имеет неверный формат: {deviceData.ExpectedValue}");
             }
+            */
         }
     }
 }

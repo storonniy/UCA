@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using UCA.DeviceDrivers;
 using System.IO.Ports;
 using static UCA.Devices.DeviceResult;
+using System.Globalization;
 
 namespace UCA.Devices
 {
@@ -18,12 +19,12 @@ namespace UCA.Devices
             this.psh73610 = new PSH73610(serialPort);
         }
 
-        public DeviceResult DoCommand(DeviceData deviceData)
+        public override DeviceResult DoCommand(DeviceData deviceData)
         {
             switch (deviceData.Command)
             {
                 case DeviceCommands.SetVoltage:
-                    var expectedVoltage = float.Parse(deviceData.Argument);
+                    var expectedVoltage = float.Parse(deviceData.Argument, CultureInfo.InvariantCulture);
                     
                     var actualVoltage = psh73610.SetVoltage(expectedVoltage);
                     if (Math.Abs(expectedVoltage - actualVoltage) < 0.01)

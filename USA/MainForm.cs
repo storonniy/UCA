@@ -25,7 +25,6 @@ namespace UCA
         private void ShowSettings()
         {
             labelComment.Text = (settings.Comment != "") ? settings.Comment : "Не указано";
-            labelControlObjectName.Text = (settings.ControlObjectName != "") ? settings.ControlObjectName : "Не указано";
             labelFactoryNumber.Text = settings.FactoryNumber.ToString();
             labelOperatorName.Text = (settings.OperatorName != "") ? settings.OperatorName : "Не указано";
             labelRegime.Text = GetRegimeAsString(settings.Regime);
@@ -35,7 +34,7 @@ namespace UCA
         {
             try
             {
-                string connectionString = string.Format("Provider=Microsoft.ACE.OLEDB.12.0;Data Source={0}; Extended Properties=Excel 12.0;", pathToDataBase);//"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathToDataBase;
+                string connectionString = string.Format("Provider=Microsoft.ACE.OLEDB.16.0;Data Source={0}; Extended Properties=Excel 12.0;", pathToDataBase);//"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathToDataBase;
                 var dbReader = new DBReader(connectionString);
                 var dataSet = dbReader.GetDataSet();
                 var info = new StepsInfo();
@@ -45,6 +44,10 @@ namespace UCA
                 thread.Start();
             }
             catch (System.Data.OleDb.OleDbException ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            catch (System.InvalidOperationException ex)
             {
                 MessageBox.Show(ex.Message);
             }
@@ -73,8 +76,9 @@ namespace UCA
                 foreach (var step in stepsInfo.StepsDictionary[tableName])
                 {
                     DoStepOfChecking(step, stepsInfo, log);
-                    Thread.Sleep(1000);
                     stepsInfo.StepNumber++;
+                    Thread.Sleep(1500);
+                    //MessageBox.Show("meow");
                 }
             }
         }
@@ -84,6 +88,8 @@ namespace UCA
             var stepParser = new StepParser(stepsInfo.DeviceHandler, step);
             var deviceResult = stepParser.DoStep();
             var nodeNumbers = GetNodeNumber(treeOfChecking, stepsInfo.StepNumber);
+            if (step.Channel > 0)
+                deviceResult.Description = $"Канал {step.Channel}: {deviceResult.Description}";
             UpdateTreeNodes(treeOfChecking, nodeNumbers, deviceResult.Description);
             if (deviceResult.State == DeviceState.OK)
             {
@@ -93,11 +99,11 @@ namespace UCA
             {
                 HighlightTreeNode(treeOfChecking, nodeNumbers, Color.Red);
                 // Аварийная остановка проверки
-                /*
-                EmergencyBreak(emergencyStepList, deviceHandler);
-                UpdateTreeNodes(treeOfChecking, nodeNumbers, "Аварийная остановка проверки");
-                Thread.CurrentThread.Abort();
-                */
+
+                //EmergencyBreak(stepsInfo);
+                //UpdateTreeNodes(treeOfChecking, nodeNumbers, "Аварийная остановка проверки");
+                //Thread.CurrentThread.Abort();
+
             }
             log.WriteItem($"{step.Description}\r\n{deviceResult.Description}\r\n\r\n");
         }
@@ -255,9 +261,11 @@ namespace UCA
             return -1;
         }
 
+        bool isPause = false;
+
         private void buttonCheckingPause_Click(object sender, EventArgs e)
         {
-
+            isPause = true;
         }
 
         private void buttonCheckingStop_Click(object sender, EventArgs e)

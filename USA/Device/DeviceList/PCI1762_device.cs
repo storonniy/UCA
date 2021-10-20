@@ -16,7 +16,7 @@ namespace UCA.Devices
             this.pci1762 = new PCI_1762(deviceNumber, deviceID);
         }
 
-        public DeviceResult DoCommand(DeviceData deviceData)
+        public override DeviceResult DoCommand(DeviceData deviceData)
         {
             int portStart = 0;
             switch (deviceData.Command)

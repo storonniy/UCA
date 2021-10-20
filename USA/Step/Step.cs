@@ -54,6 +54,8 @@ namespace UCA.Steps
                 var baudRate = int.Parse(row["baudRate"].ToString());
                 var device = new Device();
                 //// ВНИМАНИЕ! КОСТЫЛЬ!
+                ///
+                /*
                 switch (deviceName)
                 {
                     case "Commutator":
@@ -69,6 +71,7 @@ namespace UCA.Steps
                         baudRate = 2400;
                         break;
                 }
+                */
                 /// КОНЕЦ КОСТЫЛЯ
 
                 device.SerialPort = GetSerialPort(portName, baudRate);

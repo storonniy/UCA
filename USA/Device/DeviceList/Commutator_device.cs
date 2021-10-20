@@ -16,7 +16,7 @@ namespace UCA.Devices
         }
 
         /// дописать OpenAllRelays
-        public DeviceResult DoCommand(DeviceData deviceData)
+        public override DeviceResult DoCommand(DeviceData deviceData)
         {
             switch (deviceData.Command)
             {
@@ -94,6 +94,24 @@ namespace UCA.Devices
                         return DeviceResult.ResultOk($"Сигнал {signalNames[0]} присутствует");
                     }
                     return DeviceResult.ResultError($"Сигнал {signalNames[0]} отсутствует");
+                case DeviceCommands.GetSignals:
+                    string[] signalNames1 = deviceData.ExpectedValue.Replace(" ", "").Split(',');
+                    // Проверим, всё ли разомкнулось:
+                    var actualSignals = Commutator.GetSignals();
+                    bool isSignalExist1 = false;
+                    foreach (var signal in signalNames1)
+                    {
+                        isSignalExist = actualSignals.Contains(signal);
+                        if (!isSignalExist)
+                        {
+                            break;
+                        }
+                    }
+                    if (isSignalExist1)
+                    {
+                        return DeviceResult.ResultOk($"Сигнал {signalNames1[0]} присутствует");
+                    }
+                    return DeviceResult.ResultError($"Сигнал {signalNames1[0]} отсутствует");
                 default:
                     return DeviceResult.ResultError($"Неизвестная команда {deviceData.Command}");
             }

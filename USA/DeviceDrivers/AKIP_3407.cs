@@ -15,7 +15,7 @@ namespace UCA.DeviceDrivers
         public AKIP_3407(SerialPort serialPort)
         {
             this.serialPort = serialPort;
-            //this.serialPort.Open();
+            this.serialPort.Open();
         }
 
         ~AKIP_3407()

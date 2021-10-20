@@ -28,7 +28,6 @@ namespace UCA
             {
                 var settings = new Settings()
                 {
-                    ControlObjectName = textBoxControlObjectName.Text,
                     Regime = GetRegimeAsEnum(comboBoxRegime.SelectedItem.ToString()),
                     Comment = textBoxComment.Text,
                     FactoryNumber = int.Parse(textBoxFactoryNumber.Text),

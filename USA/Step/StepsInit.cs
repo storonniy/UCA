@@ -4,9 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UCA;
-using CommutatorLibrary;
-using PSP405Library;
-using GDM78261Library;
 using System.IO;
 using System.IO.Ports;
 using UCA.Devices;
@@ -34,7 +31,7 @@ namespace UCA.Steps
             }
             catch (ArgumentException)
             {
-                return new DeviceResult { State = DeviceState.ERROR, Description = "Команда не найдена: " +  step.Command};
+                return new DeviceResult { State = DeviceState.ERROR, Description = $"Команда не найдена: {step.Command}" };
             }
             try
             {
@@ -42,7 +39,7 @@ namespace UCA.Steps
             }
             catch (ArgumentException)
             {
-                return new DeviceResult { State = DeviceState.ERROR, Description = "Тип устройства не найден: " + step.Device };
+                return new DeviceResult { State = DeviceState.ERROR, Description = $"Тип устройства не найден: {step.Device }" };
             }
             var deviceResult = deviceHandler.ProcessDevice(deviceData);
             return deviceResult;

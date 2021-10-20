@@ -16,7 +16,7 @@ namespace UCA.Devices
             this.ath8030 = new ATH_8030(portName);
         }
 
-        public DeviceResult DoCommand(DeviceData deviceData)
+        public override DeviceResult DoCommand(DeviceData deviceData)
         {
             switch (deviceData.Command)
             {

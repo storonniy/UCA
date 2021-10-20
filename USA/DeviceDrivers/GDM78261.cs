@@ -16,8 +16,13 @@ namespace UCA.DeviceDrivers
         public GDM78261 (SerialPort serialPort)
         {
             this.serialPort = serialPort;
-            //this.serialPort.Open();
+            this.serialPort.Open();
         }
+        ~GDM78261()
+        {
+            this.serialPort.Close();
+        }
+
 
         /// <summary>
         /// Returns the DC voltage measurement as N mV.
@@ -25,8 +30,8 @@ namespace UCA.DeviceDrivers
         /// <returns></returns>
         public double MeasureVoltageDC()
         {
-            serialPort.WriteLine("MEAS:VOLT:DC?#013");
-            Thread.Sleep(1000);
+            serialPort.WriteLine("MEAS:VOLT:DC?#013#010");
+            Thread.Sleep(2000);
             return ParseValue(serialPort.ReadLine());
         }
         /// <summary>
@@ -35,24 +40,46 @@ namespace UCA.DeviceDrivers
         /// <returns></returns>
         public double MeasureCurrentDC()
         {
-            serialPort.WriteLine("MEAS:CURR:DC#013");
-            Thread.Sleep(1000);
+            Thread.Sleep(2000);
+            serialPort.WriteLine("MEAS:CURR:DC?#013#010");
+            Thread.Sleep(2000);
             return ParseValue(serialPort.ReadLine());
+        }
+
+        /// <summary>
+        /// Sets measurement to DC Current on the first display and specifies range
+        /// </summary>
+        /// <param name="range"></param>
+        public void SetMeasurementToCurrentDC(double range)
+        {
+            serialPort.WriteLine($"CONF:CURR:DC {range}#013#010");
+            Thread.Sleep(1000);
+        }
+        /// <summary>
+        /// Sets measurement to DC Voltage on the first display and specifies the range
+        /// </summary>
+        /// <param name="range"></param>
+        public void SetMeasurementToVoltageDC(double range)
+        {
+            serialPort.WriteLine($"CONF:VOLT:DC {range}#013#010");
+            Thread.Sleep(1000);
+        }
+
+
+        private enum Polarity
+        {
+            AC,
+            DC
+        }
+
+        public void Configure()
+        {
+
         }
 
         public static double ParseValue (string value)
         {
-            value = value.Replace(">", "");
-            int indexOfDecimalPart = value.IndexOf("E");
-            int power = int.Parse(value.Substring(indexOfDecimalPart + 1));
-            value = value.Remove(indexOfDecimalPart);
-            double mainPartOfValue = double.Parse(value, CultureInfo.InvariantCulture);
-            return mainPartOfValue * Math.Pow(10, power + 3);
-        }
-
-        ~GDM78261()
-        {
-            serialPort.Close();
+            return (double)Decimal.Parse(value.Replace("\r", ""), NumberStyles.Float, CultureInfo.InvariantCulture);
         }
     }
 }
