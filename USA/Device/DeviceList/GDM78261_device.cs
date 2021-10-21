@@ -3,7 +3,6 @@ using System.Globalization;
 using System.IO;
 using System.IO.Ports;
 using UCA.DeviceDrivers;
-using UCA.Auxiliary;
 using static UCA.Auxiliary.UnitValuePair;
 
 namespace UCA.Devices

@@ -29,8 +29,6 @@ namespace UCA
         /// </summary>
         private void InitializeComponent()
         {
-            this.comboBoxRegime = new System.Windows.Forms.ComboBox();
-            this.label6 = new System.Windows.Forms.Label();
             this.textBoxComment = new System.Windows.Forms.TextBox();
             this.textBoxOperatorName = new System.Windows.Forms.TextBox();
             this.textBoxFactoryNumber = new System.Windows.Forms.TextBox();
@@ -39,32 +37,13 @@ namespace UCA
             this.label2 = new System.Windows.Forms.Label();
             this.buttonApplySettings = new System.Windows.Forms.Button();
             this.labelErrorFactoryNumber = new System.Windows.Forms.Label();
+            this.algorithmTableAdapter1 = new USA.DataBaseDataSetTableAdapters.AlgorithmTableAdapter();
             this.SuspendLayout();
-            // 
-            // comboBoxRegime
-            // 
-            this.comboBoxRegime.BackColor = System.Drawing.SystemColors.Window;
-            this.comboBoxRegime.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.comboBoxRegime.FormattingEnabled = true;
-            this.comboBoxRegime.Location = new System.Drawing.Point(184, 24);
-            this.comboBoxRegime.Name = "comboBoxRegime";
-            this.comboBoxRegime.Size = new System.Drawing.Size(179, 24);
-            this.comboBoxRegime.TabIndex = 24;
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.label6.Location = new System.Drawing.Point(13, 24);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(51, 17);
-            this.label6.TabIndex = 23;
-            this.label6.Text = "Режим";
             // 
             // textBoxComment
             // 
             this.textBoxComment.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.textBoxComment.Location = new System.Drawing.Point(184, 71);
+            this.textBoxComment.Location = new System.Drawing.Point(204, 29);
             this.textBoxComment.Name = "textBoxComment";
             this.textBoxComment.Size = new System.Drawing.Size(179, 23);
             this.textBoxComment.TabIndex = 22;
@@ -73,7 +52,7 @@ namespace UCA
             // textBoxOperatorName
             // 
             this.textBoxOperatorName.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.textBoxOperatorName.Location = new System.Drawing.Point(184, 161);
+            this.textBoxOperatorName.Location = new System.Drawing.Point(204, 119);
             this.textBoxOperatorName.Name = "textBoxOperatorName";
             this.textBoxOperatorName.Size = new System.Drawing.Size(179, 23);
             this.textBoxOperatorName.TabIndex = 20;
@@ -82,7 +61,7 @@ namespace UCA
             // textBoxFactoryNumber
             // 
             this.textBoxFactoryNumber.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.textBoxFactoryNumber.Location = new System.Drawing.Point(184, 115);
+            this.textBoxFactoryNumber.Location = new System.Drawing.Point(204, 73);
             this.textBoxFactoryNumber.Name = "textBoxFactoryNumber";
             this.textBoxFactoryNumber.Size = new System.Drawing.Size(179, 23);
             this.textBoxFactoryNumber.TabIndex = 19;
@@ -93,7 +72,7 @@ namespace UCA
             // 
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.label4.Location = new System.Drawing.Point(13, 164);
+            this.label4.Location = new System.Drawing.Point(33, 122);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(74, 17);
             this.label4.TabIndex = 18;
@@ -103,7 +82,7 @@ namespace UCA
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.label3.Location = new System.Drawing.Point(13, 118);
+            this.label3.Location = new System.Drawing.Point(33, 76);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(123, 17);
             this.label3.TabIndex = 17;
@@ -113,7 +92,7 @@ namespace UCA
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.label2.Location = new System.Drawing.Point(13, 71);
+            this.label2.Location = new System.Drawing.Point(33, 29);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(89, 17);
             this.label2.TabIndex = 16;
@@ -121,7 +100,7 @@ namespace UCA
             // 
             // buttonApplySettings
             // 
-            this.buttonApplySettings.Location = new System.Drawing.Point(144, 245);
+            this.buttonApplySettings.Location = new System.Drawing.Point(138, 168);
             this.buttonApplySettings.Name = "buttonApplySettings";
             this.buttonApplySettings.Size = new System.Drawing.Size(107, 28);
             this.buttonApplySettings.TabIndex = 15;
@@ -136,19 +115,21 @@ namespace UCA
             | System.Windows.Forms.AnchorStyles.Right)));
             this.labelErrorFactoryNumber.AutoSize = true;
             this.labelErrorFactoryNumber.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.labelErrorFactoryNumber.Location = new System.Drawing.Point(181, 141);
+            this.labelErrorFactoryNumber.Location = new System.Drawing.Point(201, 99);
             this.labelErrorFactoryNumber.Name = "labelErrorFactoryNumber";
             this.labelErrorFactoryNumber.Size = new System.Drawing.Size(0, 17);
             this.labelErrorFactoryNumber.TabIndex = 25;
+            // 
+            // algorithmTableAdapter1
+            // 
+            this.algorithmTableAdapter1.ClearBeforeFill = true;
             // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(416, 302);
+            this.ClientSize = new System.Drawing.Size(416, 225);
             this.Controls.Add(this.labelErrorFactoryNumber);
-            this.Controls.Add(this.comboBoxRegime);
-            this.Controls.Add(this.label6);
             this.Controls.Add(this.textBoxComment);
             this.Controls.Add(this.textBoxOperatorName);
             this.Controls.Add(this.textBoxFactoryNumber);
@@ -164,9 +145,6 @@ namespace UCA
         }
 
         #endregion
-
-        private System.Windows.Forms.ComboBox comboBoxRegime;
-        private System.Windows.Forms.Label label6;
         private System.Windows.Forms.TextBox textBoxComment;
         private System.Windows.Forms.TextBox textBoxOperatorName;
         private System.Windows.Forms.TextBox textBoxFactoryNumber;
@@ -175,5 +153,6 @@ namespace UCA
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button buttonApplySettings;
         private System.Windows.Forms.Label labelErrorFactoryNumber;
+        private USA.DataBaseDataSetTableAdapters.AlgorithmTableAdapter algorithmTableAdapter1;
     }
 }

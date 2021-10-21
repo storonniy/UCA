@@ -16,11 +16,11 @@ namespace UCA.DeviceDrivers
         public GDM78261 (SerialPort serialPort)
         {
             this.serialPort = serialPort;
-            this.serialPort.Open();
+            //this.serialPort.Open();
         }
         ~GDM78261()
         {
-            this.serialPort.Close();
+            //this.serialPort.Close();
         }
 
 

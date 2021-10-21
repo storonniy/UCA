@@ -39,22 +39,22 @@ namespace UCA
             this.buttonCheckingStart = new System.Windows.Forms.Button();
             this.buttonCheckingStop = new System.Windows.Forms.Button();
             this.buttonCheckingPause = new System.Windows.Forms.Button();
-            this.buttonSaveProtocol = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.buttonOpenDataBase = new System.Windows.Forms.Button();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.treeOfChecking = new System.Windows.Forms.TreeView();
-            this.groupBoxCheckingManagement = new System.Windows.Forms.GroupBox();
+            this.comboBoxVoltageSupply = new System.Windows.Forms.ComboBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.comboBoxCheckingMode = new System.Windows.Forms.ComboBox();
+            this.labelOperatorName = new System.Windows.Forms.Label();
+            this.labelFactoryNumber = new System.Windows.Forms.Label();
+            this.labelComment = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.labelControlObjectName = new System.Windows.Forms.Label();
-            this.labelRegime = new System.Windows.Forms.Label();
-            this.labelComment = new System.Windows.Forms.Label();
-            this.labelFactoryNumber = new System.Windows.Forms.Label();
-            this.labelOperatorName = new System.Windows.Forms.Label();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.treeOfChecking = new System.Windows.Forms.TreeView();
+            this.groupBoxCheckingManagement = new System.Windows.Forms.GroupBox();
+            this.button = new System.Windows.Forms.Button();
+            this.buttonOpenDataBase = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -119,22 +119,15 @@ namespace UCA
             this.buttonCheckingPause.UseVisualStyleBackColor = true;
             this.buttonCheckingPause.Click += new System.EventHandler(this.buttonCheckingPause_Click);
             // 
-            // buttonSaveProtocol
-            // 
-            resources.ApplyResources(this.buttonSaveProtocol, "buttonSaveProtocol");
-            this.buttonSaveProtocol.Name = "buttonSaveProtocol";
-            this.buttonSaveProtocol.UseVisualStyleBackColor = true;
-            this.buttonSaveProtocol.Click += new System.EventHandler(this.buttonSaveProtocol_Click);
-            // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.comboBoxVoltageSupply);
+            this.panel1.Controls.Add(this.label1);
+            this.panel1.Controls.Add(this.comboBoxCheckingMode);
             this.panel1.Controls.Add(this.labelOperatorName);
             this.panel1.Controls.Add(this.labelFactoryNumber);
             this.panel1.Controls.Add(this.labelComment);
-            this.panel1.Controls.Add(this.labelRegime);
-            this.panel1.Controls.Add(this.labelControlObjectName);
             this.panel1.Controls.Add(this.label6);
-            this.panel1.Controls.Add(this.label5);
             this.panel1.Controls.Add(this.label4);
             this.panel1.Controls.Add(this.label3);
             this.panel1.Controls.Add(this.label2);
@@ -144,45 +137,43 @@ namespace UCA
             resources.ApplyResources(this.panel1, "panel1");
             this.panel1.Name = "panel1";
             // 
-            // buttonOpenDataBase
+            // comboBoxVoltageSupply
             // 
-            resources.ApplyResources(this.buttonOpenDataBase, "buttonOpenDataBase");
-            this.buttonOpenDataBase.Name = "buttonOpenDataBase";
-            this.buttonOpenDataBase.UseVisualStyleBackColor = true;
-            this.buttonOpenDataBase.Click += new System.EventHandler(this.buttonOpenDataBase_Click);
+            this.comboBoxVoltageSupply.FormattingEnabled = true;
+            resources.ApplyResources(this.comboBoxVoltageSupply, "comboBoxVoltageSupply");
+            this.comboBoxVoltageSupply.Name = "comboBoxVoltageSupply";
             // 
-            // groupBox2
+            // label1
             // 
-            this.groupBox2.Controls.Add(this.treeOfChecking);
-            resources.ApplyResources(this.groupBox2, "groupBox2");
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.TabStop = false;
+            resources.ApplyResources(this.label1, "label1");
+            this.label1.Name = "label1";
             // 
-            // treeOfChecking
+            // comboBoxCheckingMode
             // 
-            resources.ApplyResources(this.treeOfChecking, "treeOfChecking");
-            this.treeOfChecking.Name = "treeOfChecking";
+            this.comboBoxCheckingMode.FormattingEnabled = true;
+            resources.ApplyResources(this.comboBoxCheckingMode, "comboBoxCheckingMode");
+            this.comboBoxCheckingMode.Name = "comboBoxCheckingMode";
+            this.comboBoxCheckingMode.SelectedIndexChanged += new System.EventHandler(this.comboBoxCheckingMode_SelectedIndexChanged);
             // 
-            // groupBoxCheckingManagement
+            // labelOperatorName
             // 
-            this.groupBoxCheckingManagement.Controls.Add(this.buttonOpenDataBase);
-            this.groupBoxCheckingManagement.Controls.Add(this.buttonCheckingStop);
-            this.groupBoxCheckingManagement.Controls.Add(this.buttonCheckingStart);
-            this.groupBoxCheckingManagement.Controls.Add(this.buttonCheckingPause);
-            this.groupBoxCheckingManagement.Controls.Add(this.buttonSaveProtocol);
-            resources.ApplyResources(this.groupBoxCheckingManagement, "groupBoxCheckingManagement");
-            this.groupBoxCheckingManagement.Name = "groupBoxCheckingManagement";
-            this.groupBoxCheckingManagement.TabStop = false;
+            resources.ApplyResources(this.labelOperatorName, "labelOperatorName");
+            this.labelOperatorName.Name = "labelOperatorName";
+            // 
+            // labelFactoryNumber
+            // 
+            resources.ApplyResources(this.labelFactoryNumber, "labelFactoryNumber");
+            this.labelFactoryNumber.Name = "labelFactoryNumber";
+            // 
+            // labelComment
+            // 
+            resources.ApplyResources(this.labelComment, "labelComment");
+            this.labelComment.Name = "labelComment";
             // 
             // label6
             // 
             resources.ApplyResources(this.label6, "label6");
             this.label6.Name = "label6";
-            // 
-            // label5
-            // 
-            resources.ApplyResources(this.label5, "label5");
-            this.label5.Name = "label5";
             // 
             // label4
             // 
@@ -199,30 +190,41 @@ namespace UCA
             resources.ApplyResources(this.label2, "label2");
             this.label2.Name = "label2";
             // 
-            // labelControlObjectName
+            // groupBox2
             // 
-            resources.ApplyResources(this.labelControlObjectName, "labelControlObjectName");
-            this.labelControlObjectName.Name = "labelControlObjectName";
+            this.groupBox2.Controls.Add(this.treeOfChecking);
+            resources.ApplyResources(this.groupBox2, "groupBox2");
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.TabStop = false;
             // 
-            // labelRegime
+            // treeOfChecking
             // 
-            resources.ApplyResources(this.labelRegime, "labelRegime");
-            this.labelRegime.Name = "labelRegime";
+            resources.ApplyResources(this.treeOfChecking, "treeOfChecking");
+            this.treeOfChecking.Name = "treeOfChecking";
             // 
-            // labelComment
+            // groupBoxCheckingManagement
             // 
-            resources.ApplyResources(this.labelComment, "labelComment");
-            this.labelComment.Name = "labelComment";
+            this.groupBoxCheckingManagement.Controls.Add(this.button);
+            this.groupBoxCheckingManagement.Controls.Add(this.buttonOpenDataBase);
+            this.groupBoxCheckingManagement.Controls.Add(this.buttonCheckingStop);
+            this.groupBoxCheckingManagement.Controls.Add(this.buttonCheckingStart);
+            this.groupBoxCheckingManagement.Controls.Add(this.buttonCheckingPause);
+            resources.ApplyResources(this.groupBoxCheckingManagement, "groupBoxCheckingManagement");
+            this.groupBoxCheckingManagement.Name = "groupBoxCheckingManagement";
+            this.groupBoxCheckingManagement.TabStop = false;
             // 
-            // labelFactoryNumber
+            // button
             // 
-            resources.ApplyResources(this.labelFactoryNumber, "labelFactoryNumber");
-            this.labelFactoryNumber.Name = "labelFactoryNumber";
+            resources.ApplyResources(this.button, "button");
+            this.button.Name = "button";
+            this.button.UseVisualStyleBackColor = true;
             // 
-            // labelOperatorName
+            // buttonOpenDataBase
             // 
-            resources.ApplyResources(this.labelOperatorName, "labelOperatorName");
-            this.labelOperatorName.Name = "labelOperatorName";
+            resources.ApplyResources(this.buttonOpenDataBase, "buttonOpenDataBase");
+            this.buttonOpenDataBase.Name = "buttonOpenDataBase";
+            this.buttonOpenDataBase.UseVisualStyleBackColor = true;
+            this.buttonOpenDataBase.Click += new System.EventHandler(this.buttonOpenDataBase_Click);
             // 
             // Form1
             // 
@@ -254,7 +256,6 @@ namespace UCA
         private System.Windows.Forms.Button buttonCheckingStart;
         private System.Windows.Forms.Button buttonCheckingStop;
         private System.Windows.Forms.Button buttonCheckingPause;
-        private System.Windows.Forms.Button buttonSaveProtocol;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.GroupBox groupBoxCheckingManagement;
         private System.Windows.Forms.GroupBox groupBox2;
@@ -263,13 +264,14 @@ namespace UCA
         private System.Windows.Forms.Label labelOperatorName;
         private System.Windows.Forms.Label labelFactoryNumber;
         private System.Windows.Forms.Label labelComment;
-        private System.Windows.Forms.Label labelRegime;
-        private System.Windows.Forms.Label labelControlObjectName;
         private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.ComboBox comboBoxVoltageSupply;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.ComboBox comboBoxCheckingMode;
+        private System.Windows.Forms.Button button;
     }
 }
 

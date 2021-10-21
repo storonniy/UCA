@@ -18,8 +18,6 @@ namespace UCA
         public SettingsForm()
         {
             InitializeComponent();
-            comboBoxRegime.Items.AddRange(new string[] { "Номинальный", "Минимальный", "Максимальный" });
-            comboBoxRegime.SelectedItem = comboBoxRegime.Items[0];
         }
 
         private void buttonApplySettings_Click(object sender, EventArgs e)
@@ -28,7 +26,6 @@ namespace UCA
             {
                 var settings = new Settings()
                 {
-                    Regime = GetRegimeAsEnum(comboBoxRegime.SelectedItem.ToString()),
                     Comment = textBoxComment.Text,
                     FactoryNumber = int.Parse(textBoxFactoryNumber.Text),
                     OperatorName = textBoxOperatorName.Text
@@ -66,6 +63,11 @@ namespace UCA
                 return false;
             }
             return true;
+        }
+
+        private void comboBoxRegime_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

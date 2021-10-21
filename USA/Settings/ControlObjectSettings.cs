@@ -6,16 +6,26 @@ using System.Threading.Tasks;
 
 namespace UCA.ControlObjectSettings
 {
+    public class PowerSupplyMode
+    {
+
+        public enum SupplyVoltageValue
+        {
+            Nominal,
+            Min,
+            Max
+        }
+    }
+
     public class ControlObjectSettings
     {
         public struct Settings
         {
-            public string ControlObjectName;
             public Regime Regime;
             public string Comment;
             public int FactoryNumber;
             public string OperatorName;
-        }
+        }        
 
         public static Regime GetRegimeAsEnum(string regimeName)
         {
@@ -52,6 +62,25 @@ namespace UCA.ControlObjectSettings
             Nominal,
             Min,
             Max
+        }
+
+        public enum CheckingType
+        {
+            SelfChecking,
+            Algorithm
+        }
+
+        public static string GetCheckingTypeAsString(CheckingType checkingType)
+        {
+            switch (checkingType)
+            {
+                case CheckingType.SelfChecking:
+                    return "Самопроверка";
+                case CheckingType.Algorithm:
+                    return "Алгоритм";
+                default:
+                    throw new Exception($"Выбран неизвестный тип проверки - {checkingType}");
+            }
         }
     }
 }

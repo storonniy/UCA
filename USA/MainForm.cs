@@ -13,13 +13,15 @@ namespace UCA
     public partial class Form1 : Form
     {
         Settings settings = new Settings();
-
+        Dictionary<string, StepsInfo> modeStepDictionary;
+ 
         public Form1(Settings settings)
         {
             InitializeComponent();
             EventSend = this;
             this.settings = settings;
             ShowSettings();
+            InitialActions();          
         }
 
         private void ShowSettings()
@@ -27,21 +29,39 @@ namespace UCA
             labelComment.Text = (settings.Comment != "") ? settings.Comment : "Не указано";
             labelFactoryNumber.Text = settings.FactoryNumber.ToString();
             labelOperatorName.Text = (settings.OperatorName != "") ? settings.OperatorName : "Не указано";
-            labelRegime.Text = GetRegimeAsString(settings.Regime);
         }
 
         private void InitialActions(string pathToDataBase)
         {
             try
             {
-                string connectionString = string.Format("Provider=Microsoft.ACE.OLEDB.16.0;Data Source={0}; Extended Properties=Excel 12.0;", pathToDataBase);//"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathToDataBase;
+                string connectionString = string.Format("Provider=Microsoft.ACE.OLEDB.12.0;Data Source={0}; Extended Properties=Excel 12.0;", pathToDataBase);//"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathToDataBase;
                 var dbReader = new DBReader(connectionString);
                 var dataSet = dbReader.GetDataSet();
-                var info = new StepsInfo();
-                info = Step.GetStepsInfo(dataSet);
-                FillTreeView(treeOfChecking, info.StepsDictionary);
-                Thread thread = new Thread(delegate () { ExecuteDataSetRowByRow(info); });//stepsDictionary
-                thread.Start();
+                var allStepsInfo = Step.GetStepsInfo(dataSet);
+                var modeStepDictionary = new Dictionary<string, StepsInfo>();
+                foreach (var modeName in allStepsInfo.ModesDictionary.Keys)
+                {
+                    var stepsDictionary = new Dictionary<string, List<Step>>();
+                    var tableNames = allStepsInfo.ModesDictionary[modeName];
+                    foreach (var tableName in tableNames)
+                    {
+                        if (tableName.Split(' ').Length > 1)
+                            stepsDictionary.Add(tableName, allStepsInfo.StepsDictionary[$"'{tableName}'"]);
+                        else
+                            stepsDictionary.Add(tableName, allStepsInfo.StepsDictionary[tableName]);
+                    }
+                    comboBoxCheckingMode.Items.Add(modeName);
+                    var stepsInfo = new StepsInfo()
+                    {
+                        DeviceHandler = allStepsInfo.DeviceHandler,
+                        EmergencyStepList = allStepsInfo.EmergencyStepList,
+                        StepsDictionary = stepsDictionary,
+                        ModesDictionary = allStepsInfo.ModesDictionary,                   
+                    };
+                    modeStepDictionary.Add(modeName, stepsInfo);
+                }
+                this.modeStepDictionary = modeStepDictionary;
             }
             catch (System.Data.OleDb.OleDbException ex)
             {
@@ -50,7 +70,7 @@ namespace UCA
             catch (System.InvalidOperationException ex)
             {
                 MessageBox.Show(ex.Message);
-            }
+            }         
             catch (ArgumentException ex)
             {
                 MessageBox.Show(ex.Message);
@@ -59,6 +79,7 @@ namespace UCA
             {
                 MessageBox.Show(ex.Message);
             }
+            comboBoxCheckingMode.SelectedItem = comboBoxCheckingMode.Items[0];
         }
 
         // TODO use InitialActions(path)
@@ -68,9 +89,14 @@ namespace UCA
             InitialActions(connectionString);
         }
 
-        private void ExecuteDataSetRowByRow (StepsInfo stepsInfo)//(Dictionary<string, List<Step>> stepsDictionary)
+        private void ExecuteDataSetRowByRow(StepsInfo stepsInfo)//(Dictionary<string, List<Step>> stepsDictionary)
         {
             var log = new Log();
+            log.AddItem($"Время начала проверки: {DateTime.Now}\n");
+            log.AddItem($"Имя оператора: {settings.OperatorName}\n");
+            log.AddItem($"Комментарий: {settings.Comment}\n");
+            log.AddItem($"Заводской номер: {settings.FactoryNumber}\n");
+            log.AddItem($"Режим: {settings.Regime}\r\n");
             foreach (var tableName in stepsInfo.StepsDictionary.Keys)
             {
                 foreach (var step in stepsInfo.StepsDictionary[tableName])
@@ -88,8 +114,6 @@ namespace UCA
             var stepParser = new StepParser(stepsInfo.DeviceHandler, step);
             var deviceResult = stepParser.DoStep();
             var nodeNumbers = GetNodeNumber(treeOfChecking, stepsInfo.StepNumber);
-            if (step.Channel > 0)
-                deviceResult.Description = $"Канал {step.Channel}: {deviceResult.Description}";
             UpdateTreeNodes(treeOfChecking, nodeNumbers, deviceResult.Description);
             if (deviceResult.State == DeviceState.OK)
             {
@@ -105,7 +129,7 @@ namespace UCA
                 //Thread.CurrentThread.Abort();
 
             }
-            log.WriteItem($"{step.Description}\r\n{deviceResult.Description}\r\n\r\n");
+            log.AddItem($"Шаг {stepsInfo.StepNumber + 1}: {step.Description}\r\n{deviceResult.Description}\r\n\r\n");
         }
 
         private void EmergencyBreak (StepsInfo stepsInfo)
@@ -120,6 +144,7 @@ namespace UCA
         #region TreeNodes
         private void FillTreeView(TreeView treeView, Dictionary<string, List<Step>> stepDictionary)
         {
+            treeView.Nodes.Clear();
             treeView.BeginUpdate();
             var nodesCount = 0;
             foreach (var tableName in stepDictionary.Keys)
@@ -154,6 +179,7 @@ namespace UCA
             }
             var nodeNumber = nodeNumbers[0];
             var subNodeNumber = nodeNumbers[1];
+            treeView.Nodes[nodeNumber].Nodes[subNodeNumber].ImageIndex = 2;
             treeView.Nodes[nodeNumber].Nodes[subNodeNumber].ForeColor = color;
         }
 
@@ -167,7 +193,7 @@ namespace UCA
             var nodeNumber = nodeNumbers[0];
             var subNodeNumber = nodeNumbers[1];
             treeView.Nodes[nodeNumber].Nodes[subNodeNumber].Nodes.Add(stepResult);
-            treeView.Nodes[nodeNumber].Nodes[subNodeNumber].Expand();
+            //treeView.Nodes[nodeNumber].Nodes[subNodeNumber].Expand();
         }
 
         private int[] GetNodeNumber(TreeView treeView, int stepNumber)
@@ -191,22 +217,6 @@ namespace UCA
 
         public static Form1 EventSend;
 
-        private List<string> GetProtocolFromTreeView(TreeView treeView)
-        {
-            var protocol = new List<string>();
-            foreach (TreeNode node in treeView.Nodes)
-            {
-                foreach (TreeNode subNode in node.Nodes)
-                {
-                    var stepDescription = subNode.Text;
-                    var stepResult = (subNode.Nodes.Count > 0) ? subNode.Nodes[0].Text : "Шаг по какой-то причине не был завершён";
-                    var stepItem = stepDescription + "\t" + stepResult + "\n\n";
-                    protocol.Add(stepItem);
-                }
-            }
-            return protocol;
-        }
-
         private void buttonSaveProtocol_Click(object sender, EventArgs e)
         {
 
@@ -214,7 +224,10 @@ namespace UCA
 
         private void buttonCheckingStart_Click(object sender, EventArgs e)
         {
-            InitialActions();
+            var modeName = comboBoxCheckingMode.SelectedItem.ToString();
+            var stepsInfo = modeStepDictionary[modeName];
+            Thread thread = new Thread(delegate () { ExecuteDataSetRowByRow(stepsInfo); });//stepsDictionary
+            thread.Start();
         }
 
         private void buttonOpenDataBase_Click(object sender, EventArgs e)
@@ -283,6 +296,13 @@ namespace UCA
         {
             richTextBoxCheckingProtocol.SelectionStart = richTextBoxCheckingProtocol.Text.Length;
             richTextBoxCheckingProtocol.ScrollToCaret();
+        }
+
+        private void comboBoxCheckingMode_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var modeName = comboBoxCheckingMode.SelectedItem.ToString();
+            var stepsInfo = modeStepDictionary[modeName];
+            FillTreeView(treeOfChecking, stepsInfo.StepsDictionary);
         }
     }
 }

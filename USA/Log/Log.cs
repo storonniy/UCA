@@ -16,11 +16,6 @@ namespace UCA.Logging
             streamWriter = GetStreamWriter();
         }
 
-        public void AddItem(string item)
-        {
-            log.Add(item);
-        }
-
         private StreamWriter GetStreamWriter()
         {
             string pathToFile = Directory.GetCurrentDirectory() + "/" + FileName; //"Data" + "/" +
@@ -44,7 +39,7 @@ namespace UCA.Logging
             streamWriter.Flush();
         }
 
-        public void WriteItem(string item)
+        public void AddItem(string item)
         {
             streamWriter.WriteLine(item);
             streamWriter.Flush();

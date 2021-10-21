@@ -11,6 +11,7 @@ namespace UCA.Steps
 {
     struct StepsInfo
     {
+        public Dictionary<string, List<string>> ModesDictionary;
         public DeviceInit DeviceHandler;
         public Dictionary<string, List<Step>> StepsDictionary;
         public List<Step> EmergencyStepList;
@@ -38,7 +39,7 @@ namespace UCA.Steps
                 DtrEnable = true,
                 RtsEnable = true,
                 Handshake = Handshake.None,
-                ReadTimeout = 1000,
+                ReadTimeout = 2000,
                 WriteTimeout = 2500
             };
             return serialPort;
@@ -47,33 +48,12 @@ namespace UCA.Steps
         private static List<Device> GetDeviceList(DataSet dataSet)
         {
             var deviceList = new List<Device>();
-            foreach (DataRow row in dataSet.Tables["DeviceInformation$"].Rows)
+            foreach (DataRow row in dataSet.Tables["DeviceInformation"].Rows)
             {
                 var deviceName = row["device"].ToString();
                 var portName = row["portName"].ToString();
                 var baudRate = int.Parse(row["baudRate"].ToString());
                 var device = new Device();
-                //// ВНИМАНИЕ! КОСТЫЛЬ!
-                ///
-                /*
-                switch (deviceName)
-                {
-                    case "Commutator":
-                        portName = "COM4";
-                        baudRate = 115200;
-                        break;
-                    case "PSP_405_power":
-                        portName = "COM5";
-                        baudRate = 2400;
-                        break;
-                    case "PSP_405":
-                        portName = "COM6";
-                        baudRate = 2400;
-                        break;
-                }
-                */
-                /// КОНЕЦ КОСТЫЛЯ
-
                 device.SerialPort = GetSerialPort(portName, baudRate);
                 try
                 {
@@ -85,20 +65,43 @@ namespace UCA.Steps
                     throw new ArgumentException($"Устройство {deviceName} не найдено в списке доступных устройств");
                 }
             }
-            dataSet.Tables.Remove(dataSet.Tables["DeviceInformation$"]);
+            dataSet.Tables.Remove(dataSet.Tables["DeviceInformation"]);
             return deviceList;
         }
 
-        public static StepsInfo GetStepsInfo(DataSet dataSet)
+        public static Dictionary<string, List<string>> GetModesDictionary (DataSet dataSet)
         {
+            var modesDictionary = new Dictionary<string, List<string>>();
+            var checkingModeTable = dataSet.Tables["Settings"];
+            dataSet.Tables.Remove(dataSet.Tables[checkingModeTable.TableName]);
+            foreach (DataRow row in checkingModeTable.Rows)
+            {
+                var checkingMode = row["CheckingMode"].ToString();
+                List<string> tableNames = row["TableNames"].ToString().Split(';').ToList();
+                for (int i = 0; i < tableNames.Count; i++)
+                {
+                    while (tableNames[i].StartsWith(" "))
+                        tableNames[i] = tableNames[i].Remove(0, 1);
+                }
+                modesDictionary.Add(checkingMode, tableNames);
+            }
+            return modesDictionary;
+        }
+
+
+
+        public static StepsInfo GetStepsInfo(DataSet dataSet)
+        {         
+            var modesDictionary = GetModesDictionary(dataSet);
             var deviceList = GetDeviceList(dataSet);
             DataSet dataSetEmergency = GetEmergencyDataSet(dataSet);
             var emergencyStepsDictionary = GetStepsDictionary(dataSetEmergency);
             var stepsDictionary = GetStepsDictionary(dataSet);
             var info = new StepsInfo()
             {
+                ModesDictionary = modesDictionary,
                 StepsDictionary = stepsDictionary,
-                EmergencyStepList = emergencyStepsDictionary["EmergencyBreaking$"],
+                EmergencyStepList = emergencyStepsDictionary["EmergencyBreaking"],
                 DeviceHandler = new DeviceInit(deviceList)
             };
             return info;
@@ -123,8 +126,8 @@ namespace UCA.Steps
 
         private static DataSet GetEmergencyDataSet(DataSet dataSet)
         {
-            var tableEmergencyBreaking = dataSet.Tables["EmergencyBreaking$"];
-            dataSet.Tables.Remove(dataSet.Tables["EmergencyBreaking$"]);
+            var tableEmergencyBreaking = dataSet.Tables["EmergencyBreaking"];
+            dataSet.Tables.Remove(dataSet.Tables[tableEmergencyBreaking.TableName]);
             var dataSetEmergency = new DataSet();
             dataSetEmergency.Tables.Add(tableEmergencyBreaking);
             return dataSetEmergency;

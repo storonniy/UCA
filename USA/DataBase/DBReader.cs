@@ -40,9 +40,9 @@ namespace UCA
             DataSet dataSet = new DataSet();
             foreach (var tableName in GetTableNamesList())
             {
-                var selectCommandText = "SELECT * FROM [" + tableName + "]";
+                var selectCommandText = $"SELECT * FROM [{tableName}]";
                 OleDbDataAdapter dataAdapter = new OleDbDataAdapter(selectCommandText, connection);
-                dataAdapter.Fill(dataSet, tableName);
+                dataAdapter.Fill(dataSet, tableName.Replace("$", ""));
             }
             return dataSet;
         }
