@@ -58,17 +58,22 @@ namespace UCA.Devices
                 case DeviceCommands.PowerOn:
                     Psp405.TurnOn();
                     Thread.Sleep(delay);
-                    if (Psp405.GetRelayStatus())
-                    {
-                        return ResultOk("Включение устройства прошло успешно");
-                    }
-                    else
-                    {
-                        return ResultError("Не удалось включить устройство");
-                    }
+                    return ResultOk("Включение устройства прошло успешно");
+                /*
+                if (Psp405.GetRelayStatus())
+                {
+                    return ResultOk("Включение устройства прошло успешно");
+                }
+                else
+                {
+                    return ResultError("Не удалось включить устройство");
+                }
+                */
                 case DeviceCommands.PowerOff:
                     Psp405.TurnOff();
                     Thread.Sleep(delay);
+                    return ResultOk("Отключение устройства прошло успешно");
+                    /*
                     if (Psp405.GetRelayStatus())
                     {
                         return ResultOk("Отключение устройства прошло успешно");
@@ -77,6 +82,7 @@ namespace UCA.Devices
                     {
                         return ResultError("Не удалось отключить устройство");
                     }
+                    */
                 case DeviceCommands.SetCurrentLimit:
                     var currentLimit = double.Parse(deviceData.Argument, CultureInfo.InvariantCulture);
                     Psp405.SetCurrentLimit(currentLimit);

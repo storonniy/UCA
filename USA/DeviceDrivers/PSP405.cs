@@ -121,7 +121,7 @@ namespace UCA.DeviceDrivers
             return status;
         }
 
-        private static readonly int delay = 100;
+        private static readonly int delay = 500;
 
         /// <summary>
         /// Set the voltage output level of the PSP-405.

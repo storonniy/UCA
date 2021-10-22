@@ -13,7 +13,7 @@ namespace UCA.Devices
             switch (deviceData.Command)
             {
                 case DeviceCommands.CalculateCoefficient:
-                    return DeviceResult.ResultError($"{deviceData.Command}");//($"Напиши метод {deviceData.Command}");
+                    return DeviceResult.ResultOk($"{deviceData.Command}");//($"Напиши метод {deviceData.Command}");
                 case DeviceCommands.CalculateCoeff_UCA_T:
                     return DeviceResult.ResultError($"Напиши метод,  {deviceData.Command}");
                 default:

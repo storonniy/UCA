@@ -31,6 +31,47 @@ namespace UCA
             labelOperatorName.Text = (settings.OperatorName != "") ? settings.OperatorName : "Не указано";
         }
 
+        private void GetModeStepDictionary (StepsInfo allStepsInfo)
+        {
+            var modeStepDictionary = new Dictionary<string, StepsInfo>();
+            foreach (var modeName in allStepsInfo.ModesDictionary.Keys)
+            {
+                var stepsDictionary = new Dictionary<string, List<Step>>();
+                var tableNames = allStepsInfo.ModesDictionary[modeName];
+                foreach (var tableName in tableNames)
+                {
+                    if (tableName != "")
+                    {
+                        if (tableName.Split(' ').Length > 1)
+                            stepsDictionary.Add(tableName, allStepsInfo.StepsDictionary[$"'{tableName}'"]);
+                        else
+                            stepsDictionary.Add(tableName, allStepsInfo.StepsDictionary[tableName]);
+                    }
+                }
+                comboBoxCheckingMode.Items.Add(modeName);
+                var stepsInfo = new StepsInfo()
+                {
+                    VoltageSupplyDictionary = allStepsInfo.VoltageSupplyDictionary,
+                    DeviceHandler = allStepsInfo.DeviceHandler,
+                    EmergencyStepList = allStepsInfo.EmergencyStepList,
+                    StepsDictionary = stepsDictionary,
+                    ModesDictionary = allStepsInfo.ModesDictionary,
+                };
+                modeStepDictionary.Add(modeName, stepsInfo);
+            }
+            this.modeStepDictionary = modeStepDictionary;
+            comboBoxCheckingMode.SelectedItem = comboBoxCheckingMode.Items[0];
+        }
+
+        private void SetVoltageSupplyMode(StepsInfo allStepsInfo)
+        {
+            foreach (var modeName in allStepsInfo.VoltageSupplyDictionary.Keys)
+            {
+                comboBoxVoltageSupply.Items.Add(modeName);
+            }
+            comboBoxVoltageSupply.SelectedItem = comboBoxVoltageSupply.Items[1];
+        }
+
         private void InitialActions(string pathToDataBase)
         {
             try
@@ -39,29 +80,8 @@ namespace UCA
                 var dbReader = new DBReader(connectionString);
                 var dataSet = dbReader.GetDataSet();
                 var allStepsInfo = Step.GetStepsInfo(dataSet);
-                var modeStepDictionary = new Dictionary<string, StepsInfo>();
-                foreach (var modeName in allStepsInfo.ModesDictionary.Keys)
-                {
-                    var stepsDictionary = new Dictionary<string, List<Step>>();
-                    var tableNames = allStepsInfo.ModesDictionary[modeName];
-                    foreach (var tableName in tableNames)
-                    {
-                        if (tableName.Split(' ').Length > 1)
-                            stepsDictionary.Add(tableName, allStepsInfo.StepsDictionary[$"'{tableName}'"]);
-                        else
-                            stepsDictionary.Add(tableName, allStepsInfo.StepsDictionary[tableName]);
-                    }
-                    comboBoxCheckingMode.Items.Add(modeName);
-                    var stepsInfo = new StepsInfo()
-                    {
-                        DeviceHandler = allStepsInfo.DeviceHandler,
-                        EmergencyStepList = allStepsInfo.EmergencyStepList,
-                        StepsDictionary = stepsDictionary,
-                        ModesDictionary = allStepsInfo.ModesDictionary,                   
-                    };
-                    modeStepDictionary.Add(modeName, stepsInfo);
-                }
-                this.modeStepDictionary = modeStepDictionary;
+                GetModeStepDictionary(allStepsInfo);
+                SetVoltageSupplyMode(allStepsInfo);
             }
             catch (System.Data.OleDb.OleDbException ex)
             {
@@ -79,7 +99,6 @@ namespace UCA
             {
                 MessageBox.Show(ex.Message);
             }
-            comboBoxCheckingMode.SelectedItem = comboBoxCheckingMode.Items[0];
         }
 
         // TODO use InitialActions(path)
@@ -156,7 +175,7 @@ namespace UCA
                     nodesCount++;
                     try
                     {
-                        var nodeName = nodesCount + " " + step.Description;
+                        var nodeName = $"{nodesCount} {step.Description}";
                         treeView.Nodes[treeNode.Index].Nodes.Add(new TreeNode(nodeName));
                         treeView.Nodes[treeNode.Index].Expand();
                     }
@@ -179,7 +198,9 @@ namespace UCA
             }
             var nodeNumber = nodeNumbers[0];
             var subNodeNumber = nodeNumbers[1];
-            treeView.Nodes[nodeNumber].Nodes[subNodeNumber].ImageIndex = 2;
+            var imageKey = "ok";
+            //treeView.ImageList.Images.Add(imageKey, new System.Drawing.Icon(Application.StartupPath + "\\Images\\ok.png"));
+            //treeView.Nodes[nodeNumber].Nodes[subNodeNumber].ImageIndex = 0;
             treeView.Nodes[nodeNumber].Nodes[subNodeNumber].ForeColor = color;
         }
 
@@ -303,6 +324,11 @@ namespace UCA
             var modeName = comboBoxCheckingMode.SelectedItem.ToString();
             var stepsInfo = modeStepDictionary[modeName];
             FillTreeView(treeOfChecking, stepsInfo.StepsDictionary);
+        }
+
+        private void comboBoxVoltageSupply_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

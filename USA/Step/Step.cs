@@ -11,6 +11,7 @@ namespace UCA.Steps
 {
     struct StepsInfo
     {
+        public Dictionary<string, double> VoltageSupplyDictionary;
         public Dictionary<string, List<string>> ModesDictionary;
         public DeviceInit DeviceHandler;
         public Dictionary<string, List<Step>> StepsDictionary;
@@ -69,11 +70,24 @@ namespace UCA.Steps
             return deviceList;
         }
 
+        public static Dictionary<string, double> GetVoltageSupplyMode(DataSet dataSet)
+        {
+            var voltageSupplyModesDictionary = new Dictionary<string, double>();
+            var voltageSupplyModeTable = dataSet.Tables["Settings"];
+            foreach (DataRow row in voltageSupplyModeTable.Rows)
+            {
+                var voltageModeName = row["VoltageSupplyMode"].ToString();
+                var voltageValue = double.Parse(row["VoltageValue"].ToString());
+                voltageSupplyModesDictionary.Add(voltageModeName, voltageValue);
+            }
+            dataSet.Tables.Remove(dataSet.Tables[voltageSupplyModeTable.TableName]);
+            return voltageSupplyModesDictionary;
+        }
+
         public static Dictionary<string, List<string>> GetModesDictionary (DataSet dataSet)
         {
             var modesDictionary = new Dictionary<string, List<string>>();
             var checkingModeTable = dataSet.Tables["Settings"];
-            dataSet.Tables.Remove(dataSet.Tables[checkingModeTable.TableName]);
             foreach (DataRow row in checkingModeTable.Rows)
             {
                 var checkingMode = row["CheckingMode"].ToString();
@@ -91,14 +105,16 @@ namespace UCA.Steps
 
 
         public static StepsInfo GetStepsInfo(DataSet dataSet)
-        {         
+        {
             var modesDictionary = GetModesDictionary(dataSet);
+            var voltageSupplyDictionary = GetVoltageSupplyMode(dataSet);
             var deviceList = GetDeviceList(dataSet);
             DataSet dataSetEmergency = GetEmergencyDataSet(dataSet);
             var emergencyStepsDictionary = GetStepsDictionary(dataSetEmergency);
             var stepsDictionary = GetStepsDictionary(dataSet);
             var info = new StepsInfo()
             {
+                VoltageSupplyDictionary = voltageSupplyDictionary,
                 ModesDictionary = modesDictionary,
                 StepsDictionary = stepsDictionary,
                 EmergencyStepList = emergencyStepsDictionary["EmergencyBreaking"],

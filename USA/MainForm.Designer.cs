@@ -142,6 +142,7 @@ namespace UCA
             this.comboBoxVoltageSupply.FormattingEnabled = true;
             resources.ApplyResources(this.comboBoxVoltageSupply, "comboBoxVoltageSupply");
             this.comboBoxVoltageSupply.Name = "comboBoxVoltageSupply";
+            this.comboBoxVoltageSupply.SelectedIndexChanged += new System.EventHandler(this.comboBoxVoltageSupply_SelectedIndexChanged);
             // 
             // label1
             // 
