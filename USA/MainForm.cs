@@ -7,14 +7,22 @@ using UCA.Devices;
 using UCA.Logging;
 using UCA.Steps;
 using static UCA.ControlObjectSettings.ControlObjectSettings;
+using System.ComponentModel;
 
 namespace UCA
 {
     public partial class Form1 : Form
     {
+        private StepsInfo stepsInfo;
         Settings settings = new Settings();
-        Dictionary<string, StepsInfo> modeStepDictionary;
- 
+
+        Thread mainThread = new Thread(some);//stepsDictionary
+
+        private static void some()
+        {
+
+        }
+
         public Form1(Settings settings)
         {
             InitializeComponent();
@@ -31,45 +39,22 @@ namespace UCA
             labelOperatorName.Text = (settings.OperatorName != "") ? settings.OperatorName : "Не указано";
         }
 
-        private void GetModeStepDictionary (StepsInfo allStepsInfo)
-        {
-            var modeStepDictionary = new Dictionary<string, StepsInfo>();
-            foreach (var modeName in allStepsInfo.ModesDictionary.Keys)
-            {
-                var stepsDictionary = new Dictionary<string, List<Step>>();
-                var tableNames = allStepsInfo.ModesDictionary[modeName];
-                foreach (var tableName in tableNames)
-                {
-                    if (tableName != "")
-                    {
-                        if (tableName.Split(' ').Length > 1)
-                            stepsDictionary.Add(tableName, allStepsInfo.StepsDictionary[$"'{tableName}'"]);
-                        else
-                            stepsDictionary.Add(tableName, allStepsInfo.StepsDictionary[tableName]);
-                    }
-                }
-                comboBoxCheckingMode.Items.Add(modeName);
-                var stepsInfo = new StepsInfo()
-                {
-                    VoltageSupplyDictionary = allStepsInfo.VoltageSupplyDictionary,
-                    DeviceHandler = allStepsInfo.DeviceHandler,
-                    EmergencyStepList = allStepsInfo.EmergencyStepList,
-                    StepsDictionary = stepsDictionary,
-                    ModesDictionary = allStepsInfo.ModesDictionary,
-                };
-                modeStepDictionary.Add(modeName, stepsInfo);
-            }
-            this.modeStepDictionary = modeStepDictionary;
-            comboBoxCheckingMode.SelectedItem = comboBoxCheckingMode.Items[0];
-        }
-
-        private void SetVoltageSupplyMode(StepsInfo allStepsInfo)
+        private void SetVoltageSupplyModes(StepsInfo allStepsInfo)
         {
             foreach (var modeName in allStepsInfo.VoltageSupplyDictionary.Keys)
             {
                 comboBoxVoltageSupply.Items.Add(modeName);
             }
             comboBoxVoltageSupply.SelectedItem = comboBoxVoltageSupply.Items[1];
+        }
+
+        private void ShowCheckingModes(StepsInfo stepsInfo)
+        {
+            foreach (var modeName in stepsInfo.ModesDictionary.Keys)
+            {
+                comboBoxCheckingMode.Items.Add(modeName);
+            }
+            comboBoxCheckingMode.SelectedItem = comboBoxCheckingMode.Items[1];
         }
 
         private void InitialActions(string pathToDataBase)
@@ -79,9 +64,9 @@ namespace UCA
                 string connectionString = string.Format("Provider=Microsoft.ACE.OLEDB.12.0;Data Source={0}; Extended Properties=Excel 12.0;", pathToDataBase);//"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathToDataBase;
                 var dbReader = new DBReader(connectionString);
                 var dataSet = dbReader.GetDataSet();
-                var allStepsInfo = Step.GetStepsInfo(dataSet);
-                GetModeStepDictionary(allStepsInfo);
-                SetVoltageSupplyMode(allStepsInfo);
+                this.stepsInfo = Step.GetStepsInfo(dataSet);
+                ShowCheckingModes(stepsInfo);
+                SetVoltageSupplyModes(stepsInfo);
             }
             catch (System.Data.OleDb.OleDbException ex)
             {
@@ -108,7 +93,7 @@ namespace UCA
             InitialActions(connectionString);
         }
 
-        private void ExecuteDataSetRowByRow(StepsInfo stepsInfo)//(Dictionary<string, List<Step>> stepsDictionary)
+        private void DoCheckingStepByStep(StepsInfo stepsInfo, string modeName)//(Dictionary<string, List<Step>> stepsDictionary)
         {
             var log = new Log();
             log.AddItem($"Время начала проверки: {DateTime.Now}\n");
@@ -116,14 +101,14 @@ namespace UCA
             log.AddItem($"Комментарий: {settings.Comment}\n");
             log.AddItem($"Заводской номер: {settings.FactoryNumber}\n");
             log.AddItem($"Режим: {settings.Regime}\r\n");
-            foreach (var tableName in stepsInfo.StepsDictionary.Keys)
+            var stepsDictionary = stepsInfo.ModesDictionary[modeName];
+            foreach (var tableName in stepsDictionary.Keys)
             {
-                foreach (var step in stepsInfo.StepsDictionary[tableName])
+                foreach (var step in stepsDictionary[tableName])
                 {
                     DoStepOfChecking(step, stepsInfo, log);
                     stepsInfo.StepNumber++;
                     Thread.Sleep(1500);
-                    //MessageBox.Show("meow");
                 }
             }
         }
@@ -201,6 +186,7 @@ namespace UCA
             var imageKey = "ok";
             //treeView.ImageList.Images.Add(imageKey, new System.Drawing.Icon(Application.StartupPath + "\\Images\\ok.png"));
             //treeView.Nodes[nodeNumber].Nodes[subNodeNumber].ImageIndex = 0;
+            //treeView.Nodes[nodeNumber].EnsureVisible();
             treeView.Nodes[nodeNumber].Nodes[subNodeNumber].ForeColor = color;
         }
 
@@ -214,7 +200,7 @@ namespace UCA
             var nodeNumber = nodeNumbers[0];
             var subNodeNumber = nodeNumbers[1];
             treeView.Nodes[nodeNumber].Nodes[subNodeNumber].Nodes.Add(stepResult);
-            //treeView.Nodes[nodeNumber].Nodes[subNodeNumber].Expand();
+            treeView.Nodes[nodeNumber].Nodes[subNodeNumber].Expand();
         }
 
         private int[] GetNodeNumber(TreeView treeView, int stepNumber)
@@ -246,9 +232,8 @@ namespace UCA
         private void buttonCheckingStart_Click(object sender, EventArgs e)
         {
             var modeName = comboBoxCheckingMode.SelectedItem.ToString();
-            var stepsInfo = modeStepDictionary[modeName];
-            Thread thread = new Thread(delegate () { ExecuteDataSetRowByRow(stepsInfo); });//stepsDictionary
-            thread.Start();
+            mainThread = new Thread(delegate () { DoCheckingStepByStep(stepsInfo, modeName); });//stepsDictionary
+            mainThread.Start();
         }
 
         private void buttonOpenDataBase_Click(object sender, EventArgs e)
@@ -299,7 +284,11 @@ namespace UCA
 
         private void buttonCheckingPause_Click(object sender, EventArgs e)
         {
-            isPause = true;
+            isPause = !isPause;
+            if (isPause)
+                buttonCheckingPause.Text = "Продолжить";
+            else
+                buttonCheckingPause.Text = "Пауза";
         }
 
         private void buttonCheckingStop_Click(object sender, EventArgs e)
@@ -322,13 +311,32 @@ namespace UCA
         private void comboBoxCheckingMode_SelectedIndexChanged(object sender, EventArgs e)
         {
             var modeName = comboBoxCheckingMode.SelectedItem.ToString();
-            var stepsInfo = modeStepDictionary[modeName];
-            FillTreeView(treeOfChecking, stepsInfo.StepsDictionary);
+            FillTreeView(treeOfChecking, stepsInfo.ModesDictionary[modeName]);
         }
 
         private void comboBoxVoltageSupply_SelectedIndexChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void Stop()
+        {
+            var modeName = comboBoxCheckingMode.SelectedItem.ToString();
+            EmergencyBreak(stepsInfo);
+            var nodeNumbers = GetNodeNumber(treeOfChecking, stepsInfo.StepNumber);
+            UpdateTreeNodes(treeOfChecking, nodeNumbers, "Аварийная остановка проверки");
+            mainThread.Abort();
+        }
+
+        private void buttonStop_Click(object sender, EventArgs e)
+        {
+            Stop();
+        }
+
+        private void Form1_Closing(object sender, CancelEventArgs e)
+        {
+            Stop();
+            Close();
         }
     }
 }

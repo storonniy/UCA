@@ -101,8 +101,8 @@ namespace UCA.Devices
                     bool isSignalExist1 = false;
                     foreach (var signal in signalNames1)
                     {
-                        isSignalExist = actualSignals.Contains(signal);
-                        if (!isSignalExist)
+                        isSignalExist1 = actualSignals.Contains(signal);
+                        if (!isSignalExist1)
                         {
                             break;
                         }

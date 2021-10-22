@@ -117,59 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <metadata name="menuStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>17, 17</value>
-  </metadata>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="самопроверкаААПToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>244, 22</value>
-  </data>
-  <data name="самопроверкаААПToolStripMenuItem.Text" xml:space="preserve">
-    <value>Самопроверка ААП</value>
-  </data>
-  <data name="режимЦиклическойПроверкиToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>244, 22</value>
-  </data>
-  <data name="режимЦиклическойПроверкиToolStripMenuItem.Text" xml:space="preserve">
-    <value>Режим циклической проверки</value>
-  </data>
-  <data name="режимПроверкиToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>113, 20</value>
-  </data>
-  <data name="режимПроверкиToolStripMenuItem.Text" xml:space="preserve">
-    <value>Режим проверки</value>
-  </data>
-  <data name="оПрограммеToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>94, 20</value>
-  </data>
-  <data name="оПрограммеToolStripMenuItem.Text" xml:space="preserve">
-    <value>О программе</value>
-  </data>
-  <data name="menuStrip1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>0, 0</value>
-  </data>
-  <data name="menuStrip1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>1073, 24</value>
-  </data>
-  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="menuStrip1.TabIndex" type="System.Int32, mscorlib">
-    <value>3</value>
-  </data>
-  <data name="menuStrip1.Text" xml:space="preserve">
-    <value>menuStrip1</value>
-  </data>
-  <data name="&gt;&gt;menuStrip1.Name" xml:space="preserve">
-    <value>menuStrip1</value>
-  </data>
-  <data name="&gt;&gt;menuStrip1.Type" xml:space="preserve">
-    <value>System.Windows.Forms.MenuStrip, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;menuStrip1.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;menuStrip1.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
   <data name="richTextBoxCheckingProtocol.Location" type="System.Drawing.Point, System.Drawing">
     <value>310, 18</value>
   </data>
@@ -180,6 +128,7 @@
   <data name="richTextBoxCheckingProtocol.Size" type="System.Drawing.Size, System.Drawing">
     <value>241, 133</value>
   </data>
+  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="richTextBoxCheckingProtocol.TabIndex" type="System.Int32, mscorlib">
     <value>2</value>
   </data>
@@ -202,10 +151,10 @@
     <value>NoControl</value>
   </data>
   <data name="buttonCheckingStart.Location" type="System.Drawing.Point, System.Drawing">
-    <value>23, 36</value>
+    <value>6, 24</value>
   </data>
   <data name="buttonCheckingStart.Size" type="System.Drawing.Size, System.Drawing">
-    <value>75, 23</value>
+    <value>84, 23</value>
   </data>
   <data name="buttonCheckingStart.TabIndex" type="System.Int32, mscorlib">
     <value>3</value>
@@ -225,41 +174,14 @@
   <data name="&gt;&gt;buttonCheckingStart.ZOrder" xml:space="preserve">
     <value>3</value>
   </data>
-  <data name="buttonCheckingStop.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="buttonCheckingStop.Location" type="System.Drawing.Point, System.Drawing">
-    <value>185, 36</value>
-  </data>
-  <data name="buttonCheckingStop.Size" type="System.Drawing.Size, System.Drawing">
-    <value>75, 23</value>
-  </data>
-  <data name="buttonCheckingStop.TabIndex" type="System.Int32, mscorlib">
-    <value>4</value>
-  </data>
-  <data name="buttonCheckingStop.Text" xml:space="preserve">
-    <value>Стоп</value>
-  </data>
-  <data name="&gt;&gt;buttonCheckingStop.Name" xml:space="preserve">
-    <value>buttonCheckingStop</value>
-  </data>
-  <data name="&gt;&gt;buttonCheckingStop.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;buttonCheckingStop.Parent" xml:space="preserve">
-    <value>groupBoxCheckingManagement</value>
-  </data>
-  <data name="&gt;&gt;buttonCheckingStop.ZOrder" xml:space="preserve">
-    <value>2</value>
-  </data>
   <data name="buttonCheckingPause.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
   <data name="buttonCheckingPause.Location" type="System.Drawing.Point, System.Drawing">
-    <value>104, 36</value>
+    <value>96, 24</value>
   </data>
   <data name="buttonCheckingPause.Size" type="System.Drawing.Size, System.Drawing">
-    <value>75, 23</value>
+    <value>84, 23</value>
   </data>
   <data name="buttonCheckingPause.TabIndex" type="System.Int32, mscorlib">
     <value>5</value>
@@ -618,6 +540,33 @@
   <data name="&gt;&gt;groupBox2.ZOrder" xml:space="preserve">
     <value>11</value>
   </data>
+  <data name="buttonStop.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="buttonStop.Location" type="System.Drawing.Point, System.Drawing">
+    <value>186, 24</value>
+  </data>
+  <data name="buttonStop.Size" type="System.Drawing.Size, System.Drawing">
+    <value>84, 23</value>
+  </data>
+  <data name="buttonStop.TabIndex" type="System.Int32, mscorlib">
+    <value>9</value>
+  </data>
+  <data name="buttonStop.Text" xml:space="preserve">
+    <value>Стоп</value>
+  </data>
+  <data name="&gt;&gt;buttonStop.Name" xml:space="preserve">
+    <value>buttonStop</value>
+  </data>
+  <data name="&gt;&gt;buttonStop.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;buttonStop.Parent" xml:space="preserve">
+    <value>groupBoxCheckingManagement</value>
+  </data>
+  <data name="&gt;&gt;buttonStop.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
   <data name="button.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
@@ -643,7 +592,7 @@
     <value>groupBoxCheckingManagement</value>
   </data>
   <data name="&gt;&gt;button.ZOrder" xml:space="preserve">
-    <value>0</value>
+    <value>1</value>
   </data>
   <data name="buttonOpenDataBase.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
@@ -670,7 +619,7 @@
     <value>groupBoxCheckingManagement</value>
   </data>
   <data name="&gt;&gt;buttonOpenDataBase.ZOrder" xml:space="preserve">
-    <value>1</value>
+    <value>2</value>
   </data>
   <data name="groupBoxCheckingManagement.Location" type="System.Drawing.Point, System.Drawing">
     <value>18, 18</value>
@@ -697,7 +646,7 @@
     <value>12</value>
   </data>
   <data name="panel1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>0, 27</value>
+    <value>2, 12</value>
   </data>
   <data name="panel1.Size" type="System.Drawing.Size, System.Drawing">
     <value>1046, 621</value>
@@ -728,30 +677,6 @@
   </data>
   <data name="$this.Text" xml:space="preserve">
     <value>УСА</value>
-  </data>
-  <data name="&gt;&gt;режимПроверкиToolStripMenuItem.Name" xml:space="preserve">
-    <value>режимПроверкиToolStripMenuItem</value>
-  </data>
-  <data name="&gt;&gt;режимПроверкиToolStripMenuItem.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;самопроверкаААПToolStripMenuItem.Name" xml:space="preserve">
-    <value>самопроверкаААПToolStripMenuItem</value>
-  </data>
-  <data name="&gt;&gt;самопроверкаААПToolStripMenuItem.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;режимЦиклическойПроверкиToolStripMenuItem.Name" xml:space="preserve">
-    <value>режимЦиклическойПроверкиToolStripMenuItem</value>
-  </data>
-  <data name="&gt;&gt;режимЦиклическойПроверкиToolStripMenuItem.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;оПрограммеToolStripMenuItem.Name" xml:space="preserve">
-    <value>оПрограммеToolStripMenuItem</value>
-  </data>
-  <data name="&gt;&gt;оПрограммеToolStripMenuItem.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;$this.Name" xml:space="preserve">
     <value>Form1</value>
