@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static UCA.Auxiliary.UnitValuePair;
 
 namespace UCA.Devices
 {
@@ -41,11 +42,19 @@ namespace UCA.Devices
                     var value = double.Parse(deviceData.Argument, CultureInfo.InvariantCulture);
                     var expectedCoefficient = double.Parse(deviceData.ExpectedValue, CultureInfo.InvariantCulture);
                     var tolerance = double.Parse(deviceData.Tolerance, CultureInfo.InvariantCulture);
-                    var actualCoefficient = CalculateUCACoefficient(deviceData.Channel, value);
-                    if (actualCoefficient >= expectedCoefficient - tolerance && actualCoefficient <= expectedCoefficient + tolerance)
-                        return DeviceResult.ResultOk($"Коэффициент равен {actualCoefficient} В/мкА");//($"Напиши метод {deviceData.Command}");
-                    else
-                        return DeviceResult.ResultError($"Коэффициент должен быть в диапазоне {expectedCoefficient} +/- {tolerance} В/мкА");
+                    try
+                    {
+                        var actualCoefficient = CalculateUCACoefficient(deviceData.Channel, value);
+                        if (actualCoefficient >= expectedCoefficient - tolerance && actualCoefficient <= expectedCoefficient + tolerance)
+                            return DeviceResult.ResultOk($"Коэффициент равен {actualCoefficient} В/мкА");//($"Напиши метод {deviceData.Command}");
+                        else
+                            return DeviceResult.ResultError($"Коэффициент должен быть в диапазоне {expectedCoefficient} +/- {tolerance} В/мкА");
+                    }
+                    catch (KeyNotFoundException)
+                    {
+                        UnitType unitType = (deviceData.Channel > 2) ? UnitType.Current : UnitType.Voltage;
+                        return DeviceResult.ResultError($"Для входного воздействия {GetValueUnitPair(value, unitType)} и канала {deviceData.Channel} не измерялись входные и выходные воздействия");
+                    }             
                 case DeviceCommands.CalculateCoeff_UCA_T:
                     return DeviceResult.ResultError($"Напиши метод,  {deviceData.Command}");
                 default:
