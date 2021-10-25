@@ -111,6 +111,7 @@ namespace UCA
                     Thread.Sleep(1500);
                 }
             }
+            MessageBox.Show("Проверка завершена, результаты проверки записаны в файл");
         }
         private void DoStepOfChecking(Step step, StepsInfo stepsInfo, Log log)
         {
@@ -166,7 +167,7 @@ namespace UCA
                     }
                     catch (ArgumentException ex)
                     {
-                        richTextBoxCheckingProtocol.Text += ex;
+                        MessageBox.Show(ex.Message);
                     }
                 }
 
@@ -224,11 +225,6 @@ namespace UCA
 
         public static Form1 EventSend;
 
-        private void buttonSaveProtocol_Click(object sender, EventArgs e)
-        {
-
-        }
-
         private void buttonCheckingStart_Click(object sender, EventArgs e)
         {
             var modeName = comboBoxCheckingMode.SelectedItem.ToString();
@@ -242,42 +238,8 @@ namespace UCA
             openBinFileDialog.Filter = "Файлы *.xls* | *xls*";//"Файлы *.accdb | *.accdb | Файлы *.mdb | *.mdb"; "Файлы *.*db | *.*db"
             if (openBinFileDialog.ShowDialog() == DialogResult.OK)
             {
-                richTextBoxCheckingProtocol.Text += $"Файл {openBinFileDialog.FileName} открыт";
                 InitialActions(openBinFileDialog.FileName);
             }
-        }
-
-        public void ShowMessage(string message)
-        {
-            if (InvokeRequired)
-            {
-                this.Invoke(new Action<string>(ShowMessage), new object[] { message });
-                return;
-            }
-            richTextBoxCheckingProtocol.Text += message;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="channelNumber"> Номер канала </param>
-        /// <param name="inputAction"> Значение входного воздействия при заданном входном воздействии </param>
-        /// <param name="inputAction0"> Значение входного воздействия при отсутствии входного воздействия </param>
-        /// <param name="outputAction"> Значение выходного воздействия при заданном входном воздействии </param>
-        /// <param name="outputAction0"> Значение выходного воздействия при отсутствии входного воздействия </param>
-        /// <returns> Возвращает коэффициент преобразования В/мкА </returns>
-        public double GetCoefficient(int channelNumber, double outputAction, double outputAction0, double inputAction, double inputAction0)
-        {
-            if (channelNumber == 1 || channelNumber == 2)
-            {
-                var totalInputResistance = 470.0;
-                return totalInputResistance * (outputAction - outputAction0) / (inputAction - inputAction0);
-            }
-            if (channelNumber >= 3 && channelNumber <= 10)
-            {
-                return (outputAction - outputAction0) / (inputAction - inputAction0);
-            }
-            return -1;
         }
 
         bool isPause = false;
@@ -300,12 +262,6 @@ namespace UCA
         private void Form1_Load(object sender, EventArgs e)
         {
 
-        }
-
-        private void richTextBoxCheckingProtocol_TextChanged(object sender, EventArgs e)
-        {
-            richTextBoxCheckingProtocol.SelectionStart = richTextBoxCheckingProtocol.Text.Length;
-            richTextBoxCheckingProtocol.ScrollToCaret();
         }
 
         private void comboBoxCheckingMode_SelectedIndexChanged(object sender, EventArgs e)

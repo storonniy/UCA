@@ -30,7 +30,6 @@ namespace UCA
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-            this.richTextBoxCheckingProtocol = new System.Windows.Forms.RichTextBox();
             this.buttonCheckingStart = new System.Windows.Forms.Button();
             this.buttonCheckingPause = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
@@ -54,12 +53,6 @@ namespace UCA
             this.groupBox2.SuspendLayout();
             this.groupBoxCheckingManagement.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // richTextBoxCheckingProtocol
-            // 
-            resources.ApplyResources(this.richTextBoxCheckingProtocol, "richTextBoxCheckingProtocol");
-            this.richTextBoxCheckingProtocol.Name = "richTextBoxCheckingProtocol";
-            this.richTextBoxCheckingProtocol.TextChanged += new System.EventHandler(this.richTextBoxCheckingProtocol_TextChanged);
             // 
             // buttonCheckingStart
             // 
@@ -87,7 +80,6 @@ namespace UCA
             this.panel1.Controls.Add(this.label4);
             this.panel1.Controls.Add(this.label3);
             this.panel1.Controls.Add(this.label2);
-            this.panel1.Controls.Add(this.richTextBoxCheckingProtocol);
             this.panel1.Controls.Add(this.groupBox2);
             this.panel1.Controls.Add(this.groupBoxCheckingManagement);
             resources.ApplyResources(this.panel1, "panel1");
@@ -206,7 +198,6 @@ namespace UCA
         }
 
         #endregion
-        private System.Windows.Forms.RichTextBox richTextBoxCheckingProtocol;
         private System.Windows.Forms.Button buttonCheckingStart;
         private System.Windows.Forms.Button buttonCheckingPause;
         private System.Windows.Forms.Panel panel1;
