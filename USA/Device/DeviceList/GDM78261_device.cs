@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.IO.Ports;
@@ -25,6 +26,7 @@ namespace UCA.Devices
                     deviceData.ExpectedValue = deviceData.ExpectedValue.Replace("<", "");
                     var expectedVoltage = double.Parse(deviceData.ExpectedValue, CultureInfo.InvariantCulture);
                     var actualVoltage = gdm78261.MeasureVoltageDC();
+                    AddCoefficientData(deviceData.Channel, expectedVoltage, actualVoltage);
                     if (lessThan)
                     {
                         if (actualVoltage < expectedVoltage)
@@ -46,6 +48,7 @@ namespace UCA.Devices
                 case DeviceCommands.GetCurrent:
                     var expectedCurrent = double.Parse(deviceData.ExpectedValue.Replace("E", "E").Replace(",", "."), CultureInfo.InvariantCulture);
                     var actualCurrent = gdm78261.MeasureCurrentDC();
+                    AddCoefficientData(deviceData.Channel, expectedCurrent, actualCurrent);
                     if (Math.Abs(expectedCurrent - actualCurrent) < 0.1 * Math.Abs(expectedCurrent))
                     {
                         return DeviceResult.ResultOk($"Измерение тока {GetValueUnitPair(actualCurrent, UnitType.Current)} прошло успешно");

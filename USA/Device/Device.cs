@@ -9,17 +9,38 @@ namespace UCA.Devices
 
         public struct InputData
         {
-            public int channel;
-            public double InputVoltage;
+            public InputData(int channel, double inputValue)
+            {
+                Channel = channel;
+                InputValue = inputValue;
+            }
+            public int Channel;
+            public double InputValue;
         }
-        public struct OutputData
+
+        private static Dictionary<InputData, List<double>> coefficientValuesDictionary = new Dictionary<InputData, List<double>>();
+
+        public static void AddCoefficientData(int channel, double expectedValue, double value)
         {
-            public double OutputVoltage;
-            public double OutputVoltageAtZeroInput;
-            public double MeasuredInputVoltage;
-            public double InputVoltageAtZeroInput;
+            if (channel > 0)
+            {
+                InputData inputData = new InputData(channel, expectedValue);
+                if (!coefficientValuesDictionary.ContainsKey(inputData))
+                {
+                    coefficientValuesDictionary.Add(inputData, new List<double> { value });
+                }
+                else
+                {
+                    coefficientValuesDictionary[inputData].Add(value);
+                }
+            }
         }
-        public Dictionary<InputData, OutputData> coefficientData;
+
+        public static List<double> GetCoefficientValues(int channel, double value)
+        {
+            InputData inputData = new InputData(channel, value);
+            return coefficientValuesDictionary[inputData];
+        }
     }
 
     public struct Device
@@ -34,7 +55,8 @@ namespace UCA.Devices
         public DeviceCommands Command;
         public string Argument;
         public string ExpectedValue;
-        public int Tolerance;
+        public string Tolerance;
+        public int Channel;
     }
 
     public struct DeviceResult

@@ -8,7 +8,7 @@ using UCA.Devices;
 using System.IO.Ports;
 
 namespace UCA.Steps
-{
+{ 
     struct StepsInfo
     {
         public Dictionary<string, double> VoltageSupplyDictionary;
@@ -27,6 +27,7 @@ namespace UCA.Steps
         public string Command;
         public string Argument;
         public string Description;
+        public string Tolerance;
 
         private static SerialPort GetSerialPort(string portName, int baudrate)
         {
@@ -176,6 +177,7 @@ namespace UCA.Steps
             step.Argument = row["argument"].ToString();
             step.Description = row["description"].ToString();           
             step.Channel = int.Parse(row["channel"].ToString());
+            step.Tolerance = row["tolerance"].ToString();
             if (step.Channel > 0)
                 step.Description = $"Канал {step.Channel}: {step.Description}";
             step.ExpectedValue = row["expectedValue"].ToString();

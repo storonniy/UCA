@@ -4,7 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using UCA.Auxiliary;
+using UCA.Devices;
 
 namespace UCA
 {

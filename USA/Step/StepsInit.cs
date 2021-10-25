@@ -28,6 +28,7 @@ namespace UCA.Steps
                 deviceData.Argument = step.Argument;
                 deviceData.ExpectedValue = step.ExpectedValue;
                 deviceData.Command = (DeviceCommands)Enum.Parse(typeof(DeviceCommands), step.Command);
+                deviceData.Channel = step.Channel;
             }
             catch (ArgumentException)
             {
