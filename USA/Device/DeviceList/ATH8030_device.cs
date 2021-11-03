@@ -20,12 +20,18 @@ namespace UCA.Devices
         {
             switch (deviceData.Command)
             {
-                case DeviceCommands.OnOff:
-                    var resultOK = ath8030.OnOff(float.Parse(deviceData.Argument));
+                case DeviceCommands.PowerOff:
+                    var resultOK = ath8030.PowerOff();
                     if (resultOK)
-                        return DeviceResult.ResultOk($"Снятие/подключение входного сигнала с {deviceData.DeviceName} прошло успешно");
+                        return DeviceResult.ResultOk($"Снятие входного сигнала с {deviceData.DeviceName} прошло успешно");
                     else
-                        return DeviceResult.ResultError($"ОШИБКА: Снятие/подключение входного сигнала с {deviceData.DeviceName} завершилось с ошибкой");
+                        return DeviceResult.ResultError($"ОШИБКА: Снятие входного сигнала с {deviceData.DeviceName} завершилось с ошибкой");
+                case DeviceCommands.PowerOn:
+                    var resultOK1 = ath8030.PowerOn();
+                    if (resultOK1)
+                        return DeviceResult.ResultOk($"Подключение входного сигнала с {deviceData.DeviceName} прошло успешно");
+                    else
+                        return DeviceResult.ResultError($"ОШИБКА: Подключение входного сигнала с {deviceData.DeviceName} завершилось с ошибкой");
                 case DeviceCommands.SetCurrent:
                     resultOK = ath8030.SetCurrent(float.Parse(deviceData.Argument));
                     if (resultOK)

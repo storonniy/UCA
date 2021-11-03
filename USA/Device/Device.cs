@@ -101,7 +101,6 @@ namespace UCA.Devices
         SetCurrentProtection,
         ChangeOutputStatus,
         // ATH_8030
-        OnOff,
         // PCI_1762
         Commutate_0,
         Commutate_1,

@@ -15,17 +15,16 @@ namespace UCA.DeviceDrivers
 
         }
 
-        public bool OnOff(float value)
+        public bool PowerOn()
         {
-            // ToDO: кинуть исключение, если value не 0 и не 1, тут написана поебень
-            bool ans;
-            var cmdArr = new ushort[1];
-            if (value == 1)
-                cmdArr[0] = 0x2a;
-            else
-                cmdArr[0] = 0x2b;
-            ans = writeHoldingRegInt(0x0A00, cmdArr);
-            return ans;
+            var cmdArr = new ushort[] { 0x2a };
+            return writeHoldingRegInt(0x0A00, cmdArr);
+        }
+
+        public bool PowerOff()
+        {
+            var cmdArr = new ushort[] { 0x2b };
+            return writeHoldingRegInt(0x0A00, cmdArr);
         }
 
         public bool SetCurrent(float current)

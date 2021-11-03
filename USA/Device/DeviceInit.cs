@@ -70,6 +70,9 @@ namespace UCA.Devices
                     case DeviceNames.PCI_1762_5:
                         newDevice = new PCI1762_device(7, 1);
                         break;
+                    case DeviceNames.AKIP_3407:
+                        newDevice = new AKIP3407_device(device.SerialPort);
+                        break;
                 }
                 Devices.Add(device.Name, newDevice);
             }
