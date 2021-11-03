@@ -89,6 +89,7 @@
     <Compile Include="DeviceDrivers\PST_3201.cs" />
     <Compile Include="Device\DeviceInit.cs" />
     <Compile Include="Device\Device.cs" />
+    <Compile Include="Device\DeviceList\AKIP3407_device.cs" />
     <Compile Include="Device\DeviceList\ATH8030_device.cs" />
     <Compile Include="Device\DeviceList\Commutator_device.cs" />
     <Compile Include="Device\DeviceList\Keysight34410_device.cs" />

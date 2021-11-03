@@ -107,7 +107,9 @@ namespace UCA.Devices
         Commutate_1,
         CalculateCoeff_UCA_T,
         SetMeasurementToCurrent, // GDM
-        SetMeasurementToVoltage
+        SetMeasurementToVoltage,
+        // AKIP_3407
+        SetFrequency
     }
 
     public enum DeviceNames
