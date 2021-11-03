@@ -145,7 +145,7 @@
     <value>groupBoxCheckingManagement</value>
   </data>
   <data name="&gt;&gt;buttonCheckingStart.ZOrder" xml:space="preserve">
-    <value>3</value>
+    <value>2</value>
   </data>
   <data name="buttonCheckingPause.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
@@ -172,64 +172,10 @@
     <value>groupBoxCheckingManagement</value>
   </data>
   <data name="&gt;&gt;buttonCheckingPause.ZOrder" xml:space="preserve">
-    <value>4</value>
-  </data>
-  <data name="comboBoxVoltageSupply.Location" type="System.Drawing.Point, System.Drawing">
-    <value>759, 14</value>
-  </data>
-  <data name="comboBoxVoltageSupply.Size" type="System.Drawing.Size, System.Drawing">
-    <value>138, 21</value>
-  </data>
-  <data name="comboBoxVoltageSupply.TabIndex" type="System.Int32, mscorlib">
-    <value>36</value>
-  </data>
-  <data name="&gt;&gt;comboBoxVoltageSupply.Name" xml:space="preserve">
-    <value>comboBoxVoltageSupply</value>
-  </data>
-  <data name="&gt;&gt;comboBoxVoltageSupply.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;comboBoxVoltageSupply.Parent" xml:space="preserve">
-    <value>panel1</value>
-  </data>
-  <data name="&gt;&gt;comboBoxVoltageSupply.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="label1.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="label1.Font" type="System.Drawing.Font, System.Drawing">
-    <value>Microsoft Sans Serif, 10pt</value>
-  </data>
-  <data name="label1.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="label1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>603, 15</value>
-  </data>
-  <data name="label1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>150, 17</value>
-  </data>
-  <data name="label1.TabIndex" type="System.Int32, mscorlib">
-    <value>35</value>
-  </data>
-  <data name="label1.Text" xml:space="preserve">
-    <value>Напряжение питания</value>
-  </data>
-  <data name="&gt;&gt;label1.Name" xml:space="preserve">
-    <value>label1</value>
-  </data>
-  <data name="&gt;&gt;label1.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label1.Parent" xml:space="preserve">
-    <value>panel1</value>
-  </data>
-  <data name="&gt;&gt;label1.ZOrder" xml:space="preserve">
-    <value>1</value>
+    <value>3</value>
   </data>
   <data name="comboBoxCheckingMode.Location" type="System.Drawing.Point, System.Drawing">
-    <value>759, 41</value>
+    <value>162, 42</value>
   </data>
   <data name="comboBoxCheckingMode.Size" type="System.Drawing.Size, System.Drawing">
     <value>138, 21</value>
@@ -244,109 +190,31 @@
     <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;comboBoxCheckingMode.Parent" xml:space="preserve">
-    <value>panel1</value>
+    <value>groupBoxPreferences</value>
   </data>
   <data name="&gt;&gt;comboBoxCheckingMode.ZOrder" xml:space="preserve">
-    <value>2</value>
+    <value>0</value>
   </data>
-  <data name="labelOperatorName.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Top, Bottom, Left, Right</value>
+  <data name="comboBoxVoltageSupply.Location" type="System.Drawing.Point, System.Drawing">
+    <value>162, 15</value>
   </data>
-  <data name="labelOperatorName.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
+  <data name="comboBoxVoltageSupply.Size" type="System.Drawing.Size, System.Drawing">
+    <value>138, 21</value>
   </data>
-  <data name="labelOperatorName.Font" type="System.Drawing.Font, System.Drawing">
-    <value>Microsoft Sans Serif, 10pt</value>
+  <data name="comboBoxVoltageSupply.TabIndex" type="System.Int32, mscorlib">
+    <value>36</value>
   </data>
-  <data name="labelOperatorName.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
+  <data name="&gt;&gt;comboBoxVoltageSupply.Name" xml:space="preserve">
+    <value>comboBoxVoltageSupply</value>
   </data>
-  <data name="labelOperatorName.Location" type="System.Drawing.Point, System.Drawing">
-    <value>775, 137</value>
+  <data name="&gt;&gt;comboBoxVoltageSupply.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="labelOperatorName.Size" type="System.Drawing.Size, System.Drawing">
-    <value>0, 17</value>
+  <data name="&gt;&gt;comboBoxVoltageSupply.Parent" xml:space="preserve">
+    <value>groupBoxPreferences</value>
   </data>
-  <data name="labelOperatorName.TabIndex" type="System.Int32, mscorlib">
-    <value>33</value>
-  </data>
-  <data name="&gt;&gt;labelOperatorName.Name" xml:space="preserve">
-    <value>labelOperatorName</value>
-  </data>
-  <data name="&gt;&gt;labelOperatorName.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;labelOperatorName.Parent" xml:space="preserve">
-    <value>panel1</value>
-  </data>
-  <data name="&gt;&gt;labelOperatorName.ZOrder" xml:space="preserve">
-    <value>3</value>
-  </data>
-  <data name="labelFactoryNumber.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Top, Bottom, Left, Right</value>
-  </data>
-  <data name="labelFactoryNumber.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="labelFactoryNumber.Font" type="System.Drawing.Font, System.Drawing">
-    <value>Microsoft Sans Serif, 10pt</value>
-  </data>
-  <data name="labelFactoryNumber.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="labelFactoryNumber.Location" type="System.Drawing.Point, System.Drawing">
-    <value>775, 103</value>
-  </data>
-  <data name="labelFactoryNumber.Size" type="System.Drawing.Size, System.Drawing">
-    <value>0, 17</value>
-  </data>
-  <data name="labelFactoryNumber.TabIndex" type="System.Int32, mscorlib">
-    <value>32</value>
-  </data>
-  <data name="&gt;&gt;labelFactoryNumber.Name" xml:space="preserve">
-    <value>labelFactoryNumber</value>
-  </data>
-  <data name="&gt;&gt;labelFactoryNumber.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;labelFactoryNumber.Parent" xml:space="preserve">
-    <value>panel1</value>
-  </data>
-  <data name="&gt;&gt;labelFactoryNumber.ZOrder" xml:space="preserve">
-    <value>4</value>
-  </data>
-  <data name="labelComment.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Top, Bottom, Left, Right</value>
-  </data>
-  <data name="labelComment.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="labelComment.Font" type="System.Drawing.Font, System.Drawing">
-    <value>Microsoft Sans Serif, 10pt</value>
-  </data>
-  <data name="labelComment.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="labelComment.Location" type="System.Drawing.Point, System.Drawing">
-    <value>775, 72</value>
-  </data>
-  <data name="labelComment.Size" type="System.Drawing.Size, System.Drawing">
-    <value>0, 17</value>
-  </data>
-  <data name="labelComment.TabIndex" type="System.Int32, mscorlib">
-    <value>31</value>
-  </data>
-  <data name="&gt;&gt;labelComment.Name" xml:space="preserve">
-    <value>labelComment</value>
-  </data>
-  <data name="&gt;&gt;labelComment.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;labelComment.Parent" xml:space="preserve">
-    <value>panel1</value>
-  </data>
-  <data name="&gt;&gt;labelComment.ZOrder" xml:space="preserve">
-    <value>5</value>
+  <data name="&gt;&gt;comboBoxVoltageSupply.ZOrder" xml:space="preserve">
+    <value>1</value>
   </data>
   <data name="label6.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -355,7 +223,7 @@
     <value>Microsoft Sans Serif, 10pt</value>
   </data>
   <data name="label6.Location" type="System.Drawing.Point, System.Drawing">
-    <value>603, 42</value>
+    <value>6, 43</value>
   </data>
   <data name="label6.Size" type="System.Drawing.Size, System.Drawing">
     <value>117, 17</value>
@@ -373,10 +241,163 @@
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;label6.Parent" xml:space="preserve">
-    <value>panel1</value>
+    <value>groupBoxPreferences</value>
   </data>
   <data name="&gt;&gt;label6.ZOrder" xml:space="preserve">
-    <value>6</value>
+    <value>2</value>
+  </data>
+  <data name="label1.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="label1.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Microsoft Sans Serif, 10pt</value>
+  </data>
+  <data name="label1.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="label1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 16</value>
+  </data>
+  <data name="label1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>150, 17</value>
+  </data>
+  <data name="label1.TabIndex" type="System.Int32, mscorlib">
+    <value>35</value>
+  </data>
+  <data name="label1.Text" xml:space="preserve">
+    <value>Напряжение питания</value>
+  </data>
+  <data name="&gt;&gt;label1.Name" xml:space="preserve">
+    <value>label1</value>
+  </data>
+  <data name="&gt;&gt;label1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;label1.Parent" xml:space="preserve">
+    <value>groupBoxPreferences</value>
+  </data>
+  <data name="&gt;&gt;label1.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="groupBoxPreferences.Location" type="System.Drawing.Point, System.Drawing">
+    <value>310, 18</value>
+  </data>
+  <data name="groupBoxPreferences.Size" type="System.Drawing.Size, System.Drawing">
+    <value>322, 133</value>
+  </data>
+  <data name="groupBoxPreferences.TabIndex" type="System.Int32, mscorlib">
+    <value>37</value>
+  </data>
+  <data name="&gt;&gt;groupBoxPreferences.Name" xml:space="preserve">
+    <value>groupBoxPreferences</value>
+  </data>
+  <data name="&gt;&gt;groupBoxPreferences.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;groupBoxPreferences.Parent" xml:space="preserve">
+    <value>panel1</value>
+  </data>
+  <data name="&gt;&gt;groupBoxPreferences.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="labelOperatorName.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Bottom, Left, Right</value>
+  </data>
+  <data name="labelOperatorName.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="labelOperatorName.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Microsoft Sans Serif, 10pt</value>
+  </data>
+  <data name="labelOperatorName.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="labelOperatorName.Location" type="System.Drawing.Point, System.Drawing">
+    <value>827, 98</value>
+  </data>
+  <data name="labelOperatorName.Size" type="System.Drawing.Size, System.Drawing">
+    <value>0, 17</value>
+  </data>
+  <data name="labelOperatorName.TabIndex" type="System.Int32, mscorlib">
+    <value>33</value>
+  </data>
+  <data name="&gt;&gt;labelOperatorName.Name" xml:space="preserve">
+    <value>labelOperatorName</value>
+  </data>
+  <data name="&gt;&gt;labelOperatorName.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;labelOperatorName.Parent" xml:space="preserve">
+    <value>panel1</value>
+  </data>
+  <data name="&gt;&gt;labelOperatorName.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="labelFactoryNumber.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Bottom, Left, Right</value>
+  </data>
+  <data name="labelFactoryNumber.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="labelFactoryNumber.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Microsoft Sans Serif, 10pt</value>
+  </data>
+  <data name="labelFactoryNumber.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="labelFactoryNumber.Location" type="System.Drawing.Point, System.Drawing">
+    <value>827, 64</value>
+  </data>
+  <data name="labelFactoryNumber.Size" type="System.Drawing.Size, System.Drawing">
+    <value>0, 17</value>
+  </data>
+  <data name="labelFactoryNumber.TabIndex" type="System.Int32, mscorlib">
+    <value>32</value>
+  </data>
+  <data name="&gt;&gt;labelFactoryNumber.Name" xml:space="preserve">
+    <value>labelFactoryNumber</value>
+  </data>
+  <data name="&gt;&gt;labelFactoryNumber.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;labelFactoryNumber.Parent" xml:space="preserve">
+    <value>panel1</value>
+  </data>
+  <data name="&gt;&gt;labelFactoryNumber.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="labelComment.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Bottom, Left, Right</value>
+  </data>
+  <data name="labelComment.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="labelComment.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Microsoft Sans Serif, 10pt</value>
+  </data>
+  <data name="labelComment.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="labelComment.Location" type="System.Drawing.Point, System.Drawing">
+    <value>827, 33</value>
+  </data>
+  <data name="labelComment.Size" type="System.Drawing.Size, System.Drawing">
+    <value>0, 17</value>
+  </data>
+  <data name="labelComment.TabIndex" type="System.Int32, mscorlib">
+    <value>31</value>
+  </data>
+  <data name="&gt;&gt;labelComment.Name" xml:space="preserve">
+    <value>labelComment</value>
+  </data>
+  <data name="&gt;&gt;labelComment.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;labelComment.Parent" xml:space="preserve">
+    <value>panel1</value>
+  </data>
+  <data name="&gt;&gt;labelComment.ZOrder" xml:space="preserve">
+    <value>3</value>
   </data>
   <data name="label4.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -385,7 +406,7 @@
     <value>Microsoft Sans Serif, 10pt</value>
   </data>
   <data name="label4.Location" type="System.Drawing.Point, System.Drawing">
-    <value>603, 134</value>
+    <value>655, 95</value>
   </data>
   <data name="label4.Size" type="System.Drawing.Size, System.Drawing">
     <value>74, 17</value>
@@ -406,7 +427,7 @@
     <value>panel1</value>
   </data>
   <data name="&gt;&gt;label4.ZOrder" xml:space="preserve">
-    <value>7</value>
+    <value>4</value>
   </data>
   <data name="label3.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -415,7 +436,7 @@
     <value>Microsoft Sans Serif, 10pt</value>
   </data>
   <data name="label3.Location" type="System.Drawing.Point, System.Drawing">
-    <value>603, 103</value>
+    <value>655, 64</value>
   </data>
   <data name="label3.Size" type="System.Drawing.Size, System.Drawing">
     <value>123, 17</value>
@@ -436,7 +457,7 @@
     <value>panel1</value>
   </data>
   <data name="&gt;&gt;label3.ZOrder" xml:space="preserve">
-    <value>8</value>
+    <value>5</value>
   </data>
   <data name="label2.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -445,16 +466,16 @@
     <value>Microsoft Sans Serif, 10pt</value>
   </data>
   <data name="label2.Location" type="System.Drawing.Point, System.Drawing">
-    <value>603, 72</value>
+    <value>655, 33</value>
   </data>
   <data name="label2.Size" type="System.Drawing.Size, System.Drawing">
-    <value>89, 17</value>
+    <value>98, 17</value>
   </data>
   <data name="label2.TabIndex" type="System.Int32, mscorlib">
     <value>24</value>
   </data>
   <data name="label2.Text" xml:space="preserve">
-    <value>Коментарий</value>
+    <value>Комментарий</value>
   </data>
   <data name="&gt;&gt;label2.Name" xml:space="preserve">
     <value>label2</value>
@@ -466,7 +487,16 @@
     <value>panel1</value>
   </data>
   <data name="&gt;&gt;label2.ZOrder" xml:space="preserve">
-    <value>9</value>
+    <value>6</value>
+  </data>
+  <data name="treeOfChecking.Location" type="System.Drawing.Point, System.Drawing">
+    <value>17, 19</value>
+  </data>
+  <data name="treeOfChecking.Size" type="System.Drawing.Size, System.Drawing">
+    <value>967, 424</value>
+  </data>
+  <data name="treeOfChecking.TabIndex" type="System.Int32, mscorlib">
+    <value>11</value>
   </data>
   <data name="&gt;&gt;treeOfChecking.Name" xml:space="preserve">
     <value>treeOfChecking</value>
@@ -502,7 +532,7 @@
     <value>panel1</value>
   </data>
   <data name="&gt;&gt;groupBox2.ZOrder" xml:space="preserve">
-    <value>10</value>
+    <value>7</value>
   </data>
   <data name="buttonStop.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
@@ -531,41 +561,14 @@
   <data name="&gt;&gt;buttonStop.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
-  <data name="button.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="button.Location" type="System.Drawing.Point, System.Drawing">
-    <value>23, 85</value>
-  </data>
-  <data name="button.Size" type="System.Drawing.Size, System.Drawing">
-    <value>129, 23</value>
-  </data>
-  <data name="button.TabIndex" type="System.Int32, mscorlib">
-    <value>8</value>
-  </data>
-  <data name="button.Text" xml:space="preserve">
-    <value>Открыть таблицы</value>
-  </data>
-  <data name="&gt;&gt;button.Name" xml:space="preserve">
-    <value>button</value>
-  </data>
-  <data name="&gt;&gt;button.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;button.Parent" xml:space="preserve">
-    <value>groupBoxCheckingManagement</value>
-  </data>
-  <data name="&gt;&gt;button.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
   <data name="buttonOpenDataBase.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
   <data name="buttonOpenDataBase.Location" type="System.Drawing.Point, System.Drawing">
-    <value>185, 85</value>
+    <value>6, 54</value>
   </data>
   <data name="buttonOpenDataBase.Size" type="System.Drawing.Size, System.Drawing">
-    <value>75, 23</value>
+    <value>84, 23</value>
   </data>
   <data name="buttonOpenDataBase.TabIndex" type="System.Int32, mscorlib">
     <value>7</value>
@@ -583,7 +586,7 @@
     <value>groupBoxCheckingManagement</value>
   </data>
   <data name="&gt;&gt;buttonOpenDataBase.ZOrder" xml:space="preserve">
-    <value>2</value>
+    <value>1</value>
   </data>
   <data name="groupBoxCheckingManagement.Location" type="System.Drawing.Point, System.Drawing">
     <value>18, 18</value>
@@ -607,7 +610,7 @@
     <value>panel1</value>
   </data>
   <data name="&gt;&gt;groupBoxCheckingManagement.ZOrder" xml:space="preserve">
-    <value>11</value>
+    <value>8</value>
   </data>
   <data name="panel1.Location" type="System.Drawing.Point, System.Drawing">
     <value>2, 12</value>
@@ -628,27 +631,6 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;panel1.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="treeOfChecking.Location" type="System.Drawing.Point, System.Drawing">
-    <value>17, 19</value>
-  </data>
-  <data name="treeOfChecking.Size" type="System.Drawing.Size, System.Drawing">
-    <value>967, 424</value>
-  </data>
-  <data name="treeOfChecking.TabIndex" type="System.Int32, mscorlib">
-    <value>11</value>
-  </data>
-  <data name="&gt;&gt;treeOfChecking.Name" xml:space="preserve">
-    <value>treeOfChecking</value>
-  </data>
-  <data name="&gt;&gt;treeOfChecking.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TreeView, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;treeOfChecking.Parent" xml:space="preserve">
-    <value>groupBox2</value>
-  </data>
-  <data name="&gt;&gt;treeOfChecking.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
   <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">

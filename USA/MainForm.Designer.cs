@@ -33,13 +33,14 @@ namespace UCA
             this.buttonCheckingStart = new System.Windows.Forms.Button();
             this.buttonCheckingPause = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.comboBoxVoltageSupply = new System.Windows.Forms.ComboBox();
-            this.label1 = new System.Windows.Forms.Label();
+            this.groupBoxPreferences = new System.Windows.Forms.GroupBox();
             this.comboBoxCheckingMode = new System.Windows.Forms.ComboBox();
+            this.comboBoxVoltageSupply = new System.Windows.Forms.ComboBox();
+            this.label6 = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
             this.labelOperatorName = new System.Windows.Forms.Label();
             this.labelFactoryNumber = new System.Windows.Forms.Label();
             this.labelComment = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
@@ -47,9 +48,9 @@ namespace UCA
             this.treeOfChecking = new System.Windows.Forms.TreeView();
             this.groupBoxCheckingManagement = new System.Windows.Forms.GroupBox();
             this.buttonStop = new System.Windows.Forms.Button();
-            this.button = new System.Windows.Forms.Button();
             this.buttonOpenDataBase = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
+            this.groupBoxPreferences.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBoxCheckingManagement.SuspendLayout();
             this.SuspendLayout();
@@ -70,13 +71,10 @@ namespace UCA
             // 
             // panel1
             // 
-            this.panel1.Controls.Add(this.comboBoxVoltageSupply);
-            this.panel1.Controls.Add(this.label1);
-            this.panel1.Controls.Add(this.comboBoxCheckingMode);
+            this.panel1.Controls.Add(this.groupBoxPreferences);
             this.panel1.Controls.Add(this.labelOperatorName);
             this.panel1.Controls.Add(this.labelFactoryNumber);
             this.panel1.Controls.Add(this.labelComment);
-            this.panel1.Controls.Add(this.label6);
             this.panel1.Controls.Add(this.label4);
             this.panel1.Controls.Add(this.label3);
             this.panel1.Controls.Add(this.label2);
@@ -85,17 +83,15 @@ namespace UCA
             resources.ApplyResources(this.panel1, "panel1");
             this.panel1.Name = "panel1";
             // 
-            // comboBoxVoltageSupply
+            // groupBoxPreferences
             // 
-            this.comboBoxVoltageSupply.FormattingEnabled = true;
-            resources.ApplyResources(this.comboBoxVoltageSupply, "comboBoxVoltageSupply");
-            this.comboBoxVoltageSupply.Name = "comboBoxVoltageSupply";
-            this.comboBoxVoltageSupply.SelectedIndexChanged += new System.EventHandler(this.comboBoxVoltageSupply_SelectedIndexChanged);
-            // 
-            // label1
-            // 
-            resources.ApplyResources(this.label1, "label1");
-            this.label1.Name = "label1";
+            this.groupBoxPreferences.Controls.Add(this.comboBoxCheckingMode);
+            this.groupBoxPreferences.Controls.Add(this.comboBoxVoltageSupply);
+            this.groupBoxPreferences.Controls.Add(this.label6);
+            this.groupBoxPreferences.Controls.Add(this.label1);
+            resources.ApplyResources(this.groupBoxPreferences, "groupBoxPreferences");
+            this.groupBoxPreferences.Name = "groupBoxPreferences";
+            this.groupBoxPreferences.TabStop = false;
             // 
             // comboBoxCheckingMode
             // 
@@ -103,6 +99,23 @@ namespace UCA
             resources.ApplyResources(this.comboBoxCheckingMode, "comboBoxCheckingMode");
             this.comboBoxCheckingMode.Name = "comboBoxCheckingMode";
             this.comboBoxCheckingMode.SelectedIndexChanged += new System.EventHandler(this.comboBoxCheckingMode_SelectedIndexChanged);
+            // 
+            // comboBoxVoltageSupply
+            // 
+            this.comboBoxVoltageSupply.FormattingEnabled = true;
+            resources.ApplyResources(this.comboBoxVoltageSupply, "comboBoxVoltageSupply");
+            this.comboBoxVoltageSupply.Name = "comboBoxVoltageSupply";
+            this.comboBoxVoltageSupply.SelectedIndexChanged += new System.EventHandler(this.comboBoxVoltageSupply_SelectedIndexChanged);
+            // 
+            // label6
+            // 
+            resources.ApplyResources(this.label6, "label6");
+            this.label6.Name = "label6";
+            // 
+            // label1
+            // 
+            resources.ApplyResources(this.label1, "label1");
+            this.label1.Name = "label1";
             // 
             // labelOperatorName
             // 
@@ -118,11 +131,6 @@ namespace UCA
             // 
             resources.ApplyResources(this.labelComment, "labelComment");
             this.labelComment.Name = "labelComment";
-            // 
-            // label6
-            // 
-            resources.ApplyResources(this.label6, "label6");
-            this.label6.Name = "label6";
             // 
             // label4
             // 
@@ -154,7 +162,6 @@ namespace UCA
             // groupBoxCheckingManagement
             // 
             this.groupBoxCheckingManagement.Controls.Add(this.buttonStop);
-            this.groupBoxCheckingManagement.Controls.Add(this.button);
             this.groupBoxCheckingManagement.Controls.Add(this.buttonOpenDataBase);
             this.groupBoxCheckingManagement.Controls.Add(this.buttonCheckingStart);
             this.groupBoxCheckingManagement.Controls.Add(this.buttonCheckingPause);
@@ -168,12 +175,6 @@ namespace UCA
             this.buttonStop.Name = "buttonStop";
             this.buttonStop.UseVisualStyleBackColor = true;
             this.buttonStop.Click += new System.EventHandler(this.buttonStop_Click);
-            // 
-            // button
-            // 
-            resources.ApplyResources(this.button, "button");
-            this.button.Name = "button";
-            this.button.UseVisualStyleBackColor = true;
             // 
             // buttonOpenDataBase
             // 
@@ -191,6 +192,8 @@ namespace UCA
             this.Load += new System.EventHandler(this.Form1_Load);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
+            this.groupBoxPreferences.ResumeLayout(false);
+            this.groupBoxPreferences.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBoxCheckingManagement.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -215,8 +218,8 @@ namespace UCA
         private System.Windows.Forms.ComboBox comboBoxVoltageSupply;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ComboBox comboBoxCheckingMode;
-        private System.Windows.Forms.Button button;
         private System.Windows.Forms.Button buttonStop;
+        private System.Windows.Forms.GroupBox groupBoxPreferences;
     }
 }
 

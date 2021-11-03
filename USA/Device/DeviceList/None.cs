@@ -48,7 +48,7 @@ namespace UCA.Devices
                         if (actualCoefficient >= expectedCoefficient - tolerance && actualCoefficient <= expectedCoefficient + tolerance)
                             return DeviceResult.ResultOk($"Коэффициент равен {actualCoefficient} В/мкА");//($"Напиши метод {deviceData.Command}");
                         else
-                            return DeviceResult.ResultError($"Коэффициент должен быть в диапазоне {expectedCoefficient} +/- {tolerance} В/мкА");
+                            return DeviceResult.ResultError($"{actualCoefficient} В/мкА, коэффициент должен быть в диапазоне {expectedCoefficient} +/- {tolerance} В/мкА");
                     }
                     catch (KeyNotFoundException)
                     {

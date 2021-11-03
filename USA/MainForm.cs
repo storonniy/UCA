@@ -61,7 +61,7 @@ namespace UCA
         {
             try
             {
-                string connectionString = string.Format("Provider=Microsoft.ACE.OLEDB.12.0;Data Source={0}; Extended Properties=Excel 12.0;", pathToDataBase);//"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathToDataBase;
+                string connectionString = string.Format("Provider=Microsoft.ACE.OLEDB.16.0;Data Source={0}; Extended Properties=Excel 12.0;", pathToDataBase);//"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathToDataBase;
                 var dbReader = new DBReader(connectionString);
                 var dataSet = dbReader.GetDataSet();
                 this.stepsInfo = Step.GetStepsInfo(dataSet);
@@ -228,7 +228,7 @@ namespace UCA
         private void buttonCheckingStart_Click(object sender, EventArgs e)
         {
             var modeName = comboBoxCheckingMode.SelectedItem.ToString();
-            mainThread = new Thread(delegate () { DoCheckingStepByStep(stepsInfo, modeName); });//stepsDictionary
+            mainThread = new Thread(delegate () { DoCheckingStepByStep(stepsInfo, modeName); });
             mainThread.Start();
         }
 
