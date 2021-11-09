@@ -24,30 +24,18 @@ namespace UCA.Devices
                 case DeviceCommands.GetVoltage:
                     var lowerLimit = double.Parse(deviceData.LowerLimit, CultureInfo.InvariantCulture);
                     var upperLimit = double.Parse(deviceData.UpperLimit, CultureInfo.InvariantCulture);
-                    bool lessThan = deviceData.ExpectedValue.Contains("<");
                     deviceData.ExpectedValue = deviceData.ExpectedValue.Replace("<", "");
-                    var expectedVoltage = double.Parse(deviceData.ExpectedValue, CultureInfo.InvariantCulture);
                     var actualVoltage = gdm78261.MeasureVoltageDC();
                     var tmp = double.Parse(deviceData.Argument, CultureInfo.InvariantCulture);
                     AddCoefficientData(deviceData.Channel, tmp, actualVoltage);
                     var result = $"Измерено напряжение {GetValueUnitPair(actualVoltage, UnitType.Voltage)} \t Нижний предел: {GetValueUnitPair(lowerLimit, UnitType.Voltage)}\t Верхний предел {GetValueUnitPair(upperLimit, UnitType.Voltage)}";
-                    if (lessThan)
+                    if (Math.Abs(actualVoltage) >= Math.Abs(lowerLimit) && Math.Abs(actualVoltage) <= Math.Abs(upperLimit))
                     {
-                        if (expectedVoltage <= actualVoltage)
-                            return DeviceResult.ResultOk(result);
-                        else
-                            return DeviceResult.ResultError($"Ошибка: {result}");
+                        return DeviceResult.ResultOk(result);
                     }
                     else
                     {
-                        if (Math.Abs(actualVoltage) <= Math.Abs(upperLimit))
-                        {
-                            return DeviceResult.ResultOk(result);
-                        }
-                        else
-                        {
-                            return DeviceResult.ResultError($"Ошибка: {result}");
-                        }
+                        return DeviceResult.ResultError("Ошибка: " + result);
                     }
                 case DeviceCommands.GetCurrent:
                     var lowerLimitCurrent = double.Parse(deviceData.LowerLimit, CultureInfo.InvariantCulture);
