@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UCA.DeviceDrivers;
+using static UCA.Auxiliary.UnitValuePair;
+
 
 namespace UCA.Devices
 {
@@ -13,7 +16,7 @@ namespace UCA.Devices
 
         public ATH8030_device (string portName)
         {
-            this.ath8030 = new ATH_8030(portName);
+            ath8030 = new ATH_8030(portName);
         }
 
         public override DeviceResult DoCommand(DeviceData deviceData)
@@ -29,15 +32,19 @@ namespace UCA.Devices
                 case DeviceCommands.PowerOn:
                     var resultOK1 = ath8030.PowerOn();
                     if (resultOK1)
-                        return DeviceResult.ResultOk($"Подключение входного сигнала с {deviceData.DeviceName} прошло успешно");
+                        return DeviceResult.ResultOk($"Подан входной сигнал с {deviceData.DeviceName}");
                     else
-                        return DeviceResult.ResultError($"ОШИБКА: Подключение входного сигнала с {deviceData.DeviceName} завершилось с ошибкой");
+                        return DeviceResult.ResultError($"Ошибка: попытка подачи входного сигнала с {deviceData.DeviceName} завершилась с ошибкой");
                 case DeviceCommands.SetCurrent:
-                    resultOK = ath8030.SetCurrent(float.Parse(deviceData.Argument));
+                    var lowerLimitCurrent = double.Parse(deviceData.LowerLimit, CultureInfo.InvariantCulture);
+                    var upperLimitCurrent = double.Parse(deviceData.UpperLimit, CultureInfo.InvariantCulture);
+                    var current = float.Parse(deviceData.Argument);
+                    resultOK = ath8030.SetCurrent(current);
+                    var resultCurrent = $"Уcтановлено значение тока {GetValueUnitPair(current, UnitType.Current)} \t Нижний предел: {GetValueUnitPair(lowerLimitCurrent, UnitType.Current)}\t Верхний предел {GetValueUnitPair(upperLimitCurrent, UnitType.Current)}";
                     if (resultOK)
-                        return DeviceResult.ResultOk($"Установка контролируемого сигнала {deviceData.Argument} А прошла успешно");
+                        return DeviceResult.ResultOk(resultCurrent);
                     else
-                        return DeviceResult.ResultError($"ОШИБКА: Установка контролируемого сигнала {deviceData.Argument} А завершилась с ошибкой");
+                        return DeviceResult.ResultError($"Ошибка: не удалось установить сигнал {GetValueUnitPair(current, UnitType.Current)}");
                 default:
                     return DeviceResult.ResultError($"Неизвестная команда {deviceData.Command}");
             }

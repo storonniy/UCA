@@ -29,7 +29,8 @@ namespace UCA.Steps
                 deviceData.ExpectedValue = step.ExpectedValue;
                 deviceData.Command = (DeviceCommands)Enum.Parse(typeof(DeviceCommands), step.Command);
                 deviceData.Channel = step.Channel;
-                deviceData.Tolerance = step.Tolerance;
+                deviceData.LowerLimit = step.LowerLimit;
+                deviceData.UpperLimit = step.UpperLimit;
             }
             catch (ArgumentException)
             {

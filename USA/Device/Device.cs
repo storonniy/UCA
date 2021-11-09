@@ -55,7 +55,8 @@ namespace UCA.Devices
         public DeviceCommands Command;
         public string Argument;
         public string ExpectedValue;
-        public string Tolerance;
+        public string LowerLimit;
+        public string UpperLimit;
         public int Channel;
     }
 
@@ -99,7 +100,6 @@ namespace UCA.Devices
         // PSH_73610, PSH_73630 (относятся к типу PSH, свести к одному устройству PSH)
         SetVoltageProtection,
         SetCurrentProtection,
-        ChangeOutputStatus,
         // ATH_8030
         // PCI_1762
         Commutate_0,

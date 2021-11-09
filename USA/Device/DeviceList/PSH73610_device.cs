@@ -25,37 +25,52 @@ namespace UCA.Devices
             switch (deviceData.Command)
             {
                 case DeviceCommands.SetVoltage:
+                    var lowerLimit = float.Parse(deviceData.LowerLimit, CultureInfo.InvariantCulture);
+                    var upperLimit = float.Parse(deviceData.UpperLimit, CultureInfo.InvariantCulture);
                     var expectedVoltage = float.Parse(deviceData.Argument, CultureInfo.InvariantCulture);             
                     var actualVoltage = psh73610.SetVoltage(expectedVoltage);
-                    if (Math.Abs(expectedVoltage - actualVoltage) <= 0.1 * Math.Abs(expectedVoltage))
+                    var result = $"Уcтановлено напряжение {GetValueUnitPair(actualVoltage, UnitType.Voltage)} \t Нижний предел: {GetValueUnitPair(lowerLimit, UnitType.Voltage)}\t Верхний предел {GetValueUnitPair(upperLimit, UnitType.Voltage)}"
+                    if (Math.Abs(actualVoltage) >= Math.Abs(lowerLimit) && Math.Abs(actualVoltage) <= Math.Abs(upperLimit))
                     {
-                        return ResultOk($"Установка напряжения {GetValueUnitPair(expectedVoltage, UnitType.Voltage)} прошла успешно");
+                        return ResultOk(result);
                     }
                     else
                     {
-                        return ResultError($"ОШИБКА: Установлено напряжение {GetValueUnitPair(actualVoltage, UnitType.Current)}, ожидалось {GetValueUnitPair(expectedVoltage, UnitType.Current)}");
+                        return ResultError($"Ошибка: {result}");
                     }
                 case DeviceCommands.SetCurrent:
+                    var lowerLimitCurrent = double.Parse(deviceData.LowerLimit, CultureInfo.InvariantCulture);
+                    var upperLimitCurrent = double.Parse(deviceData.UpperLimit, CultureInfo.InvariantCulture);
                     var expectedCurrent = float.Parse(deviceData.Argument);
                     var actualCurrent = psh73610.SetCurrent(expectedCurrent);
-                    if (Math.Abs(expectedCurrent - actualCurrent) <= 0.1 * Math.Abs(expectedCurrent))
+                    var resultCurrent = $"Уcтановлено значение тока {GetValueUnitPair(actualCurrent, UnitType.Current)} \t Нижний предел: {GetValueUnitPair(lowerLimitCurrent, UnitType.Current)}\t Верхний предел {GetValueUnitPair(upperLimitCurrent, UnitType.Current)}";
+                    if (Math.Abs(actualCurrent) >= Math.Abs(lowerLimitCurrent) && Math.Abs(actualCurrent) <= Math.Abs(upperLimitCurrent))
                     {
-                        return ResultOk($"Установка тока {GetValueUnitPair(actualCurrent, UnitType.Current)} прошла успешно");
+                        return ResultOk(resultCurrent);
                     }
                     else
                     {
-                        return ResultError($"ОШИБКА: Установлен ток {GetValueUnitPair(actualCurrent, UnitType.Current)}, ожидался {GetValueUnitPair(expectedCurrent, UnitType.Current)}");
+                        return ResultError("Ошибка: " + resultCurrent);
                     }
-                case DeviceCommands.ChangeOutputStatus:
-                    var expectedStatus = float.Parse(deviceData.Argument);
-                    var actualStatus = psh73610.ChangeOutputStatus(expectedStatus);
-                    if (expectedStatus == actualStatus)
+                case DeviceCommands.PowerOff:
+                    var actualStatus = psh73610.ChangeOutputStatus(0);
+                    if (actualStatus == 0)
                     {
-                        return ResultOk($"Состояние выхода PSH_73610 успешно изменено на {actualStatus}");
+                        return DeviceResult.ResultOk($"Снятие входного сигнала с {deviceData.DeviceName}");
                     }
                     else
                     {
-                        return ResultError($"ОШИБКА: Ожидалось переключение состояния PSH_73610 в {expectedStatus}, фактическое {actualStatus}");
+                        return DeviceResult.ResultError($"ОШИБКА: не удалось отключить входной сигнал с {deviceData.DeviceName}");
+                    }
+                case DeviceCommands.PowerOn:
+                    var status = psh73610.ChangeOutputStatus(1);
+                    if (status == 1)
+                    {
+                        return DeviceResult.ResultOk($"Подача входного сигнала с {deviceData.DeviceName}");
+                    }
+                    else
+                    {
+                        return DeviceResult.ResultError($"Ошибка: не удалось подать входной сигнал с {deviceData.DeviceName}");
                     }
                 default:
                     return ResultError($"Неизвестная команда {deviceData.Command}");

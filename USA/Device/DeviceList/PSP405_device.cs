@@ -26,39 +26,49 @@ namespace UCA.Devices
             switch (deviceData.Command)
             {
                 case DeviceCommands.SetVoltage:
+                    var lowerLimit = double.Parse(deviceData.LowerLimit, CultureInfo.InvariantCulture);
+                    var upperLimit = double.Parse(deviceData.UpperLimit, CultureInfo.InvariantCulture);
+                    Psp405.SetVoltageLimit((int)upperLimit);
+                    Thread.Sleep(delay);
                     var voltage = double.Parse(deviceData.Argument);
                     Psp405.SetVoltage(voltage);
                     Thread.Sleep(delay);
-                    Psp405.SetVoltageLimit(40);
-                    Thread.Sleep(delay);
                     var actualVoltage = Psp405.GetOutputVoltage();
-                    if (Math.Abs(voltage - actualVoltage) < 0.1 * Math.Abs(voltage))
+                    var result = $"Уcтановлено напряжение {GetValueUnitPair(actualVoltage, UnitType.Voltage)} \t Нижний предел: {GetValueUnitPair(lowerLimit, UnitType.Voltage)}\t Верхний предел {GetValueUnitPair(upperLimit, UnitType.Voltage)}"
+                    if (Math.Abs(actualVoltage) >= Math.Abs(lowerLimit) && Math.Abs(actualVoltage) <= Math.Abs(upperLimit))
                     {
-                        return ResultOk($"Установка напряжения {GetValueUnitPair(voltage, UnitType.Voltage)} прошла успешно");
+                        return ResultOk(result);
                     }
                     else
                     {
-                        return ResultError($"Установлено неверное напряжение {GetValueUnitPair(voltage, UnitType.Voltage)}");
+                        return ResultError("Ошибка: " + result);
                     }
                 case DeviceCommands.SetCurrent:
-                    double current = Math.Abs(double.Parse(deviceData.Argument)); // мкА
+                    var lowerLimitCurrent = double.Parse(deviceData.LowerLimit, CultureInfo.InvariantCulture);
+                    var upperLimitCurrent = double.Parse(deviceData.UpperLimit, CultureInfo.InvariantCulture);
+                    Psp405.SetCurrentLimit(upperLimitCurrent);
+                    double current = Math.Abs(double.Parse(deviceData.Argument));
                     Thread.Sleep(delay);
                     double resistance = 480000;
                     double voltage1 = current * resistance;
+                    Psp405.SetVoltageLimit((int)voltage1);
+                    Thread.Sleep(delay);
                     Psp405.SetVoltage(voltage1);
-                    var actualVolt = Psp405.GetOutputVoltage();
-                    if (Math.Abs(actualVolt - voltage1) < 0.1 * Math.Abs(actualVolt))
+                    Thread.Sleep(delay);
+                    var actualCurrent = Psp405.GetOutputVoltage() / resistance;
+                    var resultCurrent = $"Уcтановлено значение тока {GetValueUnitPair(actualCurrent, UnitType.Current)} \t Нижний предел: {GetValueUnitPair(lowerLimitCurrent, UnitType.Current)}\t Верхний предел {GetValueUnitPair(upperLimitCurrent, UnitType.Current)}";
+                    if (Math.Abs(actualCurrent) >= Math.Abs(lowerLimitCurrent) && Math.Abs(actualCurrent) <= Math.Abs(upperLimitCurrent))
                     {
-                        return ResultOk($"Установка тока {GetValueUnitPair(actualVolt / resistance, UnitType.Current)} прошла успешно");
+                        return ResultOk(resultCurrent);
                     }
                     else
                     {
-                        return ResultError($"Установлено неверное значение тока {GetValueUnitPair(actualVolt / resistance, UnitType.Current)}");
+                        return ResultError("Ошибка: " + resultCurrent);
                     }
                 case DeviceCommands.PowerOn:
                     Psp405.TurnOn();
                     Thread.Sleep(delay);
-                    return ResultOk("Включение устройства прошло успешно");
+                    return ResultOk($"Включение {deviceData.DeviceName} прошло успешно");
                 /*
                 if (Psp405.GetRelayStatus())
                 {
@@ -88,7 +98,7 @@ namespace UCA.Devices
                     Psp405.SetCurrentLimit(currentLimit);
                     Thread.Sleep(delay);
                     var actualCurrentLimit = Psp405.GetCurrentLimit();
-                    if (Math.Abs(currentLimit - actualCurrentLimit) < 0.1 * Math.Abs(currentLimit))
+                    if (Math.Abs(currentLimit - actualCurrentLimit) <= 0.1 * Math.Abs(currentLimit))
                     {
                         return ResultOk($"Установка предела по току {GetValueUnitPair(actualCurrentLimit, UnitType.Current)} прошла успешно");
                     }

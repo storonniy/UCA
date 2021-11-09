@@ -16,7 +16,7 @@ namespace UCA.DeviceDrivers
         public Commutator(SerialPort serialPort)
         {
             this.serialPort = serialPort;
-            serialPort.Open();
+            //serialPort.Open();
         }
 
         ~Commutator()

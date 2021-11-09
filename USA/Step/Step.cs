@@ -27,7 +27,8 @@ namespace UCA.Steps
         public string Command;
         public string Argument;
         public string Description;
-        public string Tolerance;
+        public string LowerLimit;
+        public string UpperLimit;
 
         private static SerialPort GetSerialPort(string portName, int baudrate)
         {
@@ -175,9 +176,11 @@ namespace UCA.Steps
             step.Device = row["device"].ToString();
             step.Command = row["command"].ToString();
             step.Argument = row["argument"].ToString();
-            step.Description = row["description"].ToString();           
+            step.Description = row["description"].ToString();
+            var meow = row["channel"].ToString();
             step.Channel = int.Parse(row["channel"].ToString());
-            step.Tolerance = row["tolerance"].ToString();
+            step.LowerLimit = row["lowerLimit"].ToString();
+            step.UpperLimit = row["upperLimit"].ToString();
             if (step.Channel > 0)
                 step.Description = $"Канал {step.Channel}: {step.Description}";
             step.ExpectedValue = row["expectedValue"].ToString();

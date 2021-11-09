@@ -40,15 +40,15 @@ namespace UCA.Devices
             {
                 case DeviceCommands.CalculateCoefficient:
                     var value = double.Parse(deviceData.Argument, CultureInfo.InvariantCulture);
-                    var expectedCoefficient = double.Parse(deviceData.ExpectedValue, CultureInfo.InvariantCulture);
-                    var tolerance = double.Parse(deviceData.Tolerance, CultureInfo.InvariantCulture);
+                    var lowerLimit = double.Parse(deviceData.LowerLimit, CultureInfo.InvariantCulture);
+                    var upperLimit = double.Parse(deviceData.UpperLimit, CultureInfo.InvariantCulture);
                     try
                     {
                         var actualCoefficient = CalculateUCACoefficient(deviceData.Channel, value);
-                        if (actualCoefficient >= expectedCoefficient - tolerance && actualCoefficient <= expectedCoefficient + tolerance)
+                        if (actualCoefficient >= lowerLimit && actualCoefficient <= upperLimit)
                             return DeviceResult.ResultOk($"Коэффициент равен {actualCoefficient} В/мкА");//($"Напиши метод {deviceData.Command}");
                         else
-                            return DeviceResult.ResultError($"Коэффициент равен {actualCoefficient} В/мкА, коэффициент должен быть в диапазоне {expectedCoefficient} +/- {tolerance} В/мкА");
+                            return DeviceResult.ResultError($"Коэффициент равен {actualCoefficient} В/мкА, коэффициент должен быть в диапазоне от {lowerLimit} до {upperLimit} В/мкА");
                     }
                     catch (KeyNotFoundException)
                     {

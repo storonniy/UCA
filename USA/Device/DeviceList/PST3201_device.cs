@@ -7,6 +7,7 @@ using UCA.DeviceDrivers;
 using System.IO.Ports;
 using static UCA.Devices.DeviceResult;
 using static UCA.Auxiliary.UnitValuePair;
+using System.Globalization;
 
 namespace UCA.Devices
 {
@@ -23,27 +24,45 @@ namespace UCA.Devices
             switch (deviceData.Command)
             {
                 case DeviceCommands.SetVoltage:
+                    var lowerLimit = double.Parse(deviceData.LowerLimit, CultureInfo.InvariantCulture);
+                    var upperLimit = double.Parse(deviceData.UpperLimit, CultureInfo.InvariantCulture);
                     var expectedVoltage = Double.Parse(deviceData.Argument);
                     var actualVoltage = pst3201.SetVoltage(expectedVoltage, 1);
-                    if (Math.Abs(expectedVoltage - actualVoltage) <= 0.1 * Math.Abs(expectedVoltage))
-                        return ResultOk($"Напряжение {GetValueUnitPair(actualVoltage, UnitType.Voltage)} на {deviceData.DeviceName} успешно установлено");
+                    var result = $"Уcтановлено напряжение {GetValueUnitPair(actualVoltage, UnitType.Voltage)} \t Нижний предел: {GetValueUnitPair(lowerLimit, UnitType.Voltage)}\t Верхний предел {GetValueUnitPair(upperLimit, UnitType.Voltage)}";
+                    if (Math.Abs(actualVoltage) >= Math.Abs(lowerLimit) && Math.Abs(actualVoltage) <= Math.Abs(upperLimit))
+                        return ResultOk(result);
                     else
-                        return ResultError($"ОШИБКА: установлено напряжение {GetValueUnitPair(actualVoltage, UnitType.Voltage)}, ожидалось {GetValueUnitPair(expectedVoltage, UnitType.Voltage)}");
+                        return ResultError($"Ошибка: {result}");
                 case DeviceCommands.SetCurrent:
+                    var lowerLimitCurrent = double.Parse(deviceData.LowerLimit, CultureInfo.InvariantCulture);
+                    var upperLimitCurrent = double.Parse(deviceData.UpperLimit, CultureInfo.InvariantCulture);
                     var expectedCurrent = Double.Parse(deviceData.Argument);
                     var actualCurrent = pst3201.SetCurrent(expectedCurrent, 1);
-                    if (Math.Abs(expectedCurrent - actualCurrent) <= 0.1 * Math.Abs(expectedCurrent))
-                        return ResultOk($"Напряжение на {deviceData.DeviceName} успешно установлено");
+                    var resultCurrent = $"Уcтановлен ток {GetValueUnitPair(actualCurrent, UnitType.Current)} \t Нижний предел: {GetValueUnitPair(lowerLimitCurrent, UnitType.Current)}\t Верхний предел {GetValueUnitPair(upperLimitCurrent, UnitType.Current)}";
+                    if (Math.Abs(actualCurrent) >= Math.Abs(lowerLimitCurrent) && Math.Abs(actualCurrent) <= Math.Abs(upperLimitCurrent))
+                        return ResultOk(resultCurrent);
                     else
-                        return ResultError($"ОШИБКА: установлено напряжение {GetValueUnitPair(actualCurrent, UnitType.Current)}, ожидалось {GetValueUnitPair(expectedCurrent, UnitType.Current)}");
-                case DeviceCommands.ChangeOutputStatus:
-                    var status = deviceData.Argument;
-                    bool expectedStatus = status == "1";
-                    var actualStatus = pst3201.ChangeOutputState(status);
-                    if (actualStatus == expectedStatus)
-                        return ResultOk($"Состояние выхода {deviceData.DeviceName} успешно установлено в {deviceData.Argument}");
+                        return ResultError($"Ошибка: {resultCurrent}");
+                case DeviceCommands.PowerOff:
+                    var actualStatus = pst3201.ChangeOutputState("0");
+                    if (!actualStatus)
+                    {
+                        return DeviceResult.ResultOk($"Снятие входного сигнала с {deviceData.DeviceName}");
+                    }
                     else
-                        return ResultError($"ОШИБКА: в процессе изменения состояния выхода {deviceData.DeviceName} в {deviceData.Argument} произошла ошибка");
+                    {
+                        return DeviceResult.ResultError($"ОШИБКА: не удалось отключить входной сигнал с {deviceData.DeviceName}");
+                    }
+                case DeviceCommands.PowerOn:
+                    var status = pst3201.ChangeOutputState("1");
+                    if (status)
+                    {
+                        return DeviceResult.ResultOk($"Подача входного сигнала с {deviceData.DeviceName}");
+                    }
+                    else
+                    {
+                        return DeviceResult.ResultError($"Ошибка: не удалось подать входной сигнал с {deviceData.DeviceName}");
+                    }
                 default:
                     return ResultError($"Неизвестная команда {deviceData.Command}");
             }

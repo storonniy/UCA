@@ -54,14 +54,14 @@ namespace UCA
             {
                 comboBoxCheckingMode.Items.Add(modeName);
             }
-            comboBoxCheckingMode.SelectedItem = comboBoxCheckingMode.Items[1];
+            comboBoxCheckingMode.SelectedItem = comboBoxCheckingMode.Items[0];
         }
 
         private void InitialActions(string pathToDataBase)
         {
             try
             {
-                string connectionString = string.Format("Provider=Microsoft.ACE.OLEDB.16.0;Data Source={0}; Extended Properties=Excel 12.0;", pathToDataBase);//"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathToDataBase;
+                string connectionString = string.Format("Provider=Microsoft.ACE.OLEDB.12.0;Data Source={0}; Extended Properties=Excel 12.0;", pathToDataBase);//"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathToDataBase;
                 var dbReader = new DBReader(connectionString);
                 var dataSet = dbReader.GetDataSet();
                 this.stepsInfo = Step.GetStepsInfo(dataSet);
@@ -75,7 +75,13 @@ namespace UCA
             catch (System.InvalidOperationException ex)
             {
                 MessageBox.Show(ex.Message);
-            }         
+            }
+            /*
+            catch (System.Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            
             catch (ArgumentException ex)
             {
                 MessageBox.Show(ex.Message);
@@ -84,6 +90,7 @@ namespace UCA
             {
                 MessageBox.Show(ex.Message);
             }
+            */
         }
 
         // TODO use InitialActions(path)
@@ -246,11 +253,16 @@ namespace UCA
 
         private void buttonCheckingPause_Click(object sender, EventArgs e)
         {
-            isPause = !isPause;
-            if (isPause)
+            if (mainThread.ThreadState != ThreadState.Suspended)
+            {
                 buttonCheckingPause.Text = "Продолжить";
+                mainThread.Suspend();
+            }
             else
+            {
                 buttonCheckingPause.Text = "Пауза";
+                mainThread.Resume();
+            }
         }
 
         private void buttonCheckingStop_Click(object sender, EventArgs e)

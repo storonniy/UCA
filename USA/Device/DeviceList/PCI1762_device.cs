@@ -13,7 +13,7 @@ namespace UCA.Devices
         readonly PCI_1762 pci1762;
         public PCI1762_device (int deviceNumber, int deviceID)
         {
-            this.pci1762 = new PCI_1762(deviceNumber, deviceID);
+            pci1762 = new PCI_1762(deviceNumber, deviceID);
         }
 
         public override DeviceResult DoCommand(DeviceData deviceData)

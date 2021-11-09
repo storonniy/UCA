@@ -15,7 +15,10 @@ namespace UCA.DeviceDrivers
 
         public PCI_1762 (int deviceNumber, int deviceID)
         {
-            instantDoCtrl.SelectedDevice = new DeviceInformation(deviceNumber);
+            if (instantDoCtrl.Initialized)
+            {
+                instantDoCtrl.SelectedDevice = new DeviceInformation(deviceNumber);
+            }
         }
 
         public bool PCI1762Command(byte[] relayNumbers, int portStart)

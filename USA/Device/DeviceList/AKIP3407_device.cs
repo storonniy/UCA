@@ -23,9 +23,12 @@ namespace UCA.Devices
             switch (deviceData.Command)
             {
                 case DeviceCommands.SetVoltage:
+                    var lowerLimit = double.Parse(deviceData.LowerLimit, CultureInfo.InvariantCulture);
+                    var upperLimit = double.Parse(deviceData.UpperLimit, CultureInfo.InvariantCulture);
                     var expectedVoltage = double.Parse(deviceData.Argument, CultureInfo.InvariantCulture);
                     var actualVoltage = akip3407.SetVoltage(expectedVoltage);
-                    if (Math.Abs(expectedVoltage - actualVoltage) <= 0.1 * Math.Abs(expectedVoltage))
+                    var result = $"Уcтановлено напряжение {GetValueUnitPair(actualVoltage, UnitType.Voltage)} \t Нижний предел: {GetValueUnitPair(lowerLimit, UnitType.Voltage)}\t Верхний предел {GetValueUnitPair(upperLimit, UnitType.Voltage)}"
+                    if (Math.Abs(actualVoltage) >= Math.Abs(lowerLimit) && Math.Abs(actualVoltage) <= Math.Abs(upperLimit))
                     {
                         return DeviceResult.ResultOk($"Установлено напряжение {GetValueUnitPair(actualVoltage, UnitType.Voltage)}");
                     }
@@ -48,21 +51,21 @@ namespace UCA.Devices
                     var actualStatus = akip3407.PowerOn();
                     if (actualStatus)
                     {
-                        return DeviceResult.ResultOk($"{deviceData.DeviceName} успешно включён");
+                        return DeviceResult.ResultOk($"Подача входного сигнала с {deviceData.DeviceName}");
                     }
                     else
                     {
-                        return DeviceResult.ResultError($"ОШИБКА: не удалось включить {deviceData.DeviceName}");
+                        return DeviceResult.ResultError($"Ошибка: не удалось подать входной сигнал с {deviceData.DeviceName}");
                     }
                 case DeviceCommands.PowerOff:
-                    var actualPowerStatus = akip3407.PowerOn();
+                    var actualPowerStatus = akip3407.PowerOff();
                     if (!actualPowerStatus)
                     {
-                        return DeviceResult.ResultOk($"{deviceData.DeviceName} успешно отключён");
+                        return DeviceResult.ResultOk($"Снятие входного сигнала с {deviceData.DeviceName}");
                     }
                     else
                     {
-                        return DeviceResult.ResultError($"ОШИБКА: не удалось отключить {deviceData.DeviceName}");
+                        return DeviceResult.ResultError($"ОШИБКА: не удалось отключить входной сигнал с {deviceData.DeviceName}");
                     }
                 default:
                     return DeviceResult.ResultError($"Неизвестная команда {deviceData.Command}");
