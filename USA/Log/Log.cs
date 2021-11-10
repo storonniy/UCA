@@ -45,6 +45,11 @@ namespace UCA.Logging
             streamWriter.Flush();
         }
 
+        public void Clear()
+        {
+            log.Clear();
+        }
+
         ~Log()
         {
             streamWriter.Close();

@@ -15,8 +15,10 @@ namespace UCA
     {
         private StepsInfo stepsInfo;
         Settings settings = new Settings();
-
+        Dictionary<TreeNode, Step> treeviewNodeStep = new Dictionary<TreeNode, Step>();
+        Dictionary<Step, TreeNode> treeviewStepNode = new Dictionary<Step, TreeNode>();
         Thread mainThread = new Thread(some);//stepsDictionary
+        Log log = new Log();
 
         private static void some()
         {
@@ -102,7 +104,7 @@ namespace UCA
 
         private void DoCheckingStepByStep(StepsInfo stepsInfo, string modeName)//(Dictionary<string, List<Step>> stepsDictionary)
         {
-            var log = new Log();
+            log.Clear();
             log.AddItem($"Время начала проверки: {DateTime.Now}\n");
             log.AddItem($"Имя оператора: {settings.OperatorName}\n");
             log.AddItem($"Комментарий: {settings.Comment}\n");
@@ -122,18 +124,19 @@ namespace UCA
         }
         private void DoStepOfChecking(Step step, StepsInfo stepsInfo, Log log)
         {
-            HighlightTreeNode(treeOfChecking, GetNodeNumber(treeOfChecking, stepsInfo.StepNumber), Color.Blue);
+            var node = treeviewStepNode[step];
+            HighlightTreeNode(treeOfChecking, node, Color.Blue);
             var stepParser = new StepParser(stepsInfo.DeviceHandler, step);
             var deviceResult = stepParser.DoStep();
-            var nodeNumbers = GetNodeNumber(treeOfChecking, stepsInfo.StepNumber);
-            UpdateTreeNodes(treeOfChecking, nodeNumbers, deviceResult.Description);
+            var stepNode = treeviewStepNode[step];
+            UpdateTreeNode(stepNode, deviceResult.Description);
             if (deviceResult.State == DeviceState.OK)
             {
-                HighlightTreeNode(treeOfChecking, nodeNumbers, Color.Green);
+                HighlightTreeNode(treeOfChecking, node, Color.Green);
             }
             else
             {
-                HighlightTreeNode(treeOfChecking, nodeNumbers, Color.Red);
+                HighlightTreeNode(treeOfChecking, node, Color.Red);
                 // Аварийная остановка проверки
 
                 //EmergencyBreak(stepsInfo);
@@ -149,13 +152,18 @@ namespace UCA
             foreach (var step in stepsInfo.EmergencyStepList)
             {
                 var stepParser = new StepParser(stepsInfo.DeviceHandler, step);
-                stepParser.DoStep();
+                var result = stepParser.DoStep();
+                var node = treeviewStepNode[step];
+                UpdateTreeNode(node, result.Description);
             }
         }
 
         #region TreeNodes
+
         private void FillTreeView(TreeView treeView, Dictionary<string, List<Step>> stepDictionary)
         {
+            treeviewNodeStep.Clear();
+            treeviewStepNode.Clear();
             treeView.Nodes.Clear();
             treeView.BeginUpdate();
             var nodesCount = 0;
@@ -169,7 +177,10 @@ namespace UCA
                     try
                     {
                         var nodeName = $"{nodesCount} {step.Description}";
-                        treeView.Nodes[treeNode.Index].Nodes.Add(new TreeNode(nodeName));
+                        var stepNode = new TreeNode(nodeName);
+                        treeviewNodeStep.Add(stepNode, step);
+                        treeviewStepNode.Add(step, stepNode);
+                        treeView.Nodes[treeNode.Index].Nodes.Add(stepNode);
                         treeView.Nodes[treeNode.Index].Expand();
                     }
                     catch (ArgumentException ex)
@@ -182,33 +193,36 @@ namespace UCA
             treeView.EndUpdate();
         }
 
-        private void HighlightTreeNode(TreeView treeView, int[] nodeNumbers, Color color)
+        private void HighlightTreeNode(TreeView treeView, TreeNode treeNode, Color color)
         {
             if (this.InvokeRequired)
             {
-                this.Invoke((MethodInvoker)delegate { HighlightTreeNode(treeView, nodeNumbers, color); });
+                this.Invoke((MethodInvoker)delegate { HighlightTreeNode(treeView, treeNode, color); });
                 return;
             }
-            var nodeNumber = nodeNumbers[0];
-            var subNodeNumber = nodeNumbers[1];
             var imageKey = "ok";
             //treeView.ImageList.Images.Add(imageKey, new System.Drawing.Icon(Application.StartupPath + "\\Images\\ok.png"));
             //treeView.Nodes[nodeNumber].Nodes[subNodeNumber].ImageIndex = 0;
             //treeView.Nodes[nodeNumber].EnsureVisible();
-            treeView.Nodes[nodeNumber].Nodes[subNodeNumber].ForeColor = color;
+            treeNode.ForeColor = color;
+            //treeView.Nodes[nodeNumber].Nodes[subNodeNumber].ForeColor = color;
         }
 
-        private void UpdateTreeNodes(TreeView treeView, int[] nodeNumbers, string stepResult)
+        private void UpdateTreeNode(TreeNode treeNode, string stepResult)
         {
             if (this.InvokeRequired)
             {
-                this.Invoke((MethodInvoker)delegate { UpdateTreeNodes(treeView, nodeNumbers, stepResult); });
+                this.Invoke((MethodInvoker)delegate { UpdateTreeNode(treeNode, stepResult); });
                 return;
             }
+            treeNode.Nodes.Add(stepResult);
+            treeNode.Expand();
+            /*
             var nodeNumber = nodeNumbers[0];
             var subNodeNumber = nodeNumbers[1];
             treeView.Nodes[nodeNumber].Nodes[subNodeNumber].Nodes.Add(stepResult);
             treeView.Nodes[nodeNumber].Nodes[subNodeNumber].Expand();
+            */
         }
 
         private int[] GetNodeNumber(TreeView treeView, int stepNumber)
@@ -291,8 +305,6 @@ namespace UCA
         {
             var modeName = comboBoxCheckingMode.SelectedItem.ToString();
             EmergencyBreak(stepsInfo);
-            var nodeNumbers = GetNodeNumber(treeOfChecking, stepsInfo.StepNumber);
-            UpdateTreeNodes(treeOfChecking, nodeNumbers, "Аварийная остановка проверки");
             mainThread.Abort();
         }
 
@@ -305,6 +317,15 @@ namespace UCA
         {
             Stop();
             Close();
+        }
+
+        private void treeOfChecking_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            if (treeviewNodeStep.ContainsKey(e.Node))
+            {
+                var thisStep = treeviewNodeStep[e.Node];
+                DoStepOfChecking(thisStep, stepsInfo, log);
+            }
         }
     }
 }

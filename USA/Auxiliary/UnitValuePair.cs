@@ -10,11 +10,11 @@ namespace UCA.Auxiliary
     {
         public static string GetValueUnitPair(double value, UnitType unitType)
         {
-            if (value * Math.Pow(10, 6) < 1000)
+            if (Math.Abs(value) * Math.Pow(10, 6) < 1000)
             {
                 return $"{value * Math.Pow(10, 6)} мк{GetUnit(value, unitType)}";
             }
-            else if (value * Math.Pow(10, 3) < 1000)
+            else if (Math.Abs(value) * Math.Pow(10, 3) < 1000)
             {
                 return $"{value * Math.Pow(10, 3)} м{GetUnit(value, unitType)}";
             }
@@ -34,6 +34,8 @@ namespace UCA.Auxiliary
                     return "В";
                 case UnitType.Power:
                     return "Вт";
+                case UnitType.Frequency:
+                    return "Гц";
                 default:
                     throw new Exception("Неизвестный тип величины");
             }
@@ -43,7 +45,8 @@ namespace UCA.Auxiliary
         {
             Voltage, 
             Current,
-            Power
+            Power,
+            Frequency
         }
     }
 }

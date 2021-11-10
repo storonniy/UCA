@@ -177,10 +177,9 @@ namespace UCA.Steps
             step.Command = row["command"].ToString();
             step.Argument = row["argument"].ToString();
             step.Description = row["description"].ToString();
-            var meow = row["channel"].ToString();
             step.Channel = int.Parse(row["channel"].ToString());
-            step.LowerLimit = row["lowerLimit"].ToString();
             step.UpperLimit = row["upperLimit"].ToString();
+            step.LowerLimit = row["lowerLimit"].ToString();
             if (step.Channel > 0)
                 step.Description = $"Канал {step.Channel}: {step.Description}";
             step.ExpectedValue = row["expectedValue"].ToString();

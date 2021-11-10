@@ -158,6 +158,7 @@ namespace UCA
             // 
             resources.ApplyResources(this.treeOfChecking, "treeOfChecking");
             this.treeOfChecking.Name = "treeOfChecking";
+            this.treeOfChecking.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeOfChecking_AfterSelect);
             // 
             // groupBoxCheckingManagement
             // 

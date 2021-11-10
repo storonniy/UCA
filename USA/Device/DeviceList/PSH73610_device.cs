@@ -29,7 +29,7 @@ namespace UCA.Devices
                     var upperLimit = float.Parse(deviceData.UpperLimit, CultureInfo.InvariantCulture);
                     var expectedVoltage = float.Parse(deviceData.Argument, CultureInfo.InvariantCulture);             
                     var actualVoltage = psh73610.SetVoltage(expectedVoltage);
-                    var result = $"Уcтановлено напряжение {GetValueUnitPair(actualVoltage, UnitType.Voltage)} \t Нижний предел: {GetValueUnitPair(lowerLimit, UnitType.Voltage)}\t Верхний предел {GetValueUnitPair(upperLimit, UnitType.Voltage)}"
+                    var result = $"Уcтановлено напряжение {GetValueUnitPair(actualVoltage, UnitType.Voltage)} \t Нижний предел: {GetValueUnitPair(lowerLimit, UnitType.Voltage)}\t Верхний предел {GetValueUnitPair(upperLimit, UnitType.Voltage)}";
                     if (Math.Abs(actualVoltage) >= Math.Abs(lowerLimit) && Math.Abs(actualVoltage) <= Math.Abs(upperLimit))
                     {
                         return ResultOk(result);

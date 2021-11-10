@@ -40,7 +40,6 @@ namespace UCA.Devices
                 case DeviceCommands.GetCurrent:
                     var lowerLimitCurrent = double.Parse(deviceData.LowerLimit, CultureInfo.InvariantCulture);
                     var upperLimitCurrent = double.Parse(deviceData.UpperLimit, CultureInfo.InvariantCulture);
-                    var expectedCurrent = double.Parse(deviceData.ExpectedValue.Replace(",", "."), CultureInfo.InvariantCulture);
                     var actualCurrent = gdm78261.MeasureCurrentDC();
                     var tmp1 = double.Parse(deviceData.Argument, CultureInfo.InvariantCulture);
                     var resultCurrent = $"Измерен ток {GetValueUnitPair(actualCurrent, UnitType.Current)} \t Нижний предел: {GetValueUnitPair(lowerLimitCurrent, UnitType.Current)}\t Верхний предел {GetValueUnitPair(upperLimitCurrent, UnitType.Current)}";
@@ -51,7 +50,7 @@ namespace UCA.Devices
                     }
                     else
                     {
-                        return DeviceResult.ResultError($"Ошибка {resultCurrent}");
+                        return DeviceResult.ResultError($"Ошибка: {resultCurrent}");
                     }
                 case DeviceCommands.SetMeasurementToCurrent:
                     var currentRange = double.Parse(deviceData.Argument, CultureInfo.InvariantCulture);
