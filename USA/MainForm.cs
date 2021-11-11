@@ -18,7 +18,7 @@ namespace UCA
         Dictionary<TreeNode, Step> treeviewNodeStep = new Dictionary<TreeNode, Step>();
         Dictionary<Step, TreeNode> treeviewStepNode = new Dictionary<Step, TreeNode>();
         Thread mainThread = new Thread(some);//stepsDictionary
-        Log log = new Log();
+        Log mainLog = new Log();
 
         private static void some()
         {
@@ -31,7 +31,15 @@ namespace UCA
             EventSend = this;
             this.settings = settings;
             ShowSettings();
-            InitialActions();          
+        }
+
+        private void CleanAll()
+        {
+            treeOfChecking.Nodes.Clear();
+            comboBoxCheckingMode.Items.Clear();
+            comboBoxVoltageSupply.Items.Clear();
+            treeviewNodeStep.Clear();
+            treeviewStepNode.Clear();
         }
 
         private void ShowSettings()
@@ -102,21 +110,26 @@ namespace UCA
             InitialActions(connectionString);
         }
 
-        private void DoCheckingStepByStep(StepsInfo stepsInfo, string modeName)//(Dictionary<string, List<Step>> stepsDictionary)
+        private Log CreateLog()
         {
-            log.Clear();
+            var log = new Log();
             log.AddItem($"Время начала проверки: {DateTime.Now}\n");
             log.AddItem($"Имя оператора: {settings.OperatorName}\n");
             log.AddItem($"Комментарий: {settings.Comment}\n");
             log.AddItem($"Заводской номер: {settings.FactoryNumber}\n");
             log.AddItem($"Режим: {settings.Regime}\r\n");
+            return log;
+        }
+
+        private void DoCheckingStepByStep(StepsInfo stepsInfo, string modeName)//(Dictionary<string, List<Step>> stepsDictionary)
+        {
+            var log = CreateLog();
             var stepsDictionary = stepsInfo.ModesDictionary[modeName];
             foreach (var tableName in stepsDictionary.Keys)
             {
                 foreach (var step in stepsDictionary[tableName])
                 {
                     DoStepOfChecking(step, stepsInfo, log);
-                    stepsInfo.StepNumber++;
                     Thread.Sleep(1500);
                 }
             }
@@ -124,37 +137,53 @@ namespace UCA
         }
         private void DoStepOfChecking(Step step, StepsInfo stepsInfo, Log log)
         {
-            var node = treeviewStepNode[step];
-            HighlightTreeNode(treeOfChecking, node, Color.Blue);
-            var stepParser = new StepParser(stepsInfo.DeviceHandler, step);
-            var deviceResult = stepParser.DoStep();
-            var stepNode = treeviewStepNode[step];
-            UpdateTreeNode(stepNode, deviceResult.Description);
-            if (deviceResult.State == DeviceState.OK)
+            if (step.ShowStep || checkBoxDebug.Checked)
             {
-                HighlightTreeNode(treeOfChecking, node, Color.Green);
+                var node = treeviewStepNode[step];
+                HighlightTreeNode(treeOfChecking, node, Color.Blue);
+                var stepParser = new StepParser(stepsInfo.DeviceHandler, step);
+                var deviceResult = stepParser.DoStep();
+                UpdateTreeNode(node, deviceResult.Description);
+                if (deviceResult.State == DeviceState.OK)
+                {
+                    HighlightTreeNode(treeOfChecking, node, Color.Green);
+                }
+                else
+                {
+                    HighlightTreeNode(treeOfChecking, node, Color.Red);
+                    // Аварийная остановка проверки
+
+                    //EmergencyBreak(stepsInfo);
+                    //UpdateTreeNodes(treeOfChecking, nodeNumbers, "Аварийная остановка проверки");
+                    //Thread.CurrentThread.Abort();
+
+                }
+                var result = $"Шаг {stepsInfo.StepNumber + 1}: {step.Description}\r\n{deviceResult.Description}\r\n\r\n";
+                log.AddItem(result);
             }
             else
             {
-                HighlightTreeNode(treeOfChecking, node, Color.Red);
-                // Аварийная остановка проверки
+                var stepParser = new StepParser(stepsInfo.DeviceHandler, step);
+                var deviceResult = stepParser.DoStep();
+                if (deviceResult.State == DeviceState.ERROR)
+                {
+                    // Аварийная остановка проверки
 
-                //EmergencyBreak(stepsInfo);
-                //UpdateTreeNodes(treeOfChecking, nodeNumbers, "Аварийная остановка проверки");
-                //Thread.CurrentThread.Abort();
-
+                    //EmergencyBreak(stepsInfo);
+                    //UpdateTreeNodes(treeOfChecking, nodeNumbers, "Аварийная остановка проверки");
+                    //Thread.CurrentThread.Abort();
+                }
             }
-            log.AddItem($"Шаг {stepsInfo.StepNumber + 1}: {step.Description}\r\n{deviceResult.Description}\r\n\r\n");
         }
 
-        private void EmergencyBreak (StepsInfo stepsInfo)
+        private void EmergencyBreak(StepsInfo stepsInfo)
         {
             foreach (var step in stepsInfo.EmergencyStepList)
             {
                 var stepParser = new StepParser(stepsInfo.DeviceHandler, step);
                 var result = stepParser.DoStep();
-                var node = treeviewStepNode[step];
-                UpdateTreeNode(node, result.Description);
+                //var node = treeviewStepNode[step];
+                //UpdateTreeNode(node, result.Description);
             }
         }
 
@@ -173,19 +202,23 @@ namespace UCA
                 treeView.Nodes.Add(treeNode);
                 foreach (var step in stepDictionary[tableName])
                 {
-                    nodesCount++;
-                    try
+                    if (step.ShowStep || checkBoxDebug.Checked)
                     {
-                        var nodeName = $"{nodesCount} {step.Description}";
-                        var stepNode = new TreeNode(nodeName);
-                        treeviewNodeStep.Add(stepNode, step);
-                        treeviewStepNode.Add(step, stepNode);
-                        treeView.Nodes[treeNode.Index].Nodes.Add(stepNode);
-                        treeView.Nodes[treeNode.Index].Expand();
-                    }
-                    catch (ArgumentException ex)
-                    {
-                        MessageBox.Show(ex.Message);
+                        nodesCount++;
+                        try
+                        {
+                            var nodeName = $"{nodesCount} {step.Description}";
+                            var stepNode = new TreeNode(nodeName);
+                            treeviewNodeStep.Add(stepNode, step);
+                            //stepNode.Checked = true;
+                            treeviewStepNode.Add(step, stepNode);
+                            treeNode.Nodes.Add(stepNode);
+                            treeNode.Expand();
+                        }
+                        catch (ArgumentException ex)
+                        {
+                            MessageBox.Show(ex.Message);
+                        }
                     }
                 }
 
@@ -225,29 +258,13 @@ namespace UCA
             */
         }
 
-        private int[] GetNodeNumber(TreeView treeView, int stepNumber)
-        {
-            int subNodeNumber = stepNumber;
-            int nodeNumber = 0;
-            foreach (TreeNode node in treeView.Nodes)
-            {
-                nodeNumber = node.Index;
-                if (subNodeNumber > node.Nodes.Count - 1)
-                {
-                    subNodeNumber -= node.Nodes.Count;
-                }
-                else
-                    break;
-            }
-            return new int[] { nodeNumber, subNodeNumber };
-        }
-
         #endregion
 
         public static Form1 EventSend;
 
         private void buttonCheckingStart_Click(object sender, EventArgs e)
         {
+            buttonCheckingStart.Enabled = false;
             var modeName = comboBoxCheckingMode.SelectedItem.ToString();
             mainThread = new Thread(delegate () { DoCheckingStepByStep(stepsInfo, modeName); });
             mainThread.Start();
@@ -259,6 +276,7 @@ namespace UCA
             openBinFileDialog.Filter = "Файлы *.xls* | *xls*";//"Файлы *.accdb | *.accdb | Файлы *.mdb | *.mdb"; "Файлы *.*db | *.*db"
             if (openBinFileDialog.ShowDialog() == DialogResult.OK)
             {
+                CleanAll();
                 InitialActions(openBinFileDialog.FileName);
             }
         }
@@ -310,6 +328,7 @@ namespace UCA
 
         private void buttonStop_Click(object sender, EventArgs e)
         {
+            buttonCheckingStart.Enabled = true;
             Stop();
         }
 
@@ -324,8 +343,59 @@ namespace UCA
             if (treeviewNodeStep.ContainsKey(e.Node))
             {
                 var thisStep = treeviewNodeStep[e.Node];
-                DoStepOfChecking(thisStep, stepsInfo, log);
+                DoStepOfChecking(thisStep, stepsInfo, mainLog);
             }
+        }
+
+        private void buttonSelectAllSteps_Click(object sender, EventArgs e)
+        {
+
+        }
+
+
+        private List<Step> GetSelectedSteps()
+        {
+            var stepList = new List<Step>();
+            foreach (var node in treeviewNodeStep.Keys)
+            {
+                if (node.Checked)
+                {
+                    var step = treeviewNodeStep[node];
+                    stepList.Add(step);
+                }
+            }
+            return stepList;
+        }
+
+        private void DoSelectedSteps(List<Step> stepList)
+        {
+            var log = CreateLog();
+            log.AddItem("Выполнение выбранных оператором шагов проверки: \r\n");
+            foreach (var step in stepList)
+            {
+                Thread.Sleep(1000);
+                DoStepOfChecking(step, stepsInfo, log);
+            }
+            while (checkBoxCycle.Checked)
+            {
+                foreach (var step in stepList)
+                {
+                    Thread.Sleep(1000);
+                    DoStepOfChecking(step, stepsInfo, log);
+                }
+            }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            var stepList = GetSelectedSteps();
+            var thread = new Thread(delegate () { DoSelectedSteps(stepList); });
+            thread.Start();
+        }
+
+        private void checkBoxCycle_CheckedChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

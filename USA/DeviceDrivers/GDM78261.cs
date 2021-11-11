@@ -23,6 +23,13 @@ namespace UCA.DeviceDrivers
             //this.serialPort.Close();
         }
 
+        public double MeasureVoltageAC()
+        {
+            serialPort.WriteLine("MEAS:VOLT:AC?#013#010");
+            Thread.Sleep(2000);
+            return ParseValue(serialPort.ReadLine());
+        }
+
 
         /// <summary>
         /// Returns the DC voltage measurement as N mV.

@@ -31,6 +31,7 @@ namespace UCA.Steps
                 deviceData.Channel = step.Channel;
                 deviceData.LowerLimit = step.LowerLimit;
                 deviceData.UpperLimit = step.UpperLimit;
+                deviceData.ShowStep = step.ShowStep;
             }
             catch (ArgumentException)
             {

@@ -56,6 +56,19 @@ namespace UCA.Devices
                     var currentRange = double.Parse(deviceData.Argument, CultureInfo.InvariantCulture);
                     gdm78261.SetMeasurementToCurrentDC(currentRange);
                     return DeviceResult.ResultOk($"{deviceData.DeviceName} переведен в режим измерения тока");
+                case DeviceCommands.GetVoltageRipple:
+                    var lowerLimitRipple = double.Parse(deviceData.LowerLimit, CultureInfo.InvariantCulture);
+                    var upperLimitRipple = double.Parse(deviceData.UpperLimit, CultureInfo.InvariantCulture);
+                    var actualRipple = gdm78261.MeasureVoltageAC();
+                    var resultRipple = $"Измерена пульсация напряжения {GetValueUnitPair(actualRipple, UnitType.Voltage)} \t Нижний предел: {GetValueUnitPair(lowerLimitRipple, UnitType.Voltage)}\t Верхний предел {GetValueUnitPair(upperLimitRipple, UnitType.Voltage)}";
+                    if (Math.Abs(actualRipple) >= Math.Abs(lowerLimitRipple) && Math.Abs(actualRipple) <= Math.Abs(upperLimitRipple))
+                    {
+                        return DeviceResult.ResultOk(resultRipple);
+                    }
+                    else
+                    {
+                        return DeviceResult.ResultError("Ошибка: " + resultRipple);
+                    }
                 default:
                     return DeviceResult.ResultError($"Неизвестная команда {deviceData.Command}");
             }

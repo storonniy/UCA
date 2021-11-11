@@ -58,6 +58,7 @@ namespace UCA.Devices
         public string LowerLimit;
         public string UpperLimit;
         public int Channel;
+        public bool ShowStep;
     }
 
     public struct DeviceResult
@@ -96,6 +97,7 @@ namespace UCA.Devices
         GetVoltage,
         GetCurrent,
         CalculateCoefficient,
+        GetVoltageRipple,
         // УСА_Т
         // PSH_73610, PSH_73630 (относятся к типу PSH, свести к одному устройству PSH)
         SetVoltageProtection,
