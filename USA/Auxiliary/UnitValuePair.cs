@@ -12,15 +12,15 @@ namespace UCA.Auxiliary
         {
             if (Math.Abs(value) * Math.Pow(10, 6) < 1000)
             {
-                return $"{value * Math.Pow(10, 6)} мк{GetUnit(value, unitType)}";
+                return $"{Math.Round(value * Math.Pow(10, 6), 3)} мк{GetUnit(value, unitType)}";
             }
             else if (Math.Abs(value) * Math.Pow(10, 3) < 1000)
             {
-                return $"{value * Math.Pow(10, 3)} м{GetUnit(value, unitType)}";
+                return $"{Math.Round(value * Math.Pow(10, 3), 3)} м{GetUnit(value, unitType)}";
             }
             else
             {
-                return $"{value} {GetUnit(value, unitType)}";
+                return $"{Math.Round(value, 3)} {GetUnit(value, unitType)}";
             }
         }
 

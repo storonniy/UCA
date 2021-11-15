@@ -86,11 +86,13 @@ namespace UCA.Devices
             }
             catch (IOException)
             {
-                return DeviceResult.ResultError($"NOT_CONNECTED: Порт {deviceData.DeviceName} закрыт");
+                var data = $"lowerLimit {deviceData.LowerLimit}; upperLimit {deviceData.UpperLimit}";
+                return DeviceResult.ResultError($"{data} \n NOT_CONNECTED: Порт {deviceData.DeviceName} закрыт");
             }
             catch (InvalidOperationException)
             {
-                return DeviceResult.ResultError($"NOT_CONNECTED: Порт {deviceData.DeviceName} закрыт");
+                var data = $"lowerLimit {deviceData.LowerLimit}; upperLimit {deviceData.UpperLimit}";
+                return DeviceResult.ResultError($"{data} \n NOT_CONNECTED: Порт {deviceData.DeviceName} закрыт");
             }
             /*
             catch (FormatException)

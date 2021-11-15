@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Data;
 using UCA.Devices;
 using System.IO.Ports;
+using System.Globalization;
 
 namespace UCA.Steps
 { 
@@ -27,8 +28,8 @@ namespace UCA.Steps
         public string Command;
         public string Argument;
         public string Description;
-        public string LowerLimit;
-        public string UpperLimit;
+        public double LowerLimit;
+        public double UpperLimit;
         public bool ShowStep;
 
         private static SerialPort GetSerialPort(string portName, int baudrate)
@@ -179,8 +180,10 @@ namespace UCA.Steps
             step.Argument = row["argument"].ToString();
             step.Description = row["description"].ToString();
             step.Channel = int.Parse(row["channel"].ToString());
-            step.UpperLimit = row["upperLimit"].ToString();
-            step.LowerLimit = row["lowerLimit"].ToString();
+            var lowerLimit = row["lowerLimit"].ToString();
+            step.LowerLimit = double.Parse(lowerLimit, NumberStyles.Float);
+            var upperLimit = row["upperLimit"].ToString();
+            step.UpperLimit = double.Parse(upperLimit, NumberStyles.Float);
             var meow = row["showStep"];
             step.ShowStep = Convert.ToBoolean(meow);
             if (step.Channel > 0)

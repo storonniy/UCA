@@ -22,13 +22,13 @@ namespace UCA.Devices
             switch (deviceData.Command)
             {
                 case DeviceCommands.GetVoltage:
-                    var lowerLimit = double.Parse(deviceData.LowerLimit, CultureInfo.InvariantCulture);
-                    var upperLimit = double.Parse(deviceData.UpperLimit, CultureInfo.InvariantCulture);
+                    var lowerLimit = deviceData.LowerLimit;
+                    var upperLimit = deviceData.UpperLimit;
                     deviceData.ExpectedValue = deviceData.ExpectedValue.Replace("<", "");
                     var actualVoltage = gdm78261.MeasureVoltageDC();
                     var tmp = double.Parse(deviceData.Argument, CultureInfo.InvariantCulture);
                     AddCoefficientData(deviceData.Channel, tmp, actualVoltage);
-                    var result = $"Измерено напряжение {GetValueUnitPair(actualVoltage, UnitType.Voltage)} \t Нижний предел: {GetValueUnitPair(lowerLimit, UnitType.Voltage)}\t Верхний предел {GetValueUnitPair(upperLimit, UnitType.Voltage)}";
+                    var result = $"Измерено напряжение {GetValueUnitPair(actualVoltage, UnitType.Voltage)} \tНижний предел: {GetValueUnitPair(lowerLimit, UnitType.Voltage)}\t Верхний предел {GetValueUnitPair(upperLimit, UnitType.Voltage)}";
                     if (Math.Abs(actualVoltage) >= Math.Abs(lowerLimit) && Math.Abs(actualVoltage) <= Math.Abs(upperLimit))
                     {
                         return DeviceResult.ResultOk(result);
@@ -38,11 +38,11 @@ namespace UCA.Devices
                         return DeviceResult.ResultError("Ошибка: " + result);
                     }
                 case DeviceCommands.GetCurrent:
-                    var lowerLimitCurrent = double.Parse(deviceData.LowerLimit, CultureInfo.InvariantCulture);
-                    var upperLimitCurrent = double.Parse(deviceData.UpperLimit, CultureInfo.InvariantCulture);
+                    var lowerLimitCurrent = deviceData.LowerLimit;
+                    var upperLimitCurrent = deviceData.UpperLimit;
                     var actualCurrent = gdm78261.MeasureCurrentDC();
                     var tmp1 = double.Parse(deviceData.Argument, CultureInfo.InvariantCulture);
-                    var resultCurrent = $"Измерен ток {GetValueUnitPair(actualCurrent, UnitType.Current)} \t Нижний предел: {GetValueUnitPair(lowerLimitCurrent, UnitType.Current)}\t Верхний предел {GetValueUnitPair(upperLimitCurrent, UnitType.Current)}";
+                    var resultCurrent = $"Измерен ток {GetValueUnitPair(actualCurrent, UnitType.Current)} \tНижний предел: {GetValueUnitPair(lowerLimitCurrent, UnitType.Current)}\t Верхний предел {GetValueUnitPair(upperLimitCurrent, UnitType.Current)}";
                     AddCoefficientData(deviceData.Channel, tmp1, actualCurrent);
                     if (Math.Abs(actualCurrent) <= Math.Abs(upperLimitCurrent))
                     {
@@ -57,8 +57,8 @@ namespace UCA.Devices
                     gdm78261.SetMeasurementToCurrentDC(currentRange);
                     return DeviceResult.ResultOk($"{deviceData.DeviceName} переведен в режим измерения тока");
                 case DeviceCommands.GetVoltageRipple:
-                    var lowerLimitRipple = double.Parse(deviceData.LowerLimit, CultureInfo.InvariantCulture);
-                    var upperLimitRipple = double.Parse(deviceData.UpperLimit, CultureInfo.InvariantCulture);
+                    var lowerLimitRipple = deviceData.LowerLimit;
+                    var upperLimitRipple = deviceData.UpperLimit;
                     var actualRipple = gdm78261.MeasureVoltageAC();
                     var resultRipple = $"Измерена пульсация напряжения {GetValueUnitPair(actualRipple, UnitType.Voltage)} \t Нижний предел: {GetValueUnitPair(lowerLimitRipple, UnitType.Voltage)}\t Верхний предел {GetValueUnitPair(upperLimitRipple, UnitType.Voltage)}";
                     if (Math.Abs(actualRipple) >= Math.Abs(lowerLimitRipple) && Math.Abs(actualRipple) <= Math.Abs(upperLimitRipple))

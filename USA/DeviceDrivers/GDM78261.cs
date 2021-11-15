@@ -86,7 +86,7 @@ namespace UCA.DeviceDrivers
 
         public static double ParseValue (string value)
         {
-            return (double)Decimal.Parse(value.Replace("\r", ""), NumberStyles.Float, CultureInfo.InvariantCulture);
+            return Math.Round((double)Decimal.Parse(value.Replace("\r", ""), NumberStyles.Float, CultureInfo.InvariantCulture), 3);
         }
     }
 }

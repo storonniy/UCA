@@ -25,8 +25,8 @@ namespace UCA.Devices
             switch (deviceData.Command)
             {
                 case DeviceCommands.SetVoltage:
-                    var lowerLimit = float.Parse(deviceData.LowerLimit, CultureInfo.InvariantCulture);
-                    var upperLimit = float.Parse(deviceData.UpperLimit, CultureInfo.InvariantCulture);
+                    var lowerLimit = deviceData.LowerLimit;
+                    var upperLimit = deviceData.UpperLimit;
                     var expectedVoltage = float.Parse(deviceData.Argument, CultureInfo.InvariantCulture);             
                     var actualVoltage = psh73610.SetVoltage(expectedVoltage);
                     var result = $"Уcтановлено напряжение {GetValueUnitPair(actualVoltage, UnitType.Voltage)} \t Нижний предел: {GetValueUnitPair(lowerLimit, UnitType.Voltage)}\t Верхний предел {GetValueUnitPair(upperLimit, UnitType.Voltage)}";
@@ -39,8 +39,8 @@ namespace UCA.Devices
                         return ResultError($"Ошибка: {result}");
                     }
                 case DeviceCommands.SetCurrent:
-                    var lowerLimitCurrent = double.Parse(deviceData.LowerLimit, CultureInfo.InvariantCulture);
-                    var upperLimitCurrent = double.Parse(deviceData.UpperLimit, CultureInfo.InvariantCulture);
+                    var lowerLimitCurrent = deviceData.LowerLimit;
+                    var upperLimitCurrent = deviceData.UpperLimit;
                     var expectedCurrent = float.Parse(deviceData.Argument);
                     var actualCurrent = psh73610.SetCurrent(expectedCurrent);
                     var resultCurrent = $"Уcтановлено значение тока {GetValueUnitPair(actualCurrent, UnitType.Current)} \t Нижний предел: {GetValueUnitPair(lowerLimitCurrent, UnitType.Current)}\t Верхний предел {GetValueUnitPair(upperLimitCurrent, UnitType.Current)}";

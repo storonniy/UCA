@@ -55,8 +55,8 @@ namespace UCA.Devices
         public DeviceCommands Command;
         public string Argument;
         public string ExpectedValue;
-        public string LowerLimit;
-        public string UpperLimit;
+        public double LowerLimit;
+        public double UpperLimit;
         public int Channel;
         public bool ShowStep;
     }

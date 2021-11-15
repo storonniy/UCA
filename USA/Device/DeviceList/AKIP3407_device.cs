@@ -23,8 +23,8 @@ namespace UCA.Devices
             switch (deviceData.Command)
             {
                 case DeviceCommands.SetVoltage:
-                    var lowerLimit = double.Parse(deviceData.LowerLimit, CultureInfo.InvariantCulture);
-                    var upperLimit = double.Parse(deviceData.UpperLimit, CultureInfo.InvariantCulture);
+                    var lowerLimit = deviceData.LowerLimit;
+                    var upperLimit = deviceData.UpperLimit;
                     var expectedVoltage = double.Parse(deviceData.Argument, CultureInfo.InvariantCulture);
                     var actualVoltage = akip3407.SetVoltage(expectedVoltage);
                     var result = $"Уcтановлено напряжение {GetValueUnitPair(actualVoltage, UnitType.Voltage)} \t Нижний предел: {GetValueUnitPair(lowerLimit, UnitType.Voltage)}\t Верхний предел {GetValueUnitPair(upperLimit, UnitType.Voltage)}";

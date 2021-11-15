@@ -26,8 +26,8 @@ namespace UCA.Devices
             switch (deviceData.Command)
             {
                 case DeviceCommands.SetVoltage:
-                    var lowerLimit = double.Parse(deviceData.LowerLimit, CultureInfo.InvariantCulture);
-                    var upperLimit = double.Parse(deviceData.UpperLimit, CultureInfo.InvariantCulture);
+                    var lowerLimit = deviceData.LowerLimit;
+                    var upperLimit = deviceData.UpperLimit;
                     Psp405.SetVoltageLimit((int)upperLimit);
                     Thread.Sleep(delay);
                     var voltage = double.Parse(deviceData.Argument);
@@ -44,18 +44,19 @@ namespace UCA.Devices
                         return ResultError("Ошибка: " + result);
                     }
                 case DeviceCommands.SetCurrent:
-                    var lowerLimitCurrent = double.Parse(deviceData.LowerLimit, CultureInfo.InvariantCulture);
-                    var upperLimitCurrent = double.Parse(deviceData.UpperLimit, CultureInfo.InvariantCulture);
+                    Psp405.SetVoltageLimit(40);
+                    var lowerLimitCurrent = deviceData.LowerLimit;
+                    var upperLimitCurrent = deviceData.UpperLimit;
                     Psp405.SetCurrentLimit(upperLimitCurrent);
                     double current = Math.Abs(double.Parse(deviceData.Argument));
                     Thread.Sleep(delay);
-                    double resistance = 480000;
+                    double resistance = 480000.0;
                     double voltage1 = current * resistance;
-                    Psp405.SetVoltageLimit((int)voltage1);
                     Thread.Sleep(delay);
                     Psp405.SetVoltage(voltage1);
                     Thread.Sleep(delay);
-                    var actualCurrent = Psp405.GetOutputVoltage() / resistance;
+                    var volt = Psp405.GetOutputVoltage();
+                    var actualCurrent = volt / resistance;
                     var resultCurrent = $"Уcтановлено значение тока {GetValueUnitPair(actualCurrent, UnitType.Current)} \t Нижний предел: {GetValueUnitPair(lowerLimitCurrent, UnitType.Current)}\t Верхний предел {GetValueUnitPair(upperLimitCurrent, UnitType.Current)}";
                     if (Math.Abs(actualCurrent) >= Math.Abs(lowerLimitCurrent) && Math.Abs(actualCurrent) <= Math.Abs(upperLimitCurrent))
                     {

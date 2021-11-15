@@ -53,6 +53,7 @@ namespace UCA
             this.buttonStop = new System.Windows.Forms.Button();
             this.buttonOpenDataBase = new System.Windows.Forms.Button();
             this.checkBoxDebug = new System.Windows.Forms.CheckBox();
+            this.button2 = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.groupBoxPreferences.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -167,6 +168,7 @@ namespace UCA
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.button2);
             this.groupBox2.Controls.Add(this.checkBoxDebug);
             this.groupBox2.Controls.Add(this.checkBoxCycle);
             this.groupBox2.Controls.Add(this.buttonSelectAllSteps);
@@ -223,6 +225,13 @@ namespace UCA
             this.checkBoxDebug.Tag = "Показывает неинформативные шаги проверки";
             this.checkBoxDebug.UseVisualStyleBackColor = true;
             // 
+            // button2
+            // 
+            resources.ApplyResources(this.button2, "button2");
+            this.button2.Name = "button2";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
             // Form1
             // 
             resources.ApplyResources(this, "$this");
@@ -265,6 +274,7 @@ namespace UCA
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.CheckBox checkBoxCycle;
         private System.Windows.Forms.CheckBox checkBoxDebug;
+        private System.Windows.Forms.Button button2;
     }
 }
 

@@ -19,7 +19,7 @@ namespace UCA.Devices
             {
                 case 1:
                 case 2:
-                    return 480000 * coeff;
+                    return Math.Round(Math.Abs(coeff * 672000.0 / 1000000.0), 3);
                 case 3:
                 case 4:
                 case 5:
@@ -28,7 +28,7 @@ namespace UCA.Devices
                 case 8:
                 case 9:
                 case 10:
-                    return coeff;
+                    return Math.Round(Math.Abs(coeff / 1000000.0), 3);
                 default:
                     throw new Exception($"Номер канала должен быть от 1 до 10 для УСА, указан номер канала {channel}");
             }
@@ -39,21 +39,23 @@ namespace UCA.Devices
             switch (deviceData.Command)
             {
                 case DeviceCommands.CalculateCoefficient:
-                    var value = double.Parse(deviceData.Argument, CultureInfo.InvariantCulture);
-                    var lowerLimit = double.Parse(deviceData.LowerLimit, CultureInfo.InvariantCulture);
-                    var upperLimit = double.Parse(deviceData.UpperLimit, CultureInfo.InvariantCulture);
+                    var value = double.Parse(deviceData.Argument.Replace(",", "."), CultureInfo.InvariantCulture);
+                    var lowerLimit = deviceData.LowerLimit;
+                    var upperLimit = deviceData.UpperLimit;
                     try
                     {
                         var actualCoefficient = CalculateUCACoefficient(deviceData.Channel, value);
+                        var result = $"Коэффициент равен {actualCoefficient} В/мкА \tНижний предел  {lowerLimit} В/мкА \tВерхний предел {upperLimit} В/мкА";
                         if (actualCoefficient >= lowerLimit && actualCoefficient <= upperLimit)
-                            return DeviceResult.ResultOk($"Коэффициент равен {actualCoefficient} В/мкА");//($"Напиши метод {deviceData.Command}");
+                            return DeviceResult.ResultOk(result);
                         else
-                            return DeviceResult.ResultError($"Коэффициент равен {actualCoefficient} В/мкА, коэффициент должен быть в диапазоне от {lowerLimit} до {upperLimit} В/мкА");
+                            return DeviceResult.ResultError($"Ошибка: {result}");
                     }
                     catch (KeyNotFoundException)
                     {
                         UnitType unitType = (deviceData.Channel > 2) ? UnitType.Current : UnitType.Voltage;
-                        return DeviceResult.ResultError($"Для входного воздействия {GetValueUnitPair(value, unitType)} и канала {deviceData.Channel} не измерялись входные и выходные воздействия");
+                        var data = $"lowerLimit {deviceData.LowerLimit}; upperLimit {deviceData.UpperLimit}";
+                        return DeviceResult.ResultError($"{data} \n Для входного воздействия {GetValueUnitPair(value, unitType)} и канала {deviceData.Channel} не измерялись входные и выходные воздействия");
                     }             
                 case DeviceCommands.CalculateCoeff_UCA_T:
                     return DeviceResult.ResultError($"Напиши метод,  {deviceData.Command}");

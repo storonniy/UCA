@@ -36,8 +36,8 @@ namespace UCA.Devices
                     else
                         return DeviceResult.ResultError($"Ошибка: попытка подачи входного сигнала с {deviceData.DeviceName} завершилась с ошибкой");
                 case DeviceCommands.SetCurrent:
-                    var lowerLimitCurrent = double.Parse(deviceData.LowerLimit, CultureInfo.InvariantCulture);
-                    var upperLimitCurrent = double.Parse(deviceData.UpperLimit, CultureInfo.InvariantCulture);
+                    var lowerLimitCurrent = deviceData.LowerLimit;
+                    var upperLimitCurrent = deviceData.UpperLimit;
                     var current = float.Parse(deviceData.Argument);
                     resultOK = ath8030.SetCurrent(current);
                     var resultCurrent = $"Уcтановлено значение тока {GetValueUnitPair(current, UnitType.Current)} \t Нижний предел: {GetValueUnitPair(lowerLimitCurrent, UnitType.Current)}\t Верхний предел {GetValueUnitPair(upperLimitCurrent, UnitType.Current)}";

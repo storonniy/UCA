@@ -31,6 +31,7 @@ namespace UCA
             EventSend = this;
             this.settings = settings;
             ShowSettings();
+            InitialActions();
         }
 
         private void CleanAll()
@@ -64,7 +65,7 @@ namespace UCA
             {
                 comboBoxCheckingMode.Items.Add(modeName);
             }
-            comboBoxCheckingMode.SelectedItem = comboBoxCheckingMode.Items[0];
+            comboBoxCheckingMode.SelectedItem = comboBoxCheckingMode.Items[1];
         }
 
         private void InitialActions(string pathToDataBase)
@@ -77,6 +78,7 @@ namespace UCA
                 this.stepsInfo = Step.GetStepsInfo(dataSet);
                 ShowCheckingModes(stepsInfo);
                 SetVoltageSupplyModes(stepsInfo);
+                ReplaceVoltageSupplyInStepsDictionary();
             }
             catch (System.Data.OleDb.OleDbException ex)
             {
@@ -130,7 +132,7 @@ namespace UCA
                 foreach (var step in stepsDictionary[tableName])
                 {
                     DoStepOfChecking(step, stepsInfo, log);
-                    Thread.Sleep(1500);
+                    Thread.Sleep(0);
                 }
             }
             MessageBox.Show("Проверка завершена, результаты проверки записаны в файл");
@@ -174,6 +176,23 @@ namespace UCA
                     //Thread.CurrentThread.Abort();
                 }
             }
+        }
+
+        private void ReplaceVoltageSupplyInStepsDictionary()
+        {
+            var stepsDictionary = stepsInfo.StepsDictionary;
+            foreach (var tableName in stepsDictionary.Keys)
+            {
+                foreach (var step in stepsDictionary[tableName])
+                {
+                    if (tableName == "'Установка напряжения питания'" && step.Command == "SetVoltage" && step.Device.Contains("power") || step.Device.Contains("Power"))
+                    {
+                        var voltage = stepsInfo.VoltageSupplyDictionary[comboBoxVoltageSupply.SelectedItem.ToString()];
+                        step.Argument = voltage.ToString();
+                    }
+                }
+            }
+            stepsInfo.StepsDictionary = stepsDictionary;
         }
 
         private void EmergencyBreak(StepsInfo stepsInfo)
@@ -272,6 +291,7 @@ namespace UCA
 
         private void buttonOpenDataBase_Click(object sender, EventArgs e)
         {
+            EmergencyBreak(stepsInfo);
             OpenFileDialog openBinFileDialog = new OpenFileDialog();
             openBinFileDialog.Filter = "Файлы *.xls* | *xls*";//"Файлы *.accdb | *.accdb | Файлы *.mdb | *.mdb"; "Файлы *.*db | *.*db"
             if (openBinFileDialog.ShowDialog() == DialogResult.OK)
@@ -287,11 +307,13 @@ namespace UCA
         {
             if (mainThread.ThreadState != ThreadState.Suspended)
             {
+                buttonStop.Enabled = false;
                 buttonCheckingPause.Text = "Продолжить";
                 mainThread.Suspend();
             }
             else
             {
+                buttonStop.Enabled = true;
                 buttonCheckingPause.Text = "Пауза";
                 mainThread.Resume();
             }
@@ -316,7 +338,7 @@ namespace UCA
 
         private void comboBoxVoltageSupply_SelectedIndexChanged(object sender, EventArgs e)
         {
-
+            ReplaceVoltageSupplyInStepsDictionary();
         }
 
         private void Stop()
@@ -326,8 +348,15 @@ namespace UCA
             mainThread.Abort();
         }
 
+        private void CleanTreeView()
+        {
+            treeOfChecking.Nodes.Clear();
+            FillTreeView(treeOfChecking, stepsInfo.StepsDictionary);
+        }
+
         private void buttonStop_Click(object sender, EventArgs e)
         {
+            CleanTreeView();
             buttonCheckingStart.Enabled = true;
             Stop();
         }
@@ -340,7 +369,7 @@ namespace UCA
 
         private void treeOfChecking_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            if (treeviewNodeStep.ContainsKey(e.Node))
+            if (treeviewNodeStep.ContainsKey(e.Node) && mainThread.ThreadState != ThreadState.Running)
             {
                 var thisStep = treeviewNodeStep[e.Node];
                 DoStepOfChecking(thisStep, stepsInfo, mainLog);
@@ -396,6 +425,12 @@ namespace UCA
         private void checkBoxCycle_CheckedChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            Stop();
+            CleanTreeView();
         }
     }
 }
