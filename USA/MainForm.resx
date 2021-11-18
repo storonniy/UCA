@@ -174,6 +174,45 @@
   <data name="&gt;&gt;buttonCheckingPause.ZOrder" xml:space="preserve">
     <value>3</value>
   </data>
+  <data name="labelAttention.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="labelAttention.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Microsoft Sans Serif, 10pt</value>
+  </data>
+  <data name="labelAttention.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="labelAttention.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 99</value>
+  </data>
+  <data name="labelAttention.Size" type="System.Drawing.Size, System.Drawing">
+    <value>0, 17</value>
+  </data>
+  <data name="labelAttention.TabIndex" type="System.Int32, mscorlib">
+    <value>38</value>
+  </data>
+  <data name="&gt;&gt;labelAttention.Name" xml:space="preserve">
+    <value>labelAttention</value>
+  </data>
+  <data name="&gt;&gt;labelAttention.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;labelAttention.Parent" xml:space="preserve">
+    <value>groupBoxPreferences</value>
+  </data>
+  <data name="&gt;&gt;labelAttention.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="comboBoxCheckingMode.Location" type="System.Drawing.Point, System.Drawing">
+    <value>162, 42</value>
+  </data>
+  <data name="comboBoxCheckingMode.Size" type="System.Drawing.Size, System.Drawing">
+    <value>138, 21</value>
+  </data>
+  <data name="comboBoxCheckingMode.TabIndex" type="System.Int32, mscorlib">
+    <value>34</value>
+  </data>
   <data name="&gt;&gt;comboBoxCheckingMode.Name" xml:space="preserve">
     <value>comboBoxCheckingMode</value>
   </data>
@@ -184,13 +223,18 @@
     <value>groupBoxPreferences</value>
   </data>
   <data name="&gt;&gt;comboBoxCheckingMode.ZOrder" xml:space="preserve">
-    <value>0</value>
+    <value>1</value>
   </data>
-  <data name="&gt;&gt;
-	  
-
-
-oltageSupply.Name" xml:space="preserve">
+  <data name="comboBoxVoltageSupply.Location" type="System.Drawing.Point, System.Drawing">
+    <value>162, 15</value>
+  </data>
+  <data name="comboBoxVoltageSupply.Size" type="System.Drawing.Size, System.Drawing">
+    <value>138, 21</value>
+  </data>
+  <data name="comboBoxVoltageSupply.TabIndex" type="System.Int32, mscorlib">
+    <value>36</value>
+  </data>
+  <data name="&gt;&gt;comboBoxVoltageSupply.Name" xml:space="preserve">
     <value>comboBoxVoltageSupply</value>
   </data>
   <data name="&gt;&gt;comboBoxVoltageSupply.Type" xml:space="preserve">
@@ -200,7 +244,25 @@ oltageSupply.Name" xml:space="preserve">
     <value>groupBoxPreferences</value>
   </data>
   <data name="&gt;&gt;comboBoxVoltageSupply.ZOrder" xml:space="preserve">
-    <value>1</value>
+    <value>2</value>
+  </data>
+  <data name="label6.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="label6.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Microsoft Sans Serif, 10pt</value>
+  </data>
+  <data name="label6.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 43</value>
+  </data>
+  <data name="label6.Size" type="System.Drawing.Size, System.Drawing">
+    <value>117, 17</value>
+  </data>
+  <data name="label6.TabIndex" type="System.Int32, mscorlib">
+    <value>28</value>
+  </data>
+  <data name="label6.Text" xml:space="preserve">
+    <value>Режим проверки</value>
   </data>
   <data name="&gt;&gt;label6.Name" xml:space="preserve">
     <value>label6</value>
@@ -212,7 +274,28 @@ oltageSupply.Name" xml:space="preserve">
     <value>groupBoxPreferences</value>
   </data>
   <data name="&gt;&gt;label6.ZOrder" xml:space="preserve">
-    <value>2</value>
+    <value>3</value>
+  </data>
+  <data name="label1.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="label1.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Microsoft Sans Serif, 10pt</value>
+  </data>
+  <data name="label1.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="label1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 16</value>
+  </data>
+  <data name="label1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>150, 17</value>
+  </data>
+  <data name="label1.TabIndex" type="System.Int32, mscorlib">
+    <value>35</value>
+  </data>
+  <data name="label1.Text" xml:space="preserve">
+    <value>Напряжение питания</value>
   </data>
   <data name="&gt;&gt;label1.Name" xml:space="preserve">
     <value>label1</value>
@@ -224,13 +307,13 @@ oltageSupply.Name" xml:space="preserve">
     <value>groupBoxPreferences</value>
   </data>
   <data name="&gt;&gt;label1.ZOrder" xml:space="preserve">
-    <value>3</value>
+    <value>4</value>
   </data>
   <data name="groupBoxPreferences.Location" type="System.Drawing.Point, System.Drawing">
     <value>310, 18</value>
   </data>
   <data name="groupBoxPreferences.Size" type="System.Drawing.Size, System.Drawing">
-    <value>322, 133</value>
+    <value>322, 97</value>
   </data>
   <data name="groupBoxPreferences.TabIndex" type="System.Int32, mscorlib">
     <value>37</value>
@@ -436,6 +519,201 @@ oltageSupply.Name" xml:space="preserve">
   <data name="&gt;&gt;label2.ZOrder" xml:space="preserve">
     <value>6</value>
   </data>
+  <data name="&gt;&gt;button2.Name" xml:space="preserve">
+    <value>button2</value>
+  </data>
+  <data name="&gt;&gt;button2.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;button2.Parent" xml:space="preserve">
+    <value>groupBox2</value>
+  </data>
+  <data name="&gt;&gt;button2.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;checkBoxDebug.Name" xml:space="preserve">
+    <value>checkBoxDebug</value>
+  </data>
+  <data name="&gt;&gt;checkBoxDebug.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;checkBoxDebug.Parent" xml:space="preserve">
+    <value>groupBox2</value>
+  </data>
+  <data name="&gt;&gt;checkBoxDebug.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="&gt;&gt;checkBoxCycle.Name" xml:space="preserve">
+    <value>checkBoxCycle</value>
+  </data>
+  <data name="&gt;&gt;checkBoxCycle.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;checkBoxCycle.Parent" xml:space="preserve">
+    <value>groupBox2</value>
+  </data>
+  <data name="&gt;&gt;checkBoxCycle.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="&gt;&gt;buttonSelectAllSteps.Name" xml:space="preserve">
+    <value>buttonSelectAllSteps</value>
+  </data>
+  <data name="&gt;&gt;buttonSelectAllSteps.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;buttonSelectAllSteps.Parent" xml:space="preserve">
+    <value>groupBox2</value>
+  </data>
+  <data name="&gt;&gt;buttonSelectAllSteps.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="&gt;&gt;button1.Name" xml:space="preserve">
+    <value>button1</value>
+  </data>
+  <data name="&gt;&gt;button1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;button1.Parent" xml:space="preserve">
+    <value>groupBox2</value>
+  </data>
+  <data name="&gt;&gt;button1.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="&gt;&gt;treeOfChecking.Name" xml:space="preserve">
+    <value>treeOfChecking</value>
+  </data>
+  <data name="&gt;&gt;treeOfChecking.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TreeView, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;treeOfChecking.Parent" xml:space="preserve">
+    <value>groupBox2</value>
+  </data>
+  <data name="&gt;&gt;treeOfChecking.ZOrder" xml:space="preserve">
+    <value>5</value>
+  </data>
+  <data name="groupBox2.Location" type="System.Drawing.Point, System.Drawing">
+    <value>18, 157</value>
+  </data>
+  <data name="groupBox2.Size" type="System.Drawing.Size, System.Drawing">
+    <value>1008, 464</value>
+  </data>
+  <data name="groupBox2.TabIndex" type="System.Int32, mscorlib">
+    <value>10</value>
+  </data>
+  <data name="groupBox2.Text" xml:space="preserve">
+    <value>Шаги проверки</value>
+  </data>
+  <data name="&gt;&gt;groupBox2.Name" xml:space="preserve">
+    <value>groupBox2</value>
+  </data>
+  <data name="&gt;&gt;groupBox2.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;groupBox2.Parent" xml:space="preserve">
+    <value>panel1</value>
+  </data>
+  <data name="&gt;&gt;groupBox2.ZOrder" xml:space="preserve">
+    <value>7</value>
+  </data>
+  <data name="buttonStop.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="buttonStop.Location" type="System.Drawing.Point, System.Drawing">
+    <value>186, 24</value>
+  </data>
+  <data name="buttonStop.Size" type="System.Drawing.Size, System.Drawing">
+    <value>84, 23</value>
+  </data>
+  <data name="buttonStop.TabIndex" type="System.Int32, mscorlib">
+    <value>9</value>
+  </data>
+  <data name="buttonStop.Text" xml:space="preserve">
+    <value>Стоп</value>
+  </data>
+  <data name="&gt;&gt;buttonStop.Name" xml:space="preserve">
+    <value>buttonStop</value>
+  </data>
+  <data name="&gt;&gt;buttonStop.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;buttonStop.Parent" xml:space="preserve">
+    <value>groupBoxCheckingManagement</value>
+  </data>
+  <data name="&gt;&gt;buttonStop.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="buttonOpenDataBase.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="buttonOpenDataBase.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 54</value>
+  </data>
+  <data name="buttonOpenDataBase.Size" type="System.Drawing.Size, System.Drawing">
+    <value>84, 23</value>
+  </data>
+  <data name="buttonOpenDataBase.TabIndex" type="System.Int32, mscorlib">
+    <value>7</value>
+  </data>
+  <data name="buttonOpenDataBase.Text" xml:space="preserve">
+    <value>Открыть</value>
+  </data>
+  <data name="&gt;&gt;buttonOpenDataBase.Name" xml:space="preserve">
+    <value>buttonOpenDataBase</value>
+  </data>
+  <data name="&gt;&gt;buttonOpenDataBase.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;buttonOpenDataBase.Parent" xml:space="preserve">
+    <value>groupBoxCheckingManagement</value>
+  </data>
+  <data name="&gt;&gt;buttonOpenDataBase.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="groupBoxCheckingManagement.Location" type="System.Drawing.Point, System.Drawing">
+    <value>18, 18</value>
+  </data>
+  <data name="groupBoxCheckingManagement.Size" type="System.Drawing.Size, System.Drawing">
+    <value>286, 97</value>
+  </data>
+  <data name="groupBoxCheckingManagement.TabIndex" type="System.Int32, mscorlib">
+    <value>8</value>
+  </data>
+  <data name="groupBoxCheckingManagement.Text" xml:space="preserve">
+    <value>Управление</value>
+  </data>
+  <data name="&gt;&gt;groupBoxCheckingManagement.Name" xml:space="preserve">
+    <value>groupBoxCheckingManagement</value>
+  </data>
+  <data name="&gt;&gt;groupBoxCheckingManagement.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;groupBoxCheckingManagement.Parent" xml:space="preserve">
+    <value>panel1</value>
+  </data>
+  <data name="&gt;&gt;groupBoxCheckingManagement.ZOrder" xml:space="preserve">
+    <value>8</value>
+  </data>
+  <data name="panel1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>2, 12</value>
+  </data>
+  <data name="panel1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>1046, 621</value>
+  </data>
+  <data name="panel1.TabIndex" type="System.Int32, mscorlib">
+    <value>4</value>
+  </data>
+  <data name="&gt;&gt;panel1.Name" xml:space="preserve">
+    <value>panel1</value>
+  </data>
+  <data name="&gt;&gt;panel1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Panel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;panel1.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;panel1.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
   <data name="button2.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
@@ -597,258 +875,6 @@ oltageSupply.Name" xml:space="preserve">
   </data>
   <data name="&gt;&gt;treeOfChecking.ZOrder" xml:space="preserve">
     <value>5</value>
-  </data>
-  <data name="groupBox2.Location" type="System.Drawing.Point, System.Drawing">
-    <value>18, 157</value>
-  </data>
-  <data name="groupBox2.Size" type="System.Drawing.Size, System.Drawing">
-    <value>1008, 464</value>
-  </data>
-  <data name="groupBox2.TabIndex" type="System.Int32, mscorlib">
-    <value>10</value>
-  </data>
-  <data name="groupBox2.Text" xml:space="preserve">
-    <value>Шаги проверки</value>
-  </data>
-  <data name="&gt;&gt;groupBox2.Name" xml:space="preserve">
-    <value>groupBox2</value>
-  </data>
-  <data name="&gt;&gt;groupBox2.Type" xml:space="preserve">
-    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;groupBox2.Parent" xml:space="preserve">
-    <value>panel1</value>
-  </data>
-  <data name="&gt;&gt;groupBox2.ZOrder" xml:space="preserve">
-    <value>7</value>
-  </data>
-  <data name="&gt;&gt;buttonStop.Name" xml:space="preserve">
-    <value>buttonStop</value>
-  </data>
-  <data name="&gt;&gt;buttonStop.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;buttonStop.Parent" xml:space="preserve">
-    <value>groupBoxCheckingManagement</value>
-  </data>
-  <data name="&gt;&gt;buttonStop.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="&gt;&gt;buttonOpenDataBase.Name" xml:space="preserve">
-    <value>buttonOpenDataBase</value>
-  </data>
-  <data name="&gt;&gt;buttonOpenDataBase.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;buttonOpenDataBase.Parent" xml:space="preserve">
-    <value>groupBoxCheckingManagement</value>
-  </data>
-  <data name="&gt;&gt;buttonOpenDataBase.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
-  <data name="groupBoxCheckingManagement.Location" type="System.Drawing.Point, System.Drawing">
-    <value>18, 18</value>
-  </data>
-  <data name="groupBoxCheckingManagement.Size" type="System.Drawing.Size, System.Drawing">
-    <value>286, 133</value>
-  </data>
-  <data name="groupBoxCheckingManagement.TabIndex" type="System.Int32, mscorlib">
-    <value>8</value>
-  </data>
-  <data name="groupBoxCheckingManagement.Text" xml:space="preserve">
-    <value>Управление</value>
-  </data>
-  <data name="&gt;&gt;groupBoxCheckingManagement.Name" xml:space="preserve">
-    <value>groupBoxCheckingManagement</value>
-  </data>
-  <data name="&gt;&gt;groupBoxCheckingManagement.Type" xml:space="preserve">
-    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;groupBoxCheckingManagement.Parent" xml:space="preserve">
-    <value>panel1</value>
-  </data>
-  <data name="&gt;&gt;groupBoxCheckingManagement.ZOrder" xml:space="preserve">
-    <value>8</value>
-  </data>
-  <data name="panel1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>2, 12</value>
-  </data>
-  <data name="panel1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>1046, 621</value>
-  </data>
-  <data name="panel1.TabIndex" type="System.Int32, mscorlib">
-    <value>4</value>
-  </data>
-  <data name="&gt;&gt;panel1.Name" xml:space="preserve">
-    <value>panel1</value>
-  </data>
-  <data name="&gt;&gt;panel1.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Panel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;panel1.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;panel1.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="comboBoxCheckingMode.Location" type="System.Drawing.Point, System.Drawing">
-    <value>162, 42</value>
-  </data>
-  <data name="comboBoxCheckingMode.Size" type="System.Drawing.Size, System.Drawing">
-    <value>138, 21</value>
-  </data>
-  <data name="comboBoxCheckingMode.TabIndex" type="System.Int32, mscorlib">
-    <value>34</value>
-  </data>
-  <data name="&gt;&gt;comboBoxCheckingMode.Name" xml:space="preserve">
-    <value>comboBoxCheckingMode</value>
-  </data>
-  <data name="&gt;&gt;comboBoxCheckingMode.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;comboBoxCheckingMode.Parent" xml:space="preserve">
-    <value>groupBoxPreferences</value>
-  </data>
-  <data name="&gt;&gt;comboBoxCheckingMode.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="comboBoxVoltageSupply.Location" type="System.Drawing.Point, System.Drawing">
-    <value>162, 15</value>
-  </data>
-  <data name="comboBoxVoltageSupply.Size" type="System.Drawing.Size, System.Drawing">
-    <value>138, 21</value>
-  </data>
-  <data name="comboBoxVoltageSupply.TabIndex" type="System.Int32, mscorlib">
-    <value>36</value>
-  </data>
-  <data name="&gt;&gt;comboBoxVoltageSupply.Name" xml:space="preserve">
-    <value>comboBoxVoltageSupply</value>
-  </data>
-  <data name="&gt;&gt;comboBoxVoltageSupply.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;comboBoxVoltageSupply.Parent" xml:space="preserve">
-    <value>groupBoxPreferences</value>
-  </data>
-  <data name="&gt;&gt;comboBoxVoltageSupply.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
-  <data name="label6.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="label6.Font" type="System.Drawing.Font, System.Drawing">
-    <value>Microsoft Sans Serif, 10pt</value>
-  </data>
-  <data name="label6.Location" type="System.Drawing.Point, System.Drawing">
-    <value>6, 43</value>
-  </data>
-  <data name="label6.Size" type="System.Drawing.Size, System.Drawing">
-    <value>117, 17</value>
-  </data>
-  <data name="label6.TabIndex" type="System.Int32, mscorlib">
-    <value>28</value>
-  </data>
-  <data name="label6.Text" xml:space="preserve">
-    <value>Режим проверки</value>
-  </data>
-  <data name="&gt;&gt;label6.Name" xml:space="preserve">
-    <value>label6</value>
-  </data>
-  <data name="&gt;&gt;label6.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label6.Parent" xml:space="preserve">
-    <value>groupBoxPreferences</value>
-  </data>
-  <data name="&gt;&gt;label6.ZOrder" xml:space="preserve">
-    <value>2</value>
-  </data>
-  <data name="label1.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="label1.Font" type="System.Drawing.Font, System.Drawing">
-    <value>Microsoft Sans Serif, 10pt</value>
-  </data>
-  <data name="label1.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="label1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>6, 16</value>
-  </data>
-  <data name="label1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>150, 17</value>
-  </data>
-  <data name="label1.TabIndex" type="System.Int32, mscorlib">
-    <value>35</value>
-  </data>
-  <data name="label1.Text" xml:space="preserve">
-    <value>Напряжение питания</value>
-  </data>
-  <data name="&gt;&gt;label1.Name" xml:space="preserve">
-    <value>label1</value>
-  </data>
-  <data name="&gt;&gt;label1.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label1.Parent" xml:space="preserve">
-    <value>groupBoxPreferences</value>
-  </data>
-  <data name="&gt;&gt;label1.ZOrder" xml:space="preserve">
-    <value>3</value>
-  </data>
-  <data name="buttonStop.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="buttonStop.Location" type="System.Drawing.Point, System.Drawing">
-    <value>186, 24</value>
-  </data>
-  <data name="buttonStop.Size" type="System.Drawing.Size, System.Drawing">
-    <value>84, 23</value>
-  </data>
-  <data name="buttonStop.TabIndex" type="System.Int32, mscorlib">
-    <value>9</value>
-  </data>
-  <data name="buttonStop.Text" xml:space="preserve">
-    <value>Стоп</value>
-  </data>
-  <data name="&gt;&gt;buttonStop.Name" xml:space="preserve">
-    <value>buttonStop</value>
-  </data>
-  <data name="&gt;&gt;buttonStop.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;buttonStop.Parent" xml:space="preserve">
-    <value>groupBoxCheckingManagement</value>
-  </data>
-  <data name="&gt;&gt;buttonStop.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="buttonOpenDataBase.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="buttonOpenDataBase.Location" type="System.Drawing.Point, System.Drawing">
-    <value>6, 54</value>
-  </data>
-  <data name="buttonOpenDataBase.Size" type="System.Drawing.Size, System.Drawing">
-    <value>84, 23</value>
-  </data>
-  <data name="buttonOpenDataBase.TabIndex" type="System.Int32, mscorlib">
-    <value>7</value>
-  </data>
-  <data name="buttonOpenDataBase.Text" xml:space="preserve">
-    <value>Открыть</value>
-  </data>
-  <data name="&gt;&gt;buttonOpenDataBase.Name" xml:space="preserve">
-    <value>buttonOpenDataBase</value>
-  </data>
-  <data name="&gt;&gt;buttonOpenDataBase.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;buttonOpenDataBase.Parent" xml:space="preserve">
-    <value>groupBoxCheckingManagement</value>
-  </data>
-  <data name="&gt;&gt;buttonOpenDataBase.ZOrder" xml:space="preserve">
-    <value>1</value>
   </data>
   <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>

@@ -16,11 +16,11 @@ namespace UCA.DeviceDrivers
         public GDM78261 (SerialPort serialPort)
         {
             this.serialPort = serialPort;
-            //this.serialPort.Open();
+            this.serialPort.Open();
         }
         ~GDM78261()
         {
-            //this.serialPort.Close();
+            this.serialPort.Close();
         }
 
         public double MeasureVoltageAC()
@@ -86,7 +86,7 @@ namespace UCA.DeviceDrivers
 
         public static double ParseValue (string value)
         {
-            return Math.Round((double)Decimal.Parse(value.Replace("\r", ""), NumberStyles.Float, CultureInfo.InvariantCulture), 3);
+            return (double)Decimal.Parse(value.Replace("\r", ""), NumberStyles.Float, CultureInfo.InvariantCulture);
         }
     }
 }

@@ -19,7 +19,7 @@ namespace UCA.Devices
             {
                 case 1:
                 case 2:
-                    return Math.Round(Math.Abs(coeff * 672000.0 / 1000000.0), 3);
+                    return coeff;//Math.Abs(coeff * 672000.0 / 1000000.0);
                 case 3:
                 case 4:
                 case 5:
@@ -28,7 +28,7 @@ namespace UCA.Devices
                 case 8:
                 case 9:
                 case 10:
-                    return Math.Round(Math.Abs(coeff / 1000000.0), 3);
+                    return Math.Abs(coeff / 1000000.0);
                 default:
                     throw new Exception($"Номер канала должен быть от 1 до 10 для УСА, указан номер канала {channel}");
             }
@@ -39,13 +39,13 @@ namespace UCA.Devices
             switch (deviceData.Command)
             {
                 case DeviceCommands.CalculateCoefficient:
-                    var value = double.Parse(deviceData.Argument.Replace(",", "."), CultureInfo.InvariantCulture);
+                    var value = double.Parse(deviceData.Argument, NumberStyles.Float);
                     var lowerLimit = deviceData.LowerLimit;
                     var upperLimit = deviceData.UpperLimit;
                     try
                     {
                         var actualCoefficient = CalculateUCACoefficient(deviceData.Channel, value);
-                        var result = $"Коэффициент равен {actualCoefficient} В/мкА \tНижний предел  {lowerLimit} В/мкА \tВерхний предел {upperLimit} В/мкА";
+                        var result = $"Коэффициент равен {string.Format("{0:0.000}", actualCoefficient)} В/мкА \tНижний предел  {lowerLimit} В/мкА \tВерхний предел {upperLimit} В/мкА";
                         if (actualCoefficient >= lowerLimit && actualCoefficient <= upperLimit)
                             return DeviceResult.ResultOk(result);
                         else

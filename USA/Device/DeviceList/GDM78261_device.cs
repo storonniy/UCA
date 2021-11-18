@@ -22,14 +22,12 @@ namespace UCA.Devices
             switch (deviceData.Command)
             {
                 case DeviceCommands.GetVoltage:
-                    var lowerLimit = deviceData.LowerLimit;
-                    var upperLimit = deviceData.UpperLimit;
                     deviceData.ExpectedValue = deviceData.ExpectedValue.Replace("<", "");
                     var actualVoltage = gdm78261.MeasureVoltageDC();
-                    var tmp = double.Parse(deviceData.Argument, CultureInfo.InvariantCulture);
+                    var tmp = double.Parse(deviceData.Argument, NumberStyles.Float);
                     AddCoefficientData(deviceData.Channel, tmp, actualVoltage);
-                    var result = $"Измерено напряжение {GetValueUnitPair(actualVoltage, UnitType.Voltage)} \tНижний предел: {GetValueUnitPair(lowerLimit, UnitType.Voltage)}\t Верхний предел {GetValueUnitPair(upperLimit, UnitType.Voltage)}";
-                    if (Math.Abs(actualVoltage) >= Math.Abs(lowerLimit) && Math.Abs(actualVoltage) <= Math.Abs(upperLimit))
+                    var result = $"Измерено напряжение {GetValueUnitPair(actualVoltage, UnitType.Voltage)} \tНижний предел: {GetValueUnitPair(deviceData.LowerLimit, UnitType.Voltage)}\t Верхний предел {GetValueUnitPair(deviceData.UpperLimit, UnitType.Voltage)}";
+                    if (actualVoltage >= deviceData.LowerLimit && actualVoltage <= deviceData.UpperLimit)
                     {
                         return DeviceResult.ResultOk(result);
                     }
@@ -38,13 +36,11 @@ namespace UCA.Devices
                         return DeviceResult.ResultError("Ошибка: " + result);
                     }
                 case DeviceCommands.GetCurrent:
-                    var lowerLimitCurrent = deviceData.LowerLimit;
-                    var upperLimitCurrent = deviceData.UpperLimit;
                     var actualCurrent = gdm78261.MeasureCurrentDC();
-                    var tmp1 = double.Parse(deviceData.Argument, CultureInfo.InvariantCulture);
-                    var resultCurrent = $"Измерен ток {GetValueUnitPair(actualCurrent, UnitType.Current)} \tНижний предел: {GetValueUnitPair(lowerLimitCurrent, UnitType.Current)}\t Верхний предел {GetValueUnitPair(upperLimitCurrent, UnitType.Current)}";
+                    var tmp1 = double.Parse(deviceData.Argument, NumberStyles.Float);
+                    var resultCurrent = $"Измерен ток {GetValueUnitPair(actualCurrent, UnitType.Current)} \tНижний предел: {GetValueUnitPair(deviceData.LowerLimit, UnitType.Current)}\t Верхний предел {GetValueUnitPair(deviceData.UpperLimit, UnitType.Current)}";
                     AddCoefficientData(deviceData.Channel, tmp1, actualCurrent);
-                    if (Math.Abs(actualCurrent) <= Math.Abs(upperLimitCurrent))
+                    if (actualCurrent >= deviceData.LowerLimit && actualCurrent <= deviceData.UpperLimit)
                     {
                         return DeviceResult.ResultOk(resultCurrent);
                     }

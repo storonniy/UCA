@@ -34,8 +34,7 @@ namespace UCA
             this.buttonCheckingPause = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
             this.groupBoxPreferences = new System.Windows.Forms.GroupBox();
-            this.checkBoxCycle = new System.Windows.Forms.CheckBox();
-            this.button1 = new System.Windows.Forms.Button();
+            this.labelAttention = new System.Windows.Forms.Label();
             this.comboBoxCheckingMode = new System.Windows.Forms.ComboBox();
             this.comboBoxVoltageSupply = new System.Windows.Forms.ComboBox();
             this.label6 = new System.Windows.Forms.Label();
@@ -47,13 +46,15 @@ namespace UCA
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.button2 = new System.Windows.Forms.Button();
+            this.checkBoxDebug = new System.Windows.Forms.CheckBox();
+            this.checkBoxCycle = new System.Windows.Forms.CheckBox();
+            this.buttonSelectAllSteps = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
             this.treeOfChecking = new System.Windows.Forms.TreeView();
             this.groupBoxCheckingManagement = new System.Windows.Forms.GroupBox();
-            this.buttonSelectAllSteps = new System.Windows.Forms.Button();
             this.buttonStop = new System.Windows.Forms.Button();
             this.buttonOpenDataBase = new System.Windows.Forms.Button();
-            this.checkBoxDebug = new System.Windows.Forms.CheckBox();
-            this.button2 = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.groupBoxPreferences.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -90,6 +91,7 @@ namespace UCA
             // 
             // groupBoxPreferences
             // 
+            this.groupBoxPreferences.Controls.Add(this.labelAttention);
             this.groupBoxPreferences.Controls.Add(this.comboBoxCheckingMode);
             this.groupBoxPreferences.Controls.Add(this.comboBoxVoltageSupply);
             this.groupBoxPreferences.Controls.Add(this.label6);
@@ -98,19 +100,10 @@ namespace UCA
             this.groupBoxPreferences.Name = "groupBoxPreferences";
             this.groupBoxPreferences.TabStop = false;
             // 
-            // checkBoxCycle
+            // labelAttention
             // 
-            resources.ApplyResources(this.checkBoxCycle, "checkBoxCycle");
-            this.checkBoxCycle.Name = "checkBoxCycle";
-            this.checkBoxCycle.UseVisualStyleBackColor = true;
-            this.checkBoxCycle.CheckedChanged += new System.EventHandler(this.checkBoxCycle_CheckedChanged);
-            // 
-            // button1
-            // 
-            resources.ApplyResources(this.button1, "button1");
-            this.button1.Name = "button1";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            resources.ApplyResources(this.labelAttention, "labelAttention");
+            this.labelAttention.Name = "labelAttention";
             // 
             // comboBoxCheckingMode
             // 
@@ -178,6 +171,44 @@ namespace UCA
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.TabStop = false;
             // 
+            // button2
+            // 
+            resources.ApplyResources(this.button2, "button2");
+            this.button2.Name = "button2";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
+            // checkBoxDebug
+            // 
+            resources.ApplyResources(this.checkBoxDebug, "checkBoxDebug");
+            this.checkBoxDebug.Checked = true;
+            this.checkBoxDebug.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBoxDebug.Name = "checkBoxDebug";
+            this.checkBoxDebug.Tag = "Показывает неинформативные шаги проверки";
+            this.checkBoxDebug.UseVisualStyleBackColor = true;
+            this.checkBoxDebug.CheckedChanged += new System.EventHandler(this.checkBoxDebug_CheckedChanged);
+            // 
+            // checkBoxCycle
+            // 
+            resources.ApplyResources(this.checkBoxCycle, "checkBoxCycle");
+            this.checkBoxCycle.Name = "checkBoxCycle";
+            this.checkBoxCycle.UseVisualStyleBackColor = true;
+            this.checkBoxCycle.CheckedChanged += new System.EventHandler(this.checkBoxCycle_CheckedChanged);
+            // 
+            // buttonSelectAllSteps
+            // 
+            resources.ApplyResources(this.buttonSelectAllSteps, "buttonSelectAllSteps");
+            this.buttonSelectAllSteps.Name = "buttonSelectAllSteps";
+            this.buttonSelectAllSteps.UseVisualStyleBackColor = true;
+            this.buttonSelectAllSteps.Click += new System.EventHandler(this.buttonSelectAllSteps_Click);
+            // 
+            // button1
+            // 
+            resources.ApplyResources(this.button1, "button1");
+            this.button1.Name = "button1";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // treeOfChecking
             // 
             this.treeOfChecking.CheckBoxes = true;
@@ -195,13 +226,6 @@ namespace UCA
             this.groupBoxCheckingManagement.Name = "groupBoxCheckingManagement";
             this.groupBoxCheckingManagement.TabStop = false;
             // 
-            // buttonSelectAllSteps
-            // 
-            resources.ApplyResources(this.buttonSelectAllSteps, "buttonSelectAllSteps");
-            this.buttonSelectAllSteps.Name = "buttonSelectAllSteps";
-            this.buttonSelectAllSteps.UseVisualStyleBackColor = true;
-            this.buttonSelectAllSteps.Click += new System.EventHandler(this.buttonSelectAllSteps_Click);
-            // 
             // buttonStop
             // 
             resources.ApplyResources(this.buttonStop, "buttonStop");
@@ -215,22 +239,6 @@ namespace UCA
             this.buttonOpenDataBase.Name = "buttonOpenDataBase";
             this.buttonOpenDataBase.UseVisualStyleBackColor = true;
             this.buttonOpenDataBase.Click += new System.EventHandler(this.buttonOpenDataBase_Click);
-            // 
-            // checkBoxDebug
-            // 
-            resources.ApplyResources(this.checkBoxDebug, "checkBoxDebug");
-            this.checkBoxDebug.Checked = true;
-            this.checkBoxDebug.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxDebug.Name = "checkBoxDebug";
-            this.checkBoxDebug.Tag = "Показывает неинформативные шаги проверки";
-            this.checkBoxDebug.UseVisualStyleBackColor = true;
-            // 
-            // button2
-            // 
-            resources.ApplyResources(this.button2, "button2");
-            this.button2.Name = "button2";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // Form1
             // 
@@ -275,6 +283,7 @@ namespace UCA
         private System.Windows.Forms.CheckBox checkBoxCycle;
         private System.Windows.Forms.CheckBox checkBoxDebug;
         private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Label labelAttention;
     }
 }
 

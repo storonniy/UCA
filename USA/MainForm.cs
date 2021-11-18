@@ -32,6 +32,8 @@ namespace UCA
             this.settings = settings;
             ShowSettings();
             InitialActions();
+            buttonStop.Enabled = false;
+            buttonCheckingPause.Enabled = false;
         }
 
         private void CleanAll()
@@ -127,6 +129,7 @@ namespace UCA
         {
             var log = CreateLog();
             var stepsDictionary = stepsInfo.ModesDictionary[modeName];
+            var stepNumber = 0;
             foreach (var tableName in stepsDictionary.Keys)
             {
                 foreach (var step in stepsDictionary[tableName])
@@ -135,6 +138,13 @@ namespace UCA
                     Thread.Sleep(0);
                 }
             }
+            /*
+            buttonCheckingStart.Enabled = true;
+            buttonCheckingStart.Enabled = false;
+            buttonStop.Enabled = false;
+            buttonOpenDataBase.Enabled = true;
+            checkBoxDebug.Enabled = true;
+            */
             MessageBox.Show("Проверка завершена, результаты проверки записаны в файл");
         }
         private void DoStepOfChecking(Step step, StepsInfo stepsInfo, Log log)
@@ -142,6 +152,8 @@ namespace UCA
             if (step.ShowStep || checkBoxDebug.Checked)
             {
                 var node = treeviewStepNode[step];
+                var indexOf = node.Text.IndexOf(' ');
+                var stepNumber = int.Parse(node.Text.Substring(0, indexOf));
                 HighlightTreeNode(treeOfChecking, node, Color.Blue);
                 var stepParser = new StepParser(stepsInfo.DeviceHandler, step);
                 var deviceResult = stepParser.DoStep();
@@ -160,7 +172,8 @@ namespace UCA
                     //Thread.CurrentThread.Abort();
 
                 }
-                var result = $"Шаг {stepsInfo.StepNumber + 1}: {step.Description}\r\n{deviceResult.Description}\r\n\r\n";
+
+                var result = $"Шаг {stepNumber}: {step.Description}\r\n{deviceResult.Description}\r\n\r\n";
                 log.AddItem(result);
             }
             else
@@ -189,6 +202,7 @@ namespace UCA
                     {
                         var voltage = stepsInfo.VoltageSupplyDictionary[comboBoxVoltageSupply.SelectedItem.ToString()];
                         step.Argument = voltage.ToString();
+                        step.Description = $"Установка напряжения питания {step.Argument} на ИП1";
                     }
                 }
             }
@@ -284,7 +298,11 @@ namespace UCA
         private void buttonCheckingStart_Click(object sender, EventArgs e)
         {
             buttonCheckingStart.Enabled = false;
-            var modeName = comboBoxCheckingMode.SelectedItem.ToString();
+            buttonStop.Enabled = true;
+            buttonCheckingPause.Enabled = true;
+            buttonOpenDataBase.Enabled = false;
+            checkBoxDebug.Enabled = false;
+            var modeName = comboBoxCheckingMode.SelectedItem.ToString();          
             mainThread = new Thread(delegate () { DoCheckingStepByStep(stepsInfo, modeName); });
             mainThread.Start();
         }
@@ -332,8 +350,22 @@ namespace UCA
 
         private void comboBoxCheckingMode_SelectedIndexChanged(object sender, EventArgs e)
         {
+            SelectCheckingMode();
+        }
+
+        private void SelectCheckingMode ()
+        {
             var modeName = comboBoxCheckingMode.SelectedItem.ToString();
             FillTreeView(treeOfChecking, stepsInfo.ModesDictionary[modeName]);
+            if (modeName == "Режим самопроверки")
+            {
+                labelAttention.ForeColor = Color.Red;
+                labelAttention.Text = "Объект контроля должен быть отстыкован!";
+            }
+            else
+            {
+                labelAttention.Text = "";
+            }
         }
 
         private void comboBoxVoltageSupply_SelectedIndexChanged(object sender, EventArgs e)
@@ -358,6 +390,7 @@ namespace UCA
         {
             CleanTreeView();
             buttonCheckingStart.Enabled = true;
+            buttonOpenDataBase.Enabled = true;
             Stop();
         }
 
@@ -369,11 +402,13 @@ namespace UCA
 
         private void treeOfChecking_AfterSelect(object sender, TreeViewEventArgs e)
         {
+            /*
             if (treeviewNodeStep.ContainsKey(e.Node) && mainThread.ThreadState != ThreadState.Running)
             {
                 var thisStep = treeviewNodeStep[e.Node];
                 DoStepOfChecking(thisStep, stepsInfo, mainLog);
             }
+            */
         }
 
         private void buttonSelectAllSteps_Click(object sender, EventArgs e)
@@ -431,6 +466,11 @@ namespace UCA
         {
             Stop();
             CleanTreeView();
+        }
+
+        private void checkBoxDebug_CheckedChanged(object sender, EventArgs e)
+        {
+            SelectCheckingMode();
         }
     }
 }

@@ -35,7 +35,7 @@ namespace UCA.Devices
                     Thread.Sleep(delay);
                     var actualVoltage = Psp405.GetOutputVoltage();
                     var result = $"Уcтановлено напряжение {GetValueUnitPair(actualVoltage, UnitType.Voltage)} \t Нижний предел: {GetValueUnitPair(lowerLimit, UnitType.Voltage)}\t Верхний предел {GetValueUnitPair(upperLimit, UnitType.Voltage)}";
-                    if (Math.Abs(actualVoltage) >= Math.Abs(lowerLimit) && Math.Abs(actualVoltage) <= Math.Abs(upperLimit))
+                    if (actualVoltage >= lowerLimit && actualVoltage <= upperLimit)
                     {
                         return ResultOk(result);
                     }
@@ -58,7 +58,7 @@ namespace UCA.Devices
                     var volt = Psp405.GetOutputVoltage();
                     var actualCurrent = volt / resistance;
                     var resultCurrent = $"Уcтановлено значение тока {GetValueUnitPair(actualCurrent, UnitType.Current)} \t Нижний предел: {GetValueUnitPair(lowerLimitCurrent, UnitType.Current)}\t Верхний предел {GetValueUnitPair(upperLimitCurrent, UnitType.Current)}";
-                    if (Math.Abs(actualCurrent) >= Math.Abs(lowerLimitCurrent) && Math.Abs(actualCurrent) <= Math.Abs(upperLimitCurrent))
+                    if (actualCurrent >= lowerLimitCurrent && actualCurrent <= upperLimitCurrent)
                     {
                         return ResultOk(resultCurrent);
                     }
@@ -82,6 +82,7 @@ namespace UCA.Devices
                 */
                 case DeviceCommands.PowerOff:
                     Psp405.TurnOff();
+                    Psp405.SetVoltage(0.0);
                     Thread.Sleep(delay);
                     return ResultOk("Отключение устройства прошло успешно");
                     /*
