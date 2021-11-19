@@ -14,9 +14,11 @@ namespace UCA
     public partial class Form1 : Form
     {
         private StepsInfo stepsInfo;
+        private DeviceInit DeviceHandler;
         Settings settings = new Settings();
         Dictionary<TreeNode, Step> treeviewNodeStep = new Dictionary<TreeNode, Step>();
         Dictionary<Step, TreeNode> treeviewStepNode = new Dictionary<Step, TreeNode>();
+        Dictionary<DeviceNames, Label> deviceLabelDictionary = new Dictionary<DeviceNames, Label>();
         Thread mainThread = new Thread(some);//stepsDictionary
         Log mainLog = new Log();
 
@@ -70,6 +72,51 @@ namespace UCA
             comboBoxCheckingMode.SelectedItem = comboBoxCheckingMode.Items[1];
         }
 
+        private void InitDevices()
+        {
+            DeviceHandler = new DeviceInit(stepsInfo.DeviceList);
+            foreach (var deviceName in DeviceHandler.Devices.Keys)
+            {
+                var device = DeviceHandler.Devices[deviceName];
+                if (device == null)
+                {
+                    break;
+                }
+            }
+            InitDevices();
+        }
+
+        private void ShowDevicesOnForm()
+        {
+            var deviceList = stepsInfo.DeviceList;
+            foreach (var device in deviceList)
+            {
+                var labelDevice = new Label()
+                {
+                    Text = device.Name.ToString(),
+                    Location = new Point(20, 30 + 25 * groupBoxDevices.Controls.Count)
+                };
+                groupBoxDevices.Controls.Add(labelDevice);
+                deviceLabelDictionary.Add(device.Name, labelDevice);
+            }
+        }
+
+        private void UpdateDevicesOnForm()
+        {
+            foreach (var device in stepsInfo.DeviceList)
+            {
+                var deviceLabel = deviceLabelDictionary[device.Name];
+                if (device.SerialPort.IsOpen)
+                {
+                    deviceLabel.ForeColor = Color.Green;
+                }
+                else
+                {
+                    deviceLabel.ForeColor = Color.Red;
+                }
+            }
+        }
+
         private void InitialActions(string pathToDataBase)
         {
             try
@@ -81,6 +128,10 @@ namespace UCA
                 ShowCheckingModes(stepsInfo);
                 SetVoltageSupplyModes(stepsInfo);
                 ReplaceVoltageSupplyInStepsDictionary();
+                ShowDevicesOnForm();
+                UpdateDevicesOnForm();
+                //// DeviceHandler = new DeviceInit(stepsInfo.DeviceList);
+
             }
             catch (System.Data.OleDb.OleDbException ex)
             {
@@ -91,6 +142,11 @@ namespace UCA
                 MessageBox.Show(ex.Message);
             }
             /*
+            catch (System.IO.IOException ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            
             catch (System.Exception ex)
             {
                 MessageBox.Show(ex.Message);
@@ -155,10 +211,10 @@ namespace UCA
                 var indexOf = node.Text.IndexOf(' ');
                 var stepNumber = int.Parse(node.Text.Substring(0, indexOf));
                 HighlightTreeNode(treeOfChecking, node, Color.Blue);
-                var stepParser = new StepParser(stepsInfo.DeviceHandler, step);
+                var stepParser = new StepParser(DeviceHandler, step);
                 var deviceResult = stepParser.DoStep();
                 UpdateTreeNode(node, deviceResult.Description);
-                if (deviceResult.State == DeviceState.OK)
+                if (deviceResult.State == DeviceStatus.OK)
                 {
                     HighlightTreeNode(treeOfChecking, node, Color.Green);
                 }
@@ -178,9 +234,9 @@ namespace UCA
             }
             else
             {
-                var stepParser = new StepParser(stepsInfo.DeviceHandler, step);
+                var stepParser = new StepParser(DeviceHandler, step);
                 var deviceResult = stepParser.DoStep();
-                if (deviceResult.State == DeviceState.ERROR)
+                if (deviceResult.State == DeviceStatus.ERROR)
                 {
                     // Аварийная остановка проверки
 
@@ -213,7 +269,7 @@ namespace UCA
         {
             foreach (var step in stepsInfo.EmergencyStepList)
             {
-                var stepParser = new StepParser(stepsInfo.DeviceHandler, step);
+                var stepParser = new StepParser(DeviceHandler, step);
                 var result = stepParser.DoStep();
                 //var node = treeviewStepNode[step];
                 //UpdateTreeNode(node, result.Description);

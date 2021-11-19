@@ -15,9 +15,10 @@ namespace UCA.Steps
         public Dictionary<string, double> VoltageSupplyDictionary;
         public Dictionary<string, Dictionary<string, List<Step>>> ModesDictionary;
         public List<Step> EmergencyStepList;
-        public DeviceInit DeviceHandler;
+        //public DeviceInit DeviceHandler;
         public Dictionary<string, List<Step>> StepsDictionary;
         public int StepNumber;
+        public List<Device> DeviceList;
     }
 
     class Step
@@ -140,9 +141,31 @@ namespace UCA.Steps
                 ModesDictionary = modeStepDictionary,
                 StepsDictionary = stepsDictionary,
                 EmergencyStepList = emergencyStepsDictionary["EmergencyBreaking"],
-                DeviceHandler = new DeviceInit(deviceList)
+                //DeviceHandler = new DeviceInit(deviceList),
+                DeviceList = deviceList
             };
             return info;
+            /*
+            catch (System.IO.IOException ex)
+            {
+                var deviceName = "";
+                foreach (var device in deviceList)
+                {
+                    var message = ex.Message;
+                    var firstIndex = message.IndexOf('\'');
+                    message = message.Substring(firstIndex + 1);
+                    var secondIndex = message.IndexOf('\'');
+                    var actualPortName = message.Substring(0, secondIndex);
+                    var portName = device.SerialPort.PortName;
+                    if (actualPortName == portName)
+                    {
+                        deviceName = device.Name.ToString();
+                        break;
+                    }
+                }
+                throw new System.IO.IOException($"{ex.Message}: {deviceName} не подключён.");
+            }
+            */
         }
 
         private static Dictionary<string, List<Step>> GetStepsDictionary(DataSet dataSet)

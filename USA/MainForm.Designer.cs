@@ -55,6 +55,8 @@ namespace UCA
             this.groupBoxCheckingManagement = new System.Windows.Forms.GroupBox();
             this.buttonStop = new System.Windows.Forms.Button();
             this.buttonOpenDataBase = new System.Windows.Forms.Button();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.groupBoxDevices = new System.Windows.Forms.GroupBox();
             this.panel1.SuspendLayout();
             this.groupBoxPreferences.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -77,6 +79,7 @@ namespace UCA
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.groupBox1);
             this.panel1.Controls.Add(this.groupBoxPreferences);
             this.panel1.Controls.Add(this.labelOperatorName);
             this.panel1.Controls.Add(this.labelFactoryNumber);
@@ -161,6 +164,7 @@ namespace UCA
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.groupBoxDevices);
             this.groupBox2.Controls.Add(this.button2);
             this.groupBox2.Controls.Add(this.checkBoxDebug);
             this.groupBox2.Controls.Add(this.checkBoxCycle);
@@ -240,6 +244,18 @@ namespace UCA
             this.buttonOpenDataBase.UseVisualStyleBackColor = true;
             this.buttonOpenDataBase.Click += new System.EventHandler(this.buttonOpenDataBase_Click);
             // 
+            // groupBox1
+            // 
+            resources.ApplyResources(this.groupBox1, "groupBox1");
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.TabStop = false;
+            // 
+            // groupBoxDevices
+            // 
+            resources.ApplyResources(this.groupBoxDevices, "groupBoxDevices");
+            this.groupBoxDevices.Name = "groupBoxDevices";
+            this.groupBoxDevices.TabStop = false;
+            // 
             // Form1
             // 
             resources.ApplyResources(this, "$this");
@@ -284,6 +300,8 @@ namespace UCA
         private System.Windows.Forms.CheckBox checkBoxDebug;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Label labelAttention;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.GroupBox groupBoxDevices;
     }
 }
 

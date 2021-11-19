@@ -37,7 +37,7 @@ namespace UCA
             this.label2 = new System.Windows.Forms.Label();
             this.buttonApplySettings = new System.Windows.Forms.Button();
             this.labelErrorFactoryNumber = new System.Windows.Forms.Label();
-            this.algorithmTableAdapter1 = new USA.DataBaseDataSetTableAdapters.AlgorithmTableAdapter();
+            //this.algorithmTableAdapter1 = new USA.DataBaseDataSetTableAdapters.AlgorithmTableAdapter();
             this.SuspendLayout();
             // 
             // textBoxComment
@@ -122,7 +122,7 @@ namespace UCA
             // 
             // algorithmTableAdapter1
             // 
-            this.algorithmTableAdapter1.ClearBeforeFill = true;
+            //this.algorithmTableAdapter1.ClearBeforeFill = true;
             // 
             // SettingsForm
             // 
@@ -153,6 +153,6 @@ namespace UCA
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button buttonApplySettings;
         private System.Windows.Forms.Label labelErrorFactoryNumber;
-        private USA.DataBaseDataSetTableAdapters.AlgorithmTableAdapter algorithmTableAdapter1;
+        //private USA.DataBaseDataSetTableAdapters.AlgorithmTableAdapter algorithmTableAdapter1;
     }
 }

@@ -3,50 +3,17 @@ using System.IO.Ports;
 
 namespace UCA.Devices
 {
-    public abstract class IDeviceInterface
-    {
-        public abstract DeviceResult DoCommand(DeviceData deviceData);
-
-        public struct InputData
-        {
-            public InputData(int channel, double inputValue)
-            {
-                Channel = channel;
-                InputValue = inputValue;
-            }
-            public int Channel;
-            public double InputValue;
-        }
-
-        private static Dictionary<InputData, List<double>> coefficientValuesDictionary = new Dictionary<InputData, List<double>>();
-
-        public static void AddCoefficientData(int channel, double expectedValue, double value)
-        {
-            if (channel > 0)
-            {
-                InputData inputData = new InputData(channel, expectedValue);
-                if (!coefficientValuesDictionary.ContainsKey(inputData))
-                {
-                    coefficientValuesDictionary.Add(inputData, new List<double> { value });
-                }
-                else
-                {
-                    coefficientValuesDictionary[inputData].Add(value);
-                }
-            }
-        }
-
-        public static List<double> GetCoefficientValues(int channel, double value)
-        {
-            InputData inputData = new InputData(channel, value);
-            return coefficientValuesDictionary[inputData];
-        }
-    }
-
     public struct Device
     {
         public SerialPort SerialPort;
         public DeviceNames Name;
+        public DeviceStatus Status;
+    }
+
+    public enum DeviceStatus
+    {
+        ERROR,
+        OK      
     }
 
     public struct DeviceData
@@ -63,18 +30,18 @@ namespace UCA.Devices
 
     public struct DeviceResult
     {
-        public DeviceState State;
+        public DeviceStatus State;
         public string Description;
 
         public static DeviceResult ResultOk(string description) => new DeviceResult()
         {
-            State = DeviceState.OK,
+            State = DeviceStatus.OK,
             Description = description
         };
 
         public static DeviceResult ResultError(string description) => new DeviceResult()
         {
-            State = DeviceState.ERROR,
+            State = DeviceStatus.ERROR,
             Description = description
         };
     }
@@ -138,11 +105,5 @@ namespace UCA.Devices
         PCI_1762_5,
         ASBL,
         AKIP_3407
-    }
-
-    public enum DeviceState
-    {
-        ERROR,
-        OK
     }
 }

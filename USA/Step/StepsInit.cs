@@ -35,7 +35,7 @@ namespace UCA.Steps
             }
             catch (ArgumentException)
             {
-                return new DeviceResult { State = DeviceState.ERROR, Description = $"Команда не найдена: {step.Command}" };
+                return new DeviceResult { State = DeviceStatus.ERROR, Description = $"Команда не найдена: {step.Command}" };
             }
             try
             {
@@ -43,7 +43,7 @@ namespace UCA.Steps
             }
             catch (ArgumentException)
             {
-                return new DeviceResult { State = DeviceState.ERROR, Description = $"Тип устройства не найден: {step.Device }" };
+                return new DeviceResult { State = DeviceStatus.ERROR, Description = $"Тип устройства не найден: {step.Device }" };
             }
             var deviceResult = deviceHandler.ProcessDevice(deviceData);
             return deviceResult;

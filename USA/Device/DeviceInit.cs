@@ -8,11 +8,26 @@ namespace UCA.Devices
     public class DeviceInit
     {
         readonly Dictionary<DeviceNames, IDeviceInterface> Devices = new Dictionary<DeviceNames, IDeviceInterface>();
+        readonly List<Device> DeviceList;
+
+        public DeviceInit InitDevices()
+        {
+            return new DeviceInit(DeviceList);
+        }
 
         public DeviceInit(List<Device> deviceList)
         {
+            this.DeviceList = deviceList;
             foreach (var device in deviceList)
             {
+                try
+                {
+
+                }
+                catch (System.IO.IOException ex)
+                {
+
+                }
                 IDeviceInterface newDevice = null;
                 switch (device.Name)
                 {
