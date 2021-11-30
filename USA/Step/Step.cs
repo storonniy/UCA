@@ -12,7 +12,7 @@ namespace UCA.Steps
 { 
     struct StepsInfo
     {
-        public Dictionary<string, double> VoltageSupplyDictionary;
+        public Dictionary<string, Dictionary<string, List<Step>>> VoltageSupplyModesDictionary;
         public Dictionary<string, Dictionary<string, List<Step>>> ModesDictionary;
         public List<Step> EmergencyStepList;
         //public DeviceInit DeviceHandler;
@@ -94,18 +94,24 @@ namespace UCA.Steps
             return deviceList;
         }
 
-        public static Dictionary<string, double> GetVoltageSupplyMode(DataSet dataSet)
+        public static Dictionary<string, List<string>> GetVoltageSupplyModesDictionary(DataSet dataSet)
         {
-            var voltageSupplyModesDictionary = new Dictionary<string, double>();
-            var voltageSupplyModeTable = dataSet.Tables["VoltageSupply"];
-            foreach (DataRow row in voltageSupplyModeTable.Rows)
+            var modesDictionary = new Dictionary<string, List<string>>();
+            var table = dataSet.Tables["VoltageSupply"];
+            foreach (DataRow row in table.Rows)
             {
-                var voltageModeName = row["VoltageSupplyMode"].ToString();
-                var voltageValue = double.Parse(row["VoltageValue"].ToString());
-                voltageSupplyModesDictionary.Add(voltageModeName, voltageValue);
+                var checkingMode = row["VoltageSupplyMode"].ToString();
+                var names = row["TableNames"].ToString();
+                List<string> tableNames = names.Split(';').ToList();
+                for (int i = 0; i < tableNames.Count; i++)
+                {
+                    while (tableNames[i].StartsWith(" "))
+                        tableNames[i] = tableNames[i].Remove(0, 1);
+                }
+                modesDictionary.Add(checkingMode, tableNames);
             }
-            dataSet.Tables.Remove(dataSet.Tables[voltageSupplyModeTable.TableName]);
-            return voltageSupplyModesDictionary;
+            dataSet.Tables.Remove(dataSet.Tables[table.TableName]);
+            return modesDictionary;
         }
 
         public static Dictionary<string, List<string>> GetModesDictionary (DataSet dataSet)
@@ -129,15 +135,16 @@ namespace UCA.Steps
 
         public static StepsInfo GetStepsInfo(DataSet dataSet)
         {
+            var voltageModesDictionary = GetVoltageSupplyModesDictionary(dataSet);
             var modesDictionary = GetModesDictionary(dataSet);
-            var voltageSupplyDictionary = GetVoltageSupplyMode(dataSet);
             var deviceList = GetDeviceList(dataSet);
             var emergencyStepsDictionary = GetEmergencyStepsDictionary(dataSet);
             var stepsDictionary = GetStepsDictionary(dataSet);
+            var voltageSupplyDictionary = GetModeStepDictionary(voltageModesDictionary, stepsDictionary);
             var modeStepDictionary = GetModeStepDictionary(modesDictionary, stepsDictionary);
             var info = new StepsInfo()
             {
-                VoltageSupplyDictionary = voltageSupplyDictionary,
+                VoltageSupplyModesDictionary = voltageSupplyDictionary,
                 ModesDictionary = modeStepDictionary,
                 StepsDictionary = stepsDictionary,
                 EmergencyStepList = emergencyStepsDictionary["EmergencyBreaking"],

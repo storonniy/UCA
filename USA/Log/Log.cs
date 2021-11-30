@@ -50,9 +50,11 @@ namespace UCA.Logging
             log.Clear();
         }
 
+        /*
         ~Log()
         {
             streamWriter.Close();
         }
+        */
     }
 }

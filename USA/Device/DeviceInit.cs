@@ -7,13 +7,18 @@ namespace UCA.Devices
 {
     public class DeviceInit
     {
-        readonly Dictionary<DeviceNames, IDeviceInterface> Devices = new Dictionary<DeviceNames, IDeviceInterface>();
-        readonly List<Device> DeviceList;
+        public readonly Dictionary<DeviceNames, IDeviceInterface> Devices = new Dictionary<DeviceNames, IDeviceInterface>();
+        public readonly List<Device> DeviceList;
 
         public DeviceInit InitDevices()
         {
             return new DeviceInit(DeviceList);
         }
+
+        //public DeviceStatus GetDeviceStatus()
+        //{
+
+        //}
 
         public DeviceInit(List<Device> deviceList)
         {

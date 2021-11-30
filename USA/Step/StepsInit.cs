@@ -23,15 +23,15 @@ namespace UCA.Steps
         public DeviceResult DoStep()
         {
             DeviceData deviceData = new DeviceData();
+            deviceData.Argument = step.Argument;
+            deviceData.ExpectedValue = step.ExpectedValue;
+            deviceData.Channel = step.Channel;
+            deviceData.LowerLimit = step.LowerLimit;
+            deviceData.UpperLimit = step.UpperLimit;
+            deviceData.ShowStep = step.ShowStep;
             try
             {
-                deviceData.Argument = step.Argument;
-                deviceData.ExpectedValue = step.ExpectedValue;
                 deviceData.Command = (DeviceCommands)Enum.Parse(typeof(DeviceCommands), step.Command);
-                deviceData.Channel = step.Channel;
-                deviceData.LowerLimit = step.LowerLimit;
-                deviceData.UpperLimit = step.UpperLimit;
-                deviceData.ShowStep = step.ShowStep;
             }
             catch (ArgumentException)
             {
@@ -45,8 +45,12 @@ namespace UCA.Steps
             {
                 return new DeviceResult { State = DeviceStatus.ERROR, Description = $"Тип устройства не найден: {step.Device }" };
             }
-            var deviceResult = deviceHandler.ProcessDevice(deviceData);
-            return deviceResult;
+            if (deviceHandler == null)
+            {
+                return DeviceResult.ResultError($"Устройство {deviceData.DeviceName} не подключено");
+            }
+            else
+                return deviceHandler.ProcessDevice(deviceData);
         }
     }
 }

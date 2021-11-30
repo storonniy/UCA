@@ -9,7 +9,6 @@ namespace UCA.Devices
     public abstract class IDeviceInterface
     {
         public abstract DeviceResult DoCommand(DeviceData deviceData);
-
         public struct InputData
         {
             public InputData(int channel, double inputValue)
