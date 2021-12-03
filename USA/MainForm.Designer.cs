@@ -46,22 +46,24 @@ namespace UCA
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.groupBoxManualStep = new System.Windows.Forms.GroupBox();
             this.button2 = new System.Windows.Forms.Button();
-            this.checkBoxDebug = new System.Windows.Forms.CheckBox();
-            this.checkBoxCycle = new System.Windows.Forms.CheckBox();
-            this.buttonSelectAllSteps = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
+            this.buttonSelectAllSteps = new System.Windows.Forms.Button();
+            this.checkBoxCycle = new System.Windows.Forms.CheckBox();
+            this.groupBoxDevices = new System.Windows.Forms.GroupBox();
+            this.checkBoxDebug = new System.Windows.Forms.CheckBox();
             this.treeOfChecking = new System.Windows.Forms.TreeView();
             this.groupBoxCheckingManagement = new System.Windows.Forms.GroupBox();
             this.buttonStop = new System.Windows.Forms.Button();
             this.buttonOpenDataBase = new System.Windows.Forms.Button();
-            this.groupBoxManualStep = new System.Windows.Forms.GroupBox();
-            this.groupBoxDevices = new System.Windows.Forms.GroupBox();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.panel1.SuspendLayout();
             this.groupBoxPreferences.SuspendLayout();
             this.groupBox2.SuspendLayout();
-            this.groupBoxCheckingManagement.SuspendLayout();
             this.groupBoxManualStep.SuspendLayout();
+            this.groupBoxCheckingManagement.SuspendLayout();
+            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // buttonCheckingStart
@@ -80,16 +82,12 @@ namespace UCA
             // 
             // panel1
             // 
+            this.panel1.AllowDrop = true;
+            resources.ApplyResources(this.panel1, "panel1");
+            this.panel1.Controls.Add(this.groupBox1);
             this.panel1.Controls.Add(this.groupBoxPreferences);
-            this.panel1.Controls.Add(this.labelOperatorName);
-            this.panel1.Controls.Add(this.labelFactoryNumber);
-            this.panel1.Controls.Add(this.labelComment);
-            this.panel1.Controls.Add(this.label4);
-            this.panel1.Controls.Add(this.label3);
-            this.panel1.Controls.Add(this.label2);
             this.panel1.Controls.Add(this.groupBox2);
             this.panel1.Controls.Add(this.groupBoxCheckingManagement);
-            resources.ApplyResources(this.panel1, "panel1");
             this.panel1.Name = "panel1";
             // 
             // groupBoxPreferences
@@ -164,13 +162,23 @@ namespace UCA
             // 
             // groupBox2
             // 
+            resources.ApplyResources(this.groupBox2, "groupBox2");
             this.groupBox2.Controls.Add(this.groupBoxManualStep);
             this.groupBox2.Controls.Add(this.groupBoxDevices);
             this.groupBox2.Controls.Add(this.checkBoxDebug);
             this.groupBox2.Controls.Add(this.treeOfChecking);
-            resources.ApplyResources(this.groupBox2, "groupBox2");
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.TabStop = false;
+            // 
+            // groupBoxManualStep
+            // 
+            this.groupBoxManualStep.Controls.Add(this.button2);
+            this.groupBoxManualStep.Controls.Add(this.button1);
+            this.groupBoxManualStep.Controls.Add(this.buttonSelectAllSteps);
+            this.groupBoxManualStep.Controls.Add(this.checkBoxCycle);
+            resources.ApplyResources(this.groupBoxManualStep, "groupBoxManualStep");
+            this.groupBoxManualStep.Name = "groupBoxManualStep";
+            this.groupBoxManualStep.TabStop = false;
             // 
             // button2
             // 
@@ -178,6 +186,33 @@ namespace UCA
             this.button2.Name = "button2";
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
+            // button1
+            // 
+            resources.ApplyResources(this.button1, "button1");
+            this.button1.Name = "button1";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // buttonSelectAllSteps
+            // 
+            resources.ApplyResources(this.buttonSelectAllSteps, "buttonSelectAllSteps");
+            this.buttonSelectAllSteps.Name = "buttonSelectAllSteps";
+            this.buttonSelectAllSteps.UseVisualStyleBackColor = true;
+            this.buttonSelectAllSteps.Click += new System.EventHandler(this.buttonSelectAllSteps_Click);
+            // 
+            // checkBoxCycle
+            // 
+            resources.ApplyResources(this.checkBoxCycle, "checkBoxCycle");
+            this.checkBoxCycle.Name = "checkBoxCycle";
+            this.checkBoxCycle.UseVisualStyleBackColor = true;
+            this.checkBoxCycle.CheckedChanged += new System.EventHandler(this.checkBoxCycle_CheckedChanged);
+            // 
+            // groupBoxDevices
+            // 
+            resources.ApplyResources(this.groupBoxDevices, "groupBoxDevices");
+            this.groupBoxDevices.Name = "groupBoxDevices";
+            this.groupBoxDevices.TabStop = false;
             // 
             // checkBoxDebug
             // 
@@ -189,31 +224,11 @@ namespace UCA
             this.checkBoxDebug.UseVisualStyleBackColor = true;
             this.checkBoxDebug.CheckedChanged += new System.EventHandler(this.checkBoxDebug_CheckedChanged);
             // 
-            // checkBoxCycle
-            // 
-            resources.ApplyResources(this.checkBoxCycle, "checkBoxCycle");
-            this.checkBoxCycle.Name = "checkBoxCycle";
-            this.checkBoxCycle.UseVisualStyleBackColor = true;
-            this.checkBoxCycle.CheckedChanged += new System.EventHandler(this.checkBoxCycle_CheckedChanged);
-            // 
-            // buttonSelectAllSteps
-            // 
-            resources.ApplyResources(this.buttonSelectAllSteps, "buttonSelectAllSteps");
-            this.buttonSelectAllSteps.Name = "buttonSelectAllSteps";
-            this.buttonSelectAllSteps.UseVisualStyleBackColor = true;
-            this.buttonSelectAllSteps.Click += new System.EventHandler(this.buttonSelectAllSteps_Click);
-            // 
-            // button1
-            // 
-            resources.ApplyResources(this.button1, "button1");
-            this.button1.Name = "button1";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
-            // 
             // treeOfChecking
             // 
-            this.treeOfChecking.CheckBoxes = true;
+            this.treeOfChecking.AllowDrop = true;
             resources.ApplyResources(this.treeOfChecking, "treeOfChecking");
+            this.treeOfChecking.CheckBoxes = true;
             this.treeOfChecking.Name = "treeOfChecking";
             this.treeOfChecking.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeOfChecking_AfterSelect);
             // 
@@ -241,21 +256,17 @@ namespace UCA
             this.buttonOpenDataBase.UseVisualStyleBackColor = true;
             this.buttonOpenDataBase.Click += new System.EventHandler(this.buttonOpenDataBase_Click);
             // 
-            // groupBoxManualStep
+            // groupBox1
             // 
-            this.groupBoxManualStep.Controls.Add(this.button2);
-            this.groupBoxManualStep.Controls.Add(this.button1);
-            this.groupBoxManualStep.Controls.Add(this.buttonSelectAllSteps);
-            this.groupBoxManualStep.Controls.Add(this.checkBoxCycle);
-            resources.ApplyResources(this.groupBoxManualStep, "groupBoxManualStep");
-            this.groupBoxManualStep.Name = "groupBoxManualStep";
-            this.groupBoxManualStep.TabStop = false;
-            // 
-            // groupBoxDevices
-            // 
-            resources.ApplyResources(this.groupBoxDevices, "groupBoxDevices");
-            this.groupBoxDevices.Name = "groupBoxDevices";
-            this.groupBoxDevices.TabStop = false;
+            resources.ApplyResources(this.groupBox1, "groupBox1");
+            this.groupBox1.Controls.Add(this.label4);
+            this.groupBox1.Controls.Add(this.labelOperatorName);
+            this.groupBox1.Controls.Add(this.label2);
+            this.groupBox1.Controls.Add(this.labelFactoryNumber);
+            this.groupBox1.Controls.Add(this.label3);
+            this.groupBox1.Controls.Add(this.labelComment);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.TabStop = false;
             // 
             // Form1
             // 
@@ -265,14 +276,15 @@ namespace UCA
             this.Name = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
             this.groupBoxPreferences.ResumeLayout(false);
             this.groupBoxPreferences.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
-            this.groupBoxCheckingManagement.ResumeLayout(false);
             this.groupBoxManualStep.ResumeLayout(false);
             this.groupBoxManualStep.PerformLayout();
+            this.groupBoxCheckingManagement.ResumeLayout(false);
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -305,6 +317,7 @@ namespace UCA
         private System.Windows.Forms.Label labelAttention;
         private System.Windows.Forms.GroupBox groupBoxManualStep;
         private System.Windows.Forms.GroupBox groupBoxDevices;
+        private System.Windows.Forms.GroupBox groupBox1;
     }
 }
 

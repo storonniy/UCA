@@ -193,7 +193,7 @@ namespace UCA
                     Thread.Sleep(0);
                 }
             }
-            MessageBox.Show("Проверка завершена, результаты проверки записаны в файл");
+            MessageBox.Show("Проверка завершена, результаты проверки записаны в файл. ОК исправен.");
             BlockControls(false);
         }
 
@@ -231,6 +231,7 @@ namespace UCA
                     if (dialogResult == DialogResult.Yes)
                     {
                         AddSubTreeNode(node, "Аварийная остановка проверки");
+                        MessageBox.Show("Проверка остановлена. ОК неисправен.");
                         AbortChecking();
                     }
                     else if (dialogResult == DialogResult.No)
@@ -248,10 +249,20 @@ namespace UCA
                 if (deviceResult.State == DeviceStatus.ERROR)
                 {
                     // Аварийная остановка проверки
-
-                    DoStepList(stepsInfo.EmergencyStepList);
-                    AbortChecking();
-                    Thread.CurrentThread.Abort();
+                    var description = $"В ходе проверки произошла ошибка:\r\nШаг: {step.Description}\r\nРезультат шага: {deviceResult.Description}\r\nОстановить проверку?";
+                    var dialogResult = MessageBox.Show(description, "Внимание!", MessageBoxButtons.YesNo);
+                    if (dialogResult == DialogResult.Yes)
+                    {
+                        //AddSubTreeNode(node, "Аварийная остановка проверки");
+                        MessageBox.Show("Проверка остановлена. ОК неисправен.");
+                        AbortChecking();
+                    }
+                    else if (dialogResult == DialogResult.No)
+                    {
+                        PauseChecking();
+                    }
+                    //AbortChecking();
+                    //Thread.CurrentThread.Abort();
                 }
             }
         }
