@@ -130,7 +130,7 @@ namespace UCA
                 //ReplaceVoltageSupplyInStepsDictionary();
                 ShowDevicesOnForm();
                 UpdateDevicesOnForm();
-                //// DeviceHandler = new DeviceInit(stepsInfo.DeviceList);
+                DeviceHandler = new DeviceInit(stepsInfo.DeviceList);
 
             }
             catch (System.Data.OleDb.OleDbException ex)
@@ -423,6 +423,10 @@ namespace UCA
             buttonStop.Enabled = false;
             buttonCheckingPause.Text = "Продолжить";
             mainThread.Suspend();
+            if (mainThread.ThreadState == ThreadState.Running)
+            {
+                mainThread.Suspend();
+            }
         }
 
         private void ResumeChecking()
@@ -503,7 +507,8 @@ namespace UCA
             DoStepList(stepsInfo.EmergencyStepList);
             CleanTreeView();
             BlockControls(false);
-            mainThread.Abort();
+            if (mainThread.ThreadState == ThreadState.Running)
+                mainThread.Abort();
         }
 
         private void CleanTreeView()
@@ -529,20 +534,24 @@ namespace UCA
 
         private void treeOfChecking_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            
+            /*
             if (treeviewNodeStep.ContainsKey(e.Node) && mainThread.ThreadState != ThreadState.Running)
             {
                 var thisStep = treeviewNodeStep[e.Node];
                 DoStepOfChecking(thisStep, stepsInfo, mainLog);
             }
-            
+            */
         }
 
-        private void buttonSelectAllSteps_Click(object sender, EventArgs e)
+        public void treeOfChecking_AfterCheckNode(object sender, TreeViewEventArgs e)
         {
-
+            e.Node.Text = "meow";
+            var state = e.Node.Checked;
+            foreach (TreeNode node in e.Node.Nodes)
+            {
+                node.Checked = state;
+            }
         }
-
 
         private List<Step> GetSelectedSteps()
         {
@@ -564,29 +573,24 @@ namespace UCA
             log.AddItem("Выполнение выбранных оператором шагов проверки: \r\n");
             foreach (var step in stepList)
             {
-                Thread.Sleep(1000);
                 DoStepOfChecking(step, stepsInfo, log);
             }
             while (checkBoxCycle.Checked)
             {
                 foreach (var step in stepList)
                 {
-                    Thread.Sleep(1000);
                     DoStepOfChecking(step, stepsInfo, log);
                 }
             }
+            BlockControls(false);
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
             var stepList = GetSelectedSteps();
-            var thread = new Thread(delegate () { DoSelectedSteps(stepList); });
-            thread.Start();
-        }
-
-        private void checkBoxCycle_CheckedChanged(object sender, EventArgs e)
-        {
-
+            BlockControls(true);
+            mainThread = new Thread(delegate () { DoSelectedSteps(stepList); });
+            mainThread.Start();
         }
 
         private void button2_Click(object sender, EventArgs e)

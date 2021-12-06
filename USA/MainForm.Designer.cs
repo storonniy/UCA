@@ -49,7 +49,6 @@ namespace UCA
             this.groupBoxManualStep = new System.Windows.Forms.GroupBox();
             this.button2 = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
-            this.buttonSelectAllSteps = new System.Windows.Forms.Button();
             this.checkBoxCycle = new System.Windows.Forms.CheckBox();
             this.groupBoxDevices = new System.Windows.Forms.GroupBox();
             this.checkBoxDebug = new System.Windows.Forms.CheckBox();
@@ -165,7 +164,6 @@ namespace UCA
             resources.ApplyResources(this.groupBox2, "groupBox2");
             this.groupBox2.Controls.Add(this.groupBoxManualStep);
             this.groupBox2.Controls.Add(this.groupBoxDevices);
-            this.groupBox2.Controls.Add(this.checkBoxDebug);
             this.groupBox2.Controls.Add(this.treeOfChecking);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.TabStop = false;
@@ -174,7 +172,7 @@ namespace UCA
             // 
             this.groupBoxManualStep.Controls.Add(this.button2);
             this.groupBoxManualStep.Controls.Add(this.button1);
-            this.groupBoxManualStep.Controls.Add(this.buttonSelectAllSteps);
+            this.groupBoxManualStep.Controls.Add(this.checkBoxDebug);
             this.groupBoxManualStep.Controls.Add(this.checkBoxCycle);
             resources.ApplyResources(this.groupBoxManualStep, "groupBoxManualStep");
             this.groupBoxManualStep.Name = "groupBoxManualStep";
@@ -194,19 +192,11 @@ namespace UCA
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
-            // buttonSelectAllSteps
-            // 
-            resources.ApplyResources(this.buttonSelectAllSteps, "buttonSelectAllSteps");
-            this.buttonSelectAllSteps.Name = "buttonSelectAllSteps";
-            this.buttonSelectAllSteps.UseVisualStyleBackColor = true;
-            this.buttonSelectAllSteps.Click += new System.EventHandler(this.buttonSelectAllSteps_Click);
-            // 
             // checkBoxCycle
             // 
             resources.ApplyResources(this.checkBoxCycle, "checkBoxCycle");
             this.checkBoxCycle.Name = "checkBoxCycle";
             this.checkBoxCycle.UseVisualStyleBackColor = true;
-            this.checkBoxCycle.CheckedChanged += new System.EventHandler(this.checkBoxCycle_CheckedChanged);
             // 
             // groupBoxDevices
             // 
@@ -279,7 +269,6 @@ namespace UCA
             this.groupBoxPreferences.ResumeLayout(false);
             this.groupBoxPreferences.PerformLayout();
             this.groupBox2.ResumeLayout(false);
-            this.groupBox2.PerformLayout();
             this.groupBoxManualStep.ResumeLayout(false);
             this.groupBoxManualStep.PerformLayout();
             this.groupBoxCheckingManagement.ResumeLayout(false);
@@ -309,7 +298,6 @@ namespace UCA
         private System.Windows.Forms.ComboBox comboBoxCheckingMode;
         private System.Windows.Forms.Button buttonStop;
         private System.Windows.Forms.GroupBox groupBoxPreferences;
-        private System.Windows.Forms.Button buttonSelectAllSteps;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.CheckBox checkBoxCycle;
         private System.Windows.Forms.CheckBox checkBoxDebug;

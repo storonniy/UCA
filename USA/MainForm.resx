@@ -123,10 +123,10 @@
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="buttonCheckingStart.Location" type="System.Drawing.Point, System.Drawing">
-    <value>6, 24</value>
+    <value>12, 24</value>
   </data>
   <data name="buttonCheckingStart.Size" type="System.Drawing.Size, System.Drawing">
-    <value>84, 23</value>
+    <value>93, 23</value>
   </data>
   <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="buttonCheckingStart.TabIndex" type="System.Int32, mscorlib">
@@ -151,7 +151,7 @@
     <value>NoControl</value>
   </data>
   <data name="buttonCheckingPause.Location" type="System.Drawing.Point, System.Drawing">
-    <value>96, 24</value>
+    <value>111, 24</value>
   </data>
   <data name="buttonCheckingPause.Size" type="System.Drawing.Size, System.Drawing">
     <value>84, 23</value>
@@ -178,7 +178,7 @@
     <value>Top, Bottom, Left, Right</value>
   </data>
   <data name="groupBox1.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Top, Right</value>
+    <value>Top, Left, Right</value>
   </data>
   <data name="&gt;&gt;label4.Name" xml:space="preserve">
     <value>label4</value>
@@ -253,10 +253,10 @@
     <value>5</value>
   </data>
   <data name="groupBox1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>638, 4</value>
+    <value>581, 3</value>
   </data>
   <data name="groupBox1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>388, 111</value>
+    <value>469, 111</value>
   </data>
   <data name="groupBox1.TabIndex" type="System.Int32, mscorlib">
     <value>40</value>
@@ -334,7 +334,7 @@
     <value>4</value>
   </data>
   <data name="groupBoxPreferences.Location" type="System.Drawing.Point, System.Drawing">
-    <value>315, 4</value>
+    <value>264, 4</value>
   </data>
   <data name="groupBoxPreferences.Size" type="System.Drawing.Size, System.Drawing">
     <value>311, 111</value>
@@ -357,6 +357,21 @@
   <data name="groupBox2.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Bottom, Left, Right</value>
   </data>
+  <data name="button2.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="button2.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 13</value>
+  </data>
+  <data name="button2.Size" type="System.Drawing.Size, System.Drawing">
+    <value>93, 23</value>
+  </data>
+  <data name="button2.TabIndex" type="System.Int32, mscorlib">
+    <value>10</value>
+  </data>
+  <data name="button2.Text" xml:space="preserve">
+    <value>Очистить</value>
+  </data>
   <data name="&gt;&gt;button2.Name" xml:space="preserve">
     <value>button2</value>
   </data>
@@ -368,6 +383,21 @@
   </data>
   <data name="&gt;&gt;button2.ZOrder" xml:space="preserve">
     <value>0</value>
+  </data>
+  <data name="button1.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="button1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>105, 13</value>
+  </data>
+  <data name="button1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>139, 23</value>
+  </data>
+  <data name="button1.TabIndex" type="System.Int32, mscorlib">
+    <value>11</value>
+  </data>
+  <data name="button1.Text" xml:space="preserve">
+    <value>Выполнить выбранные шаги</value>
   </data>
   <data name="&gt;&gt;button1.Name" xml:space="preserve">
     <value>button1</value>
@@ -381,17 +411,50 @@
   <data name="&gt;&gt;button1.ZOrder" xml:space="preserve">
     <value>1</value>
   </data>
-  <data name="&gt;&gt;buttonSelectAllSteps.Name" xml:space="preserve">
-    <value>buttonSelectAllSteps</value>
+  <data name="checkBoxDebug.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
   </data>
-  <data name="&gt;&gt;buttonSelectAllSteps.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="checkBoxDebug.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
   </data>
-  <data name="&gt;&gt;buttonSelectAllSteps.Parent" xml:space="preserve">
+  <data name="checkBoxDebug.Location" type="System.Drawing.Point, System.Drawing">
+    <value>705, 19</value>
+  </data>
+  <data name="checkBoxDebug.Size" type="System.Drawing.Size, System.Drawing">
+    <value>125, 17</value>
+  </data>
+  <data name="checkBoxDebug.TabIndex" type="System.Int32, mscorlib">
+    <value>38</value>
+  </data>
+  <data name="checkBoxDebug.Text" xml:space="preserve">
+    <value>Отладочный режим</value>
+  </data>
+  <data name="&gt;&gt;checkBoxDebug.Name" xml:space="preserve">
+    <value>checkBoxDebug</value>
+  </data>
+  <data name="&gt;&gt;checkBoxDebug.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;checkBoxDebug.Parent" xml:space="preserve">
     <value>groupBoxManualStep</value>
   </data>
-  <data name="&gt;&gt;buttonSelectAllSteps.ZOrder" xml:space="preserve">
+  <data name="&gt;&gt;checkBoxDebug.ZOrder" xml:space="preserve">
     <value>2</value>
+  </data>
+  <data name="checkBoxCycle.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="checkBoxCycle.Location" type="System.Drawing.Point, System.Drawing">
+    <value>259, 17</value>
+  </data>
+  <data name="checkBoxCycle.Size" type="System.Drawing.Size, System.Drawing">
+    <value>80, 17</value>
+  </data>
+  <data name="checkBoxCycle.TabIndex" type="System.Int32, mscorlib">
+    <value>37</value>
+  </data>
+  <data name="checkBoxCycle.Text" xml:space="preserve">
+    <value>Зациклить</value>
   </data>
   <data name="&gt;&gt;checkBoxCycle.Name" xml:space="preserve">
     <value>checkBoxCycle</value>
@@ -406,10 +469,10 @@
     <value>3</value>
   </data>
   <data name="groupBoxManualStep.Location" type="System.Drawing.Point, System.Drawing">
-    <value>96, 14</value>
+    <value>6, 14</value>
   </data>
   <data name="groupBoxManualStep.Size" type="System.Drawing.Size, System.Drawing">
-    <value>581, 47</value>
+    <value>836, 47</value>
   </data>
   <data name="groupBoxManualStep.TabIndex" type="System.Int32, mscorlib">
     <value>39</value>
@@ -430,10 +493,10 @@
     <value>Top, Right</value>
   </data>
   <data name="groupBoxDevices.Location" type="System.Drawing.Point, System.Drawing">
-    <value>829, 19</value>
+    <value>853, 14</value>
   </data>
   <data name="groupBoxDevices.Size" type="System.Drawing.Size, System.Drawing">
-    <value>168, 419</value>
+    <value>168, 424</value>
   </data>
   <data name="groupBoxDevices.TabIndex" type="System.Int32, mscorlib">
     <value>39</value>
@@ -453,36 +516,6 @@
   <data name="&gt;&gt;groupBoxDevices.ZOrder" xml:space="preserve">
     <value>1</value>
   </data>
-  <data name="checkBoxDebug.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="checkBoxDebug.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="checkBoxDebug.Location" type="System.Drawing.Point, System.Drawing">
-    <value>683, 27</value>
-  </data>
-  <data name="checkBoxDebug.Size" type="System.Drawing.Size, System.Drawing">
-    <value>125, 17</value>
-  </data>
-  <data name="checkBoxDebug.TabIndex" type="System.Int32, mscorlib">
-    <value>38</value>
-  </data>
-  <data name="checkBoxDebug.Text" xml:space="preserve">
-    <value>Отладочный режим</value>
-  </data>
-  <data name="&gt;&gt;checkBoxDebug.Name" xml:space="preserve">
-    <value>checkBoxDebug</value>
-  </data>
-  <data name="&gt;&gt;checkBoxDebug.Type" xml:space="preserve">
-    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;checkBoxDebug.Parent" xml:space="preserve">
-    <value>groupBox2</value>
-  </data>
-  <data name="&gt;&gt;checkBoxDebug.ZOrder" xml:space="preserve">
-    <value>2</value>
-  </data>
   <data name="treeOfChecking.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Bottom, Left, Right</value>
   </data>
@@ -493,7 +526,7 @@
     <value>26, 67</value>
   </data>
   <data name="treeOfChecking.Size" type="System.Drawing.Size, System.Drawing">
-    <value>792, 419</value>
+    <value>816, 419</value>
   </data>
   <data name="treeOfChecking.TabIndex" type="System.Int32, mscorlib">
     <value>11</value>
@@ -508,13 +541,13 @@
     <value>groupBox2</value>
   </data>
   <data name="&gt;&gt;treeOfChecking.ZOrder" xml:space="preserve">
-    <value>3</value>
+    <value>2</value>
   </data>
   <data name="groupBox2.Location" type="System.Drawing.Point, System.Drawing">
     <value>18, 118</value>
   </data>
   <data name="groupBox2.Size" type="System.Drawing.Size, System.Drawing">
-    <value>1008, 503</value>
+    <value>1032, 503</value>
   </data>
   <data name="groupBox2.TabIndex" type="System.Int32, mscorlib">
     <value>10</value>
@@ -562,7 +595,7 @@
     <value>18, 4</value>
   </data>
   <data name="groupBoxCheckingManagement.Size" type="System.Drawing.Size, System.Drawing">
-    <value>286, 111</value>
+    <value>240, 111</value>
   </data>
   <data name="groupBoxCheckingManagement.TabIndex" type="System.Int32, mscorlib">
     <value>8</value>
@@ -586,7 +619,7 @@
     <value>2, 12</value>
   </data>
   <data name="panel1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>1046, 621</value>
+    <value>1070, 621</value>
   </data>
   <data name="panel1.TabIndex" type="System.Int32, mscorlib">
     <value>4</value>
@@ -613,7 +646,7 @@
     <value>NoControl</value>
   </data>
   <data name="labelAttention.Location" type="System.Drawing.Point, System.Drawing">
-    <value>6, 99</value>
+    <value>6, 82</value>
   </data>
   <data name="labelAttention.Size" type="System.Drawing.Size, System.Drawing">
     <value>0, 17</value>
@@ -927,122 +960,14 @@
   <data name="&gt;&gt;label2.ZOrder" xml:space="preserve">
     <value>2</value>
   </data>
-  <data name="button2.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="button2.Location" type="System.Drawing.Point, System.Drawing">
-    <value>417, 13</value>
-  </data>
-  <data name="button2.Size" type="System.Drawing.Size, System.Drawing">
-    <value>84, 23</value>
-  </data>
-  <data name="button2.TabIndex" type="System.Int32, mscorlib">
-    <value>10</value>
-  </data>
-  <data name="button2.Text" xml:space="preserve">
-    <value>Очистить</value>
-  </data>
-  <data name="&gt;&gt;button2.Name" xml:space="preserve">
-    <value>button2</value>
-  </data>
-  <data name="&gt;&gt;button2.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;button2.Parent" xml:space="preserve">
-    <value>groupBoxManualStep</value>
-  </data>
-  <data name="&gt;&gt;button2.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="button1.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="button1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>114, 15</value>
-  </data>
-  <data name="button1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>139, 23</value>
-  </data>
-  <data name="button1.TabIndex" type="System.Int32, mscorlib">
-    <value>11</value>
-  </data>
-  <data name="button1.Text" xml:space="preserve">
-    <value>Выполнить выбранные шаги</value>
-  </data>
-  <data name="&gt;&gt;button1.Name" xml:space="preserve">
-    <value>button1</value>
-  </data>
-  <data name="&gt;&gt;button1.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;button1.Parent" xml:space="preserve">
-    <value>groupBoxManualStep</value>
-  </data>
-  <data name="&gt;&gt;button1.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
-  <data name="buttonSelectAllSteps.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="buttonSelectAllSteps.Location" type="System.Drawing.Point, System.Drawing">
-    <value>15, 15</value>
-  </data>
-  <data name="buttonSelectAllSteps.Size" type="System.Drawing.Size, System.Drawing">
-    <value>93, 23</value>
-  </data>
-  <data name="buttonSelectAllSteps.TabIndex" type="System.Int32, mscorlib">
-    <value>10</value>
-  </data>
-  <data name="buttonSelectAllSteps.Text" xml:space="preserve">
-    <value>Выбрать всё</value>
-  </data>
-  <data name="&gt;&gt;buttonSelectAllSteps.Name" xml:space="preserve">
-    <value>buttonSelectAllSteps</value>
-  </data>
-  <data name="&gt;&gt;buttonSelectAllSteps.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;buttonSelectAllSteps.Parent" xml:space="preserve">
-    <value>groupBoxManualStep</value>
-  </data>
-  <data name="&gt;&gt;buttonSelectAllSteps.ZOrder" xml:space="preserve">
-    <value>2</value>
-  </data>
-  <data name="checkBoxCycle.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="checkBoxCycle.Location" type="System.Drawing.Point, System.Drawing">
-    <value>259, 19</value>
-  </data>
-  <data name="checkBoxCycle.Size" type="System.Drawing.Size, System.Drawing">
-    <value>80, 17</value>
-  </data>
-  <data name="checkBoxCycle.TabIndex" type="System.Int32, mscorlib">
-    <value>37</value>
-  </data>
-  <data name="checkBoxCycle.Text" xml:space="preserve">
-    <value>Зациклить</value>
-  </data>
-  <data name="&gt;&gt;checkBoxCycle.Name" xml:space="preserve">
-    <value>checkBoxCycle</value>
-  </data>
-  <data name="&gt;&gt;checkBoxCycle.Type" xml:space="preserve">
-    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;checkBoxCycle.Parent" xml:space="preserve">
-    <value>groupBoxManualStep</value>
-  </data>
-  <data name="&gt;&gt;checkBoxCycle.ZOrder" xml:space="preserve">
-    <value>3</value>
-  </data>
   <data name="buttonStop.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
   <data name="buttonStop.Location" type="System.Drawing.Point, System.Drawing">
-    <value>186, 24</value>
+    <value>12, 64</value>
   </data>
   <data name="buttonStop.Size" type="System.Drawing.Size, System.Drawing">
-    <value>84, 23</value>
+    <value>93, 23</value>
   </data>
   <data name="buttonStop.TabIndex" type="System.Int32, mscorlib">
     <value>9</value>
@@ -1066,7 +991,7 @@
     <value>NoControl</value>
   </data>
   <data name="buttonOpenDataBase.Location" type="System.Drawing.Point, System.Drawing">
-    <value>6, 54</value>
+    <value>111, 64</value>
   </data>
   <data name="buttonOpenDataBase.Size" type="System.Drawing.Size, System.Drawing">
     <value>84, 23</value>
@@ -1102,7 +1027,7 @@
     <value>1089, 703</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
-    <value>УСА</value>
+    <value>Программа проверки прибора C-33162 УСА ШЮГИ.468151.110 Версия 1.0</value>
   </data>
   <data name="&gt;&gt;$this.Name" xml:space="preserve">
     <value>Form1</value>

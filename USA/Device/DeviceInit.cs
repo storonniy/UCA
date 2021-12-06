@@ -25,6 +25,7 @@ namespace UCA.Devices
             this.DeviceList = deviceList;
             foreach (var device in deviceList)
             {
+                /*
                 try
                 {
 
@@ -33,6 +34,7 @@ namespace UCA.Devices
                 {
 
                 }
+                */
                 IDeviceInterface newDevice = null;
                 switch (device.Name)
                 {
