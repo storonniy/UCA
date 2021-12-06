@@ -46,11 +46,21 @@ namespace UCA
                 }
                 if (step != null)
                 {
-                    //var stepParser = new StepParser(DeviceHandler, step);
-                    //var deviceResult = stepParser.DoStep();
-                    DoStepOfChecking(step);
+                    var stepResult = DoStep(step);
+                    if (step.ShowStep) //|| form.checkBoxDebug.Checked
+                    {
+                        ShowStepResult(step, stepResult);
+                    }
                     //TODO убери нах
-                    Thread.Sleep(1000);
+                    //Thread.Sleep(1000);
+                }
+                else if (isCheckingStarted)
+                {
+                    isCheckingStarted = false;
+                    form.CleanTreeView();
+                    form.BlockControls(false);
+                    var result = checkingResult ? "исправен" : "неисправен";
+                    MessageBox.Show($"Проверка завершена, результаты проверки записаны в файл. ОК {result}.");
                 }
                 else
                 {
@@ -262,8 +272,8 @@ namespace UCA
 
         private string GetModeName()
         {
-            var modeName = comboBoxVoltageSupply.SelectedItem.ToString();
-            if (modeName != "Самопроверка")
+            var modeName = comboBoxCheckingMode.SelectedItem.ToString();
+            if (modeName != "Режим самопроверки")
                 modeName = comboBoxVoltageSupply.SelectedItem.ToString();
             return modeName;
         }
@@ -272,9 +282,9 @@ namespace UCA
 
         #region Проверка
 
-        private void DoCheckingStepByStep(string modeName)//(Dictionary<string, List<Step>> stepsDictionary)
+        private void EnQueueCheckingSteps(string modeName)//(Dictionary<string, List<Step>> stepsDictionary)
         {
-            var stepsDictionary = (modeName == "Самопроверка") ? stepsInfo.ModesDictionary[modeName] : stepsInfo.VoltageSupplyModesDictionary[modeName];
+            var stepsDictionary = (modeName == "Режим самопроверки") ? stepsInfo.ModesDictionary[modeName] : stepsInfo.VoltageSupplyModesDictionary[modeName];
             foreach (var tableName in stepsDictionary.Keys)
             {
                 foreach (var step in stepsDictionary[tableName])
@@ -283,148 +293,62 @@ namespace UCA
                     {
                         queue.Enqueue(step);
                     }
-                    //DoStepOfChecking(step);
                 }
             }
-            //var result = (checkingResult) ? "исправен" : "неисправен";
-            //MessageBox.Show($"Проверка завершена, результаты проверки записаны в файл. ОК {result}.");
-            //BlockControls(false);
         }
 
-        private static void DoStepOfChecking(Step step)
+        private static void ShowStepResult(Step step, DeviceResult deviceResult)
         {
-            if (step.ShowStep || form.checkBoxDebug.Checked)
+            var node = treeviewStepNode[step];
+            form.HighlightTreeNode(node, Color.Blue);
+            var indexOf = node.Text.IndexOf(' ');
+            var stepNumber = int.Parse(node.Text.Substring(0, indexOf));
+            var result = $"Шаг {stepNumber}: {step.Description}\r\n{deviceResult.Description}\r\n\r\n";
+            log.Send(result);
+            form.AddSubTreeNode(node, deviceResult.Description);
+            if (deviceResult.State == DeviceStatus.OK)
             {
-                var node = treeviewStepNode[step];
-                var indexOf = node.Text.IndexOf(' ');
-                var stepNumber = int.Parse(node.Text.Substring(0, indexOf));
-                form.HighlightTreeNode(node, Color.Blue);
-                var stepParser = new StepParser(DeviceHandler, step);
-                var deviceResult = stepParser.DoStep();
-                form.AddSubTreeNode(node, deviceResult.Description);
-                if (deviceResult.State == DeviceStatus.OK)
-                {
-                    form.HighlightTreeNode(node, Color.Green);
-                }
-                else
-                {
-                    checkingResult = false;
-                    form.HighlightTreeNode(node, Color.Red);
-
-                    
-                    if (!form.checkBoxIgnoreErrors.Checked)
-                    {
-                        // Аварийная остановка проверки
-                        var description = $"В ходе проверки произошла ошибка:\r\nШаг {stepNumber}: {step.Description}\r\nРезультат шага: {deviceResult.Description}\r\nОстановить проверку?";
-                        var dialogResult = MessageBox.Show(description, "Внимание!", MessageBoxButtons.YesNo);
-                        if (dialogResult == DialogResult.Yes)
-                        {
-                            form.AddSubTreeNode(node, "Аварийная остановка проверки");
-                            MessageBox.Show("Проверка остановлена. ОК неисправен.");
-                            form.AbortChecking();
-                        }
-                        else if (dialogResult == DialogResult.No)
-                        {
-                            form.ChangeControlState(form.groupBoxManualStep, true);
-                            form.ChangeCheckingState(false);
-                        }
-                    }
-                }
-                var result = $"Шаг {stepNumber}: {step.Description}\r\n{deviceResult.Description}\r\n\r\n";
-                log.Send(result);
+                form.HighlightTreeNode(node, Color.Green);
             }
-            else
+            if (deviceResult.State == DeviceStatus.ERROR)
             {
-                var stepParser = new StepParser(DeviceHandler, step);
-                var deviceResult = stepParser.DoStep();
-                if (deviceResult.State == DeviceStatus.ERROR && !form.checkBoxIgnoreErrors.Checked) // && !checkBoxIgnoreErrors.Checked
-                {
-                    checkingResult = false;
-                    // Аварийная остановка проверки
-                    var description = $"В ходе проверки произошла ошибка:\r\nШаг: {step.Description}\r\nРезультат шага: {deviceResult.Description}\r\nОстановить проверку?";
-                    var dialogResult = MessageBox.Show(description, "Внимание!", MessageBoxButtons.YesNo);
-                    if (dialogResult == DialogResult.Yes)
-                    {
-                        //AddSubTreeNode(node, "Аварийная остановка проверки");
-                        MessageBox.Show("Проверка остановлена. ОК неисправен.");
-                        form.AbortChecking();
-                    }
-                    else if (dialogResult == DialogResult.No)
-                    {
-                        form.ChangeCheckingState(false);
-                    }
-                }
+                form.HighlightTreeNode(node, Color.Red);
             }
         }
 
-        /*
-        private void DoStepOfChecking(Step step)
+        private static void ShowErrorDialog(string description)
         {
-            if (step.ShowStep || checkBoxDebug.Checked)
+            var dialogResult = MessageBox.Show(description, "Внимание!", MessageBoxButtons.YesNo);
+            if (dialogResult == DialogResult.Yes)
             {
-                var node = treeviewStepNode[step];
-                var indexOf = node.Text.IndexOf(' ');
-                var stepNumber = int.Parse(node.Text.Substring(0, indexOf));
-                HighlightTreeNode(node, Color.Blue);
-                var stepParser = new StepParser(DeviceHandler, step);
-                var deviceResult = stepParser.DoStep();
-                AddSubTreeNode(node, deviceResult.Description);
-                if (deviceResult.State == DeviceStatus.OK)
-                {
-                    HighlightTreeNode(node, Color.Green);
-                }
-                else
-                {
-                    checkingResult = false;
-                    HighlightTreeNode(node, Color.Red);
-                    
-                    if (!checkBoxIgnoreErrors.Checked)
-                    {
-                        // Аварийная остановка проверки
-                        var description = $"В ходе проверки произошла ошибка:\r\nШаг {stepNumber}: {step.Description}\r\nРезультат шага: {deviceResult.Description}\r\nОстановить проверку?";
-                        var dialogResult = MessageBox.Show(description, "Внимание!", MessageBoxButtons.YesNo);
-                        if (dialogResult == DialogResult.Yes)
-                        {
-                            AddSubTreeNode(node, "Аварийная остановка проверки");
-                            MessageBox.Show("Проверка остановлена. ОК неисправен.");
-                            AbortChecking();
-                        }
-                        else if (dialogResult == DialogResult.No)
-                        {
-                            ChangeControlState(groupBoxManualStep, true);
-                            PauseChecking();
-                        }
-                    }
-                }
-                var result = $"Шаг {stepNumber}: {step.Description}\r\n{deviceResult.Description}\r\n\r\n";
-                log.Send(result);
+                //form.AddSubTreeNode(node, "Аварийная остановка проверки");
+                MessageBox.Show("Проверка остановлена. ОК неисправен.");
+                form.AbortChecking();
             }
-            else
+            else if (dialogResult == DialogResult.No)
             {
-                var stepParser = new StepParser(DeviceHandler, step);
-                var deviceResult = stepParser.DoStep();
-                if (deviceResult.State == DeviceStatus.ERROR && !checkBoxIgnoreErrors.Checked) // && !checkBoxIgnoreErrors.Checked
-                {
-                    checkingResult = false;
-                    // Аварийная остановка проверки
-                    var description = $"В ходе проверки произошла ошибка:\r\nШаг: {step.Description}\r\nРезультат шага: {deviceResult.Description}\r\nОстановить проверку?";
-                    var dialogResult = MessageBox.Show(description, "Внимание!", MessageBoxButtons.YesNo);
-                    if (dialogResult == DialogResult.Yes)
-                    {
-                        //AddSubTreeNode(node, "Аварийная остановка проверки");
-                        MessageBox.Show("Проверка остановлена. ОК неисправен.");
-                        AbortChecking();
-                    }
-                    else if (dialogResult == DialogResult.No)
-                    {
-                        PauseChecking();
-                    }
-                    //AbortChecking();
-                    //Thread.CurrentThread.Abort();
-                }
+                isCheckingStarted = true;
+                form.ChangeControlState(form.groupBoxManualStep, true);
+                //form.ChangeCheckingState(false);
             }
         }
-        */
+
+        private static DeviceResult DoStep(Step step)
+        {
+            var stepParser = new StepParser(DeviceHandler, step);
+            var deviceResult = stepParser.DoStep();
+            if (deviceResult.State == DeviceStatus.ERROR)
+            {
+                checkingResult = false;
+                if (!form.checkBoxIgnoreErrors.Checked)
+                {
+                    isCheckingStarted = false;
+                    var description = $"В ходе проверки произошла ошибка:\r\nШаг: {step.Description}\r\nРезультат шага: {deviceResult.Description}\r\nОстановить проверку?";
+                    ShowErrorDialog(description);
+                }
+            }
+            return deviceResult;
+        }
 
         #endregion
 
@@ -476,22 +400,6 @@ namespace UCA
                 {
                     queue.Enqueue(step);
                 }
-                //var stepParser = new StepParser(DeviceHandler, step);
-                //stepParser.DoStep();
-            }
-        }
-
-        private void DoStepList(List<Step> stepList, TreeNode node)
-        {
-            foreach (var step in stepList)
-            {
-                var stepParser = new StepParser(DeviceHandler, step);
-                var result = stepParser.DoStep();
-                AddSubTreeNode(node, result.Description);
-                if (result.State == DeviceStatus.OK)
-                {
-                    HighlightTreeNode(node, Color.Green);
-                }
             }
         }
 
@@ -501,19 +409,19 @@ namespace UCA
 
         private void AbortChecking()
         {
-            //mainThread.Suspend();
             isCheckingStarted = false;
             ChangeControlState(buttonStop, isCheckingStarted);
-            CleanTreeView();
-            BlockControls(isCheckingStarted);
             lock (queue)
             {
                 queue.Clear();
+                isCheckingStarted = true;
                 foreach (var step in stepsInfo.EmergencyStepList)
                 {
                     queue.Enqueue(step);
                 }
             }
+            CleanTreeView();
+            BlockControls(false);
         }
 
         private void ChangeCheckingState()
@@ -652,13 +560,11 @@ namespace UCA
 
         private void buttonCheckingStart_Click(object sender, EventArgs e)
         {
-            isCheckingStarted = true;
-            BlockControls(isCheckingStarted);
             CreateLog();
             var modeName = GetModeName();
-            DoCheckingStepByStep(modeName);
-            //mainThread = new Thread(delegate () { DoCheckingStepByStep(modeName); });
-            //mainThread.Start();
+            EnQueueCheckingSteps(modeName);
+            isCheckingStarted = true;
+            BlockControls(isCheckingStarted);
         }
         private void buttonOpenDataBase_Click(object sender, EventArgs e)
         {
@@ -692,9 +598,10 @@ namespace UCA
             AbortChecking();
         }
 
-        private void Form1_Closing(object sender, CancelEventArgs e)
+        private void Form1_FormClosing(object sender, CancelEventArgs e)
         {
             AbortChecking();
+
         }
 
         private void treeOfChecking_AfterSelect(object sender, TreeViewEventArgs e)
@@ -713,8 +620,8 @@ namespace UCA
         {
             var stepList = GetSelectedSteps();
             BlockControls(true);
-            mainThread = new Thread(delegate () { DoSelectedSteps(stepList); });
-            mainThread.Start();
+            DoSelectedSteps(stepList);
+
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -750,7 +657,13 @@ namespace UCA
             stepsInfo.StepsDictionary = stepsDictionary;
         }
         */
-
         #endregion
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            AbortChecking();
+            mainThread.Abort();
+            Application.Exit();
+        }
     }
 }

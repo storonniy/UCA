@@ -64,10 +64,5 @@ namespace UCA
             }
             return true;
         }
-
-        private void comboBoxRegime_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
     }
 }
