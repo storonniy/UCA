@@ -13,6 +13,9 @@ namespace UCA
 {
     public partial class Form1 : Form
     {
+
+        #region Глобальные переменные
+
         private StepsInfo stepsInfo;
         private DeviceInit DeviceHandler;
         Settings settings = new Settings();
@@ -21,12 +24,16 @@ namespace UCA
         Dictionary<DeviceNames, Label> deviceLabelDictionary = new Dictionary<DeviceNames, Label>();
         Thread mainThread = new Thread(some);//stepsDictionary
         Log mainLog = new Log();
+        public static Form1 EventSend;
 
         private static void some()
         {
 
         }
 
+        #endregion
+
+        #region Конструктор Form1
         public Form1(Settings settings)
         {
             InitializeComponent();
@@ -38,14 +45,9 @@ namespace UCA
             buttonCheckingPause.Enabled = false;
         }
 
-        private void CleanAll()
-        {
-            treeOfChecking.Nodes.Clear();
-            comboBoxCheckingMode.Items.Clear();
-            comboBoxVoltageSupply.Items.Clear();
-            treeviewNodeStep.Clear();
-            treeviewStepNode.Clear();
-        }
+        #endregion
+
+        #region Показать режимы и настройки
 
         private void ShowSettings()
         {
@@ -72,16 +74,46 @@ namespace UCA
             comboBoxCheckingMode.SelectedItem = comboBoxCheckingMode.Items[1];
         }
 
+        private void SelectCheckingMode()
+        {
+            var modeName = comboBoxCheckingMode.SelectedItem.ToString();
+            FillTreeView(treeOfChecking, stepsInfo.ModesDictionary[modeName]);
+            if (modeName == "Режим самопроверки")
+            {
+                labelAttention.ForeColor = Color.Red;
+                labelAttention.Text = "Объект контроля должен быть отстыкован!";
+                comboBoxVoltageSupply.Enabled = false;
+            }
+            else
+            {
+                comboBoxVoltageSupply.Enabled = true;
+                labelAttention.Text = "";
+            }
+            if (modeName == "Полная проверка")
+            {
+                SetVoltageSupplyMode();
+            }
+        }
+
+        private void SetVoltageSupplyMode()
+        {
+            var modeName = comboBoxVoltageSupply.SelectedItem.ToString();
+            FillTreeView(treeOfChecking, stepsInfo.VoltageSupplyModesDictionary[modeName]);
+        }
+
+        #endregion
+
+        #region Устройства
         private void InitDevices()
         {
             DeviceHandler = new DeviceInit(stepsInfo.DeviceList);
-            foreach (var deviceName in DeviceHandler.Devices.Keys)
+            foreach (var device in stepsInfo.DeviceList)
             {
-                var device = DeviceHandler.Devices[deviceName];
-                if (device == null)
+                if (device.Status == DeviceStatus.OK)
                 {
                     break;
                 }
+                //else if (device.Status == DeviceStatus.ERROR)
             }
             InitDevices();
         }
@@ -117,6 +149,10 @@ namespace UCA
             }
         }
 
+        #endregion
+
+        #region Инициализация 
+
         private void InitialActions(string pathToDataBase)
         {
             try
@@ -129,9 +165,10 @@ namespace UCA
                 ShowCheckingModes();
                 //ReplaceVoltageSupplyInStepsDictionary();
                 ShowDevicesOnForm();
-                UpdateDevicesOnForm();
+                //InitDevices();
                 DeviceHandler = new DeviceInit(stepsInfo.DeviceList);
-
+                UpdateDevicesOnForm();
+                //DeviceHandler = new DeviceInit(stepsInfo.DeviceList);
             }
             catch (System.Data.OleDb.OleDbException ex)
             {
@@ -141,7 +178,7 @@ namespace UCA
             {
                 MessageBox.Show(ex.Message);
             }
-            /*
+            
             catch (System.IO.IOException ex)
             {
                 MessageBox.Show(ex.Message);
@@ -150,8 +187,8 @@ namespace UCA
             catch (System.Exception ex)
             {
                 MessageBox.Show(ex.Message);
-            }
-            
+            }            
+            /*         
             catch (ArgumentException ex)
             {
                 MessageBox.Show(ex.Message);
@@ -163,12 +200,15 @@ namespace UCA
             */
         }
 
-        // TODO use InitialActions(path)
         private void InitialActions()
         {
             string connectionString = "UCA.xlsx;";
             InitialActions(connectionString);
         }
+
+        #endregion
+
+        #region Логгирование
 
         private Log CreateLog()
         {
@@ -180,6 +220,10 @@ namespace UCA
             log.AddItem($"Режим: {settings.Regime}\r\n");
             return log;
         }
+
+        #endregion
+
+        #region Проверка
 
         private void DoCheckingStepByStep(string modeName)//(Dictionary<string, List<Step>> stepsDictionary)
         {
@@ -195,16 +239,6 @@ namespace UCA
             }
             MessageBox.Show("Проверка завершена, результаты проверки записаны в файл. ОК исправен.");
             BlockControls(false);
-        }
-
-        private void ChangeControlState(Control control, bool state)
-        {
-            if (this.InvokeRequired)
-            {
-                this.Invoke((MethodInvoker)delegate { ChangeControlState(control, state); });
-                return;
-            }
-            control.Enabled = state;
         }
 
         private void DoStepOfChecking(Step step, StepsInfo stepsInfo, Log log)
@@ -267,6 +301,9 @@ namespace UCA
             }
         }
 
+        #endregion
+
+        #region Закомментированные методы
         /*
         private void ReplaceVoltageSupplyInStepsDictionary()
         {
@@ -287,28 +324,7 @@ namespace UCA
         }
         */
 
-        private void DoStepList(List<Step> stepList)
-        {
-            foreach (var step in stepList)
-            {
-                var stepParser = new StepParser(DeviceHandler, step);
-                stepParser.DoStep();
-            }
-        }
-
-        private void DoStepList(List<Step> stepList, TreeNode node)
-        {
-            foreach (var step in stepList)
-            {
-                var stepParser = new StepParser(DeviceHandler, step);
-                var result = stepParser.DoStep();
-                AddSubTreeNode(node, result.Description);
-                if (result.State == DeviceStatus.OK)
-                {
-                    HighlightTreeNode(node, Color.Green);
-                }
-            }
-        }
+        #endregion
 
         #region TreeNodes
 
@@ -371,17 +387,19 @@ namespace UCA
             parentTreeNode.Expand();
         }
 
+        public void treeOfChecking_AfterCheckNode(object sender, TreeViewEventArgs e)
+        {
+            e.Node.Text = "meow";
+            var state = e.Node.Checked;
+            foreach (TreeNode node in e.Node.Nodes)
+            {
+                node.Checked = state;
+            }
+        }
+
         #endregion
 
-        public static Form1 EventSend;
-
-        private void buttonCheckingStart_Click(object sender, EventArgs e)
-        {
-            BlockControls(true);
-            var modeName = comboBoxCheckingMode.SelectedItem.ToString();          
-            mainThread = new Thread(delegate () { DoCheckingStepByStep(modeName); });
-            mainThread.Start();
-        }
+        #region Блокировка и очистка элементов формы
 
         private void BlockControls(bool state)
         {
@@ -394,23 +412,45 @@ namespace UCA
             ChangeControlState(groupBoxManualStep, !state);
         }
 
-        private void buttonOpenDataBase_Click(object sender, EventArgs e)
+        private void CleanAll()
         {
-            DoStepList(stepsInfo.EmergencyStepList);
-            OpenFileDialog openBinFileDialog = new OpenFileDialog();
-            openBinFileDialog.Filter = "Файлы *.xls* | *xls*";//"Файлы *.accdb | *.accdb | Файлы *.mdb | *.mdb"; "Файлы *.*db | *.*db"
-            if (openBinFileDialog.ShowDialog() == DialogResult.OK)
+            treeOfChecking.Nodes.Clear();
+            comboBoxCheckingMode.Items.Clear();
+            comboBoxVoltageSupply.Items.Clear();
+            treeviewNodeStep.Clear();
+            treeviewStepNode.Clear();
+        }
+        private void CleanTreeView()
+        {
+            if (this.InvokeRequired)
             {
-                CleanAll();
-                InitialActions(openBinFileDialog.FileName);
+                this.Invoke((MethodInvoker)delegate { CleanTreeView(); });
+                return;
             }
+            treeOfChecking.Nodes.Clear();
+            SelectCheckingMode();
+        }
+        private void ChangeControlState(Control control, bool state)
+        {
+            if (this.InvokeRequired)
+            {
+                this.Invoke((MethodInvoker)delegate { ChangeControlState(control, state); });
+                return;
+            }
+            control.Enabled = state;
         }
 
-        bool isPause = false;
+        #endregion
 
-        private void buttonCheckingPause_Click(object sender, EventArgs e)
+        #region Управление потоком проверки
+
+        private void AbortChecking()
         {
-            PauseResumeChecking();
+            DoStepList(stepsInfo.EmergencyStepList);
+            CleanTreeView();
+            BlockControls(false);
+            if (mainThread.ThreadState == ThreadState.Running)
+                mainThread.Abort();
         }
 
         private void PauseChecking()
@@ -453,105 +493,9 @@ namespace UCA
             }
         }
 
-        private void buttonCheckingStop_Click(object sender, EventArgs e)
-        {
-  
-        }
+        #endregion
 
-
-        private void Form1_Load(object sender, EventArgs e)
-        {
-
-        }
-
-        private void comboBoxCheckingMode_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            SelectCheckingMode(); 
-        }
-
-        private void SelectCheckingMode ()
-        {
-            var modeName = comboBoxCheckingMode.SelectedItem.ToString();
-            FillTreeView(treeOfChecking, stepsInfo.ModesDictionary[modeName]);
-            if (modeName == "Режим самопроверки")
-            {
-                labelAttention.ForeColor = Color.Red;
-                labelAttention.Text = "Объект контроля должен быть отстыкован!";
-                comboBoxVoltageSupply.Enabled = false;
-            }
-            else
-            {
-                comboBoxVoltageSupply.Enabled = true;
-                labelAttention.Text = "";
-            }
-            if (modeName == "Полная проверка")
-            {
-                SetVoltageSupplyMode();
-            }    
-        }
-
-        private void comboBoxVoltageSupply_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            //ReplaceVoltageSupplyInStepsDictionary();
-            SetVoltageSupplyMode();
-        }
-
-        private void SetVoltageSupplyMode()
-        {
-            var modeName = comboBoxVoltageSupply.SelectedItem.ToString();
-            FillTreeView(treeOfChecking, stepsInfo.VoltageSupplyModesDictionary[modeName]);
-        }
-
-        private void AbortChecking()
-        {
-            DoStepList(stepsInfo.EmergencyStepList);
-            CleanTreeView();
-            BlockControls(false);
-            if (mainThread.ThreadState == ThreadState.Running)
-                mainThread.Abort();
-        }
-
-        private void CleanTreeView()
-        {
-            if (this.InvokeRequired)
-            {
-                this.Invoke((MethodInvoker)delegate { CleanTreeView(); });
-                return;
-            }
-            treeOfChecking.Nodes.Clear();
-            SelectCheckingMode();
-        }
-
-        private void buttonStop_Click(object sender, EventArgs e)
-        {
-            AbortChecking();
-        }
-
-        private void Form1_Closing(object sender, CancelEventArgs e)
-        {
-            AbortChecking();
-        }
-
-        private void treeOfChecking_AfterSelect(object sender, TreeViewEventArgs e)
-        {
-            /*
-            if (treeviewNodeStep.ContainsKey(e.Node) && mainThread.ThreadState != ThreadState.Running)
-            {
-                var thisStep = treeviewNodeStep[e.Node];
-                DoStepOfChecking(thisStep, stepsInfo, mainLog);
-            }
-            */
-        }
-
-        public void treeOfChecking_AfterCheckNode(object sender, TreeViewEventArgs e)
-        {
-            e.Node.Text = "meow";
-            var state = e.Node.Checked;
-            foreach (TreeNode node in e.Node.Nodes)
-            {
-                node.Checked = state;
-            }
-        }
+        #region Выборочная проверка
 
         private List<Step> GetSelectedSteps()
         {
@@ -585,6 +529,87 @@ namespace UCA
             BlockControls(false);
         }
 
+        private void DoStepList(List<Step> stepList)
+        {
+            foreach (var step in stepList)
+            {
+                var stepParser = new StepParser(DeviceHandler, step);
+                stepParser.DoStep();
+            }
+        }
+
+        private void DoStepList(List<Step> stepList, TreeNode node)
+        {
+            foreach (var step in stepList)
+            {
+                var stepParser = new StepParser(DeviceHandler, step);
+                var result = stepParser.DoStep();
+                AddSubTreeNode(node, result.Description);
+                if (result.State == DeviceStatus.OK)
+                {
+                    HighlightTreeNode(node, Color.Green);
+                }
+            }
+        }
+
+        #endregion
+
+        #region Методы элементов управления
+
+        private void buttonCheckingStart_Click(object sender, EventArgs e)
+        {
+            BlockControls(true);
+            var modeName = comboBoxCheckingMode.SelectedItem.ToString();
+            mainThread = new Thread(delegate () { DoCheckingStepByStep(modeName); });
+            mainThread.Start();
+        }
+        private void buttonOpenDataBase_Click(object sender, EventArgs e)
+        {
+            DoStepList(stepsInfo.EmergencyStepList);
+            OpenFileDialog openBinFileDialog = new OpenFileDialog();
+            openBinFileDialog.Filter = "Файлы *.xls* | *xls*";//"Файлы *.accdb | *.accdb | Файлы *.mdb | *.mdb"; "Файлы *.*db | *.*db"
+            if (openBinFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                CleanAll();
+                InitialActions(openBinFileDialog.FileName);
+            }
+        }
+        private void buttonCheckingPause_Click(object sender, EventArgs e)
+        {
+            PauseResumeChecking();
+        }
+
+        private void comboBoxCheckingMode_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            SelectCheckingMode();
+        }
+
+        private void comboBoxVoltageSupply_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            //ReplaceVoltageSupplyInStepsDictionary();
+            SetVoltageSupplyMode();
+        }
+
+        private void buttonStop_Click(object sender, EventArgs e)
+        {
+            AbortChecking();
+        }
+
+        private void Form1_Closing(object sender, CancelEventArgs e)
+        {
+            AbortChecking();
+        }
+
+        private void treeOfChecking_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            /*
+            if (treeviewNodeStep.ContainsKey(e.Node) && mainThread.ThreadState != ThreadState.Running)
+            {
+                var thisStep = treeviewNodeStep[e.Node];
+                DoStepOfChecking(thisStep, stepsInfo, mainLog);
+            }
+            */
+        }
         private void button1_Click(object sender, EventArgs e)
         {
             var stepList = GetSelectedSteps();
@@ -603,5 +628,7 @@ namespace UCA
         {
             SelectCheckingMode();
         }
+
+        #endregion
     }
 }
