@@ -97,16 +97,8 @@ namespace UCA.DeviceDrivers
             serialPort.WriteLine(command);
             Thread.Sleep(delay);
             var answerFromAdapter = serialPort.ReadExisting();
-            if (answerFromAdapter != "*OpenRelays:OK\r" && answerFromAdapter != "*OpenRelays:all\r")
-                throw new Exception($"При размыкании реле {command} возникла ошибка");
-            try
-            {
-
-            }
-            catch { TimeoutException e; }
-            {
-                // Время ожидания ответа от коммутационного адаптера превышено.
-            }
+            //if (answerFromAdapter != "*OpenRelays:OK\r" && answerFromAdapter != "*OpenRelays:all\r" && answerFromAdapter != "* OpenRelays:all\r* OpenRelays:all\r")
+                //throw new Exception($"При размыкании реле {command} возникла ошибка");
         }
 
         public string GetIdentifier()

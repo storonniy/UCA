@@ -340,11 +340,12 @@ namespace UCA.DeviceDrivers
         }
 
         /// <summary>
-        /// Toggle output of the PSP-405 ON or OFF.
+        /// Turn the output of the PSP-405 OFF.
         /// </summary>
+
         public void TurnOff()
         {
-            serialPort.Write("KO\r");
+            serialPort.Write("KOD\r");
             Thread.Sleep(delay);
         }
 
@@ -357,12 +358,13 @@ namespace UCA.DeviceDrivers
             Thread.Sleep(delay);
         }
 
+
         /// <summary>
-        /// Turn the output of the PSP-405 OFF.
+        /// Toggle output of the PSP-405 ON or OFF.
         /// </summary>
         public void ToggleOnOrOff()
         {
-            serialPort.Write("KOD\r");
+            serialPort.Write("KO\r");
             Thread.Sleep(delay);
         }
 

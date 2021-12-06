@@ -5,8 +5,6 @@ VisualStudioVersion = 16.0.30804.86
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UCA", "USA\UCA.csproj", "{89E2B87A-6250-46C4-9E1E-CB5F2C62E81A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UCA.DeviceDrivers.Tests", "UCA.DeviceDrivers.Tests\UCA.DeviceDrivers.Tests.csproj", "{724A93FE-1665-49EA-A499-837DF1B193AD}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,14 +21,6 @@ Global
 		{89E2B87A-6250-46C4-9E1E-CB5F2C62E81A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{89E2B87A-6250-46C4-9E1E-CB5F2C62E81A}.Release|x64.ActiveCfg = Release|Any CPU
 		{89E2B87A-6250-46C4-9E1E-CB5F2C62E81A}.Release|x64.Build.0 = Release|Any CPU
-		{724A93FE-1665-49EA-A499-837DF1B193AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{724A93FE-1665-49EA-A499-837DF1B193AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{724A93FE-1665-49EA-A499-837DF1B193AD}.Debug|x64.ActiveCfg = Debug|x64
-		{724A93FE-1665-49EA-A499-837DF1B193AD}.Debug|x64.Build.0 = Debug|x64
-		{724A93FE-1665-49EA-A499-837DF1B193AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{724A93FE-1665-49EA-A499-837DF1B193AD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{724A93FE-1665-49EA-A499-837DF1B193AD}.Release|x64.ActiveCfg = Release|x64
-		{724A93FE-1665-49EA-A499-837DF1B193AD}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

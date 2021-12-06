@@ -6,19 +6,24 @@ namespace UCA.Logging
 {
     class Log
     {
-        private List<string> log;
         public string FileName;
         private readonly StreamWriter streamWriter;
 
         public Log()
         {
-            FileName = GetFileName();
+            var path = @"C:\UCAlogs\";
+            var dirInfo = new DirectoryInfo(path);
+            if (!dirInfo.Exists)
+            {
+                dirInfo.Create();
+            }
+            FileName = path + GetFileName();
             streamWriter = GetStreamWriter();
         }
 
         private StreamWriter GetStreamWriter()
         {
-            string pathToFile = Directory.GetCurrentDirectory() + "/" + FileName; //"Data" + "/" +
+            string pathToFile = FileName;
             FileStream aFile = new FileStream(pathToFile, FileMode.OpenOrCreate, FileAccess.ReadWrite);
             return new StreamWriter(aFile);
         }
@@ -32,22 +37,13 @@ namespace UCA.Logging
             return fileName + ".txt";
         }
 
-        public void Write()
+        public void Send(string item)
         {
-            foreach (var line in log)
-                streamWriter.WriteLine(line);
-            streamWriter.Flush();
-        }
-
-        public void AddItem(string item)
-        {
-            streamWriter.WriteLine(item);
-            streamWriter.Flush();
-        }
-
-        public void Clear()
-        {
-            log.Clear();
+            lock (streamWriter)
+            {
+                streamWriter.WriteLine(item);
+                streamWriter.Flush();
+            }
         }
 
         /*
