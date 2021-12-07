@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using static UCA.ControlObjectSettings.ControlObjectSettings;
 
 namespace UCA.Logging
 {
@@ -8,9 +9,11 @@ namespace UCA.Logging
     {
         public string FileName;
         private readonly StreamWriter streamWriter;
+        private Settings settings;
 
-        public Log()
+        public Log(Settings settings)
         {
+            this.settings = settings;
             var path = @"C:\UCAlogs\";
             var dirInfo = new DirectoryInfo(path);
             if (!dirInfo.Exists)
@@ -33,7 +36,7 @@ namespace UCA.Logging
             DateTime date = DateTime.Now;
             string fileName = date.ToString();
             var year = date.Year.ToString();
-            fileName = fileName.Replace(":", "").Replace(year, year + "_").Replace(" ", "").Replace(".", "");
+            fileName = $"{settings.FactoryNumber} {settings.Comment} {settings.OperatorName} {fileName.Replace(":", "").Replace(year, year + "_").Replace(" ", "").Replace(".", "")}";//fileName.Replace(":", "").Replace(year, year + "_").Replace(" ", "").Replace(".", "");
             return fileName + ".txt";
         }
 

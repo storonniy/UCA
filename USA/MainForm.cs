@@ -24,13 +24,14 @@ namespace UCA
         Settings settings = new Settings();
 
         static Form1 form;
-        static Log log = new Log();
+        static Log log;
 
         Thread mainThread = new Thread(some);//stepsDictionary
         static Queue<Step> queue = new Queue<Step>();
         static Form1 EventSend;
         static bool checkingResult = true;
         static bool isCheckingStarted = false;
+        static bool isCheckingInterrupted = false;
 
         private static void some()
         {
@@ -59,8 +60,17 @@ namespace UCA
                     isCheckingStarted = false;
                     form.CleanTreeView();
                     form.BlockControls(false);
-                    var result = checkingResult ? "исправен" : "неисправен";
-                    MessageBox.Show($"Проверка завершена, результаты проверки записаны в файл. ОК {result}.");
+                    var result = checkingResult ? "ОК исправен." : "ОК неисправен";
+                    if (isCheckingInterrupted)
+                    {
+                        result = $"Проверка прервана, результаты проверки записаны в файл.";
+                    }
+                    else
+                    {
+                        result = $"Проверка завершена, результаты проверки записаны в файл. {result}";
+                    }
+                    MessageBox.Show(result);
+                    log.Send(result);
                 }
                 else
                 {
@@ -80,6 +90,7 @@ namespace UCA
             InitializeComponent();
             EventSend = this;
             this.settings = settings;
+            //log = new Log(form.settings);
             ShowSettings();
             InitialActions();
             buttonStop.Enabled = false;
@@ -261,7 +272,7 @@ namespace UCA
 
         private void CreateLog()
         {
-            log = new Log();
+            log = new Log(settings);
             log.Send($"Время начала проверки: {DateTime.Now}\n");
             log.Send($"Имя оператора: {settings.OperatorName}\n");
             log.Send($"Комментарий: {settings.Comment}\n");
@@ -338,10 +349,11 @@ namespace UCA
             var stepParser = new StepParser(DeviceHandler, step);
             var deviceResult = stepParser.DoStep();
             if (deviceResult.State == DeviceStatus.ERROR)
-            {
+            {             
                 checkingResult = false;
                 if (!form.checkBoxIgnoreErrors.Checked)
                 {
+                    isCheckingInterrupted = true;
                     isCheckingStarted = false;
                     var description = $"В ходе проверки произошла ошибка:\r\nШаг: {step.Description}\r\nРезультат шага: {deviceResult.Description}\r\nОстановить проверку?";
                     ShowErrorDialog(description);
@@ -408,7 +420,7 @@ namespace UCA
         #region Управление потоком проверки
 
         private void AbortChecking()
-        {
+        {         
             isCheckingStarted = false;
             ChangeControlState(buttonStop, isCheckingStarted);
             lock (queue)
@@ -560,6 +572,8 @@ namespace UCA
 
         private void buttonCheckingStart_Click(object sender, EventArgs e)
         {
+            checkingResult = true;
+            isCheckingInterrupted = false;
             CreateLog();
             var modeName = GetModeName();
             EnQueueCheckingSteps(modeName);
@@ -595,7 +609,8 @@ namespace UCA
 
         private void buttonStop_Click(object sender, EventArgs e)
         {
-            AbortChecking();
+            isCheckingInterrupted = true;
+            AbortChecking();      
         }
 
         private void Form1_FormClosing(object sender, CancelEventArgs e)
@@ -661,9 +676,33 @@ namespace UCA
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            AbortChecking();
-            mainThread.Abort();
+            isCheckingInterrupted = true;
+            if (queue.Count != 0)
+            {
+                AbortChecking();
+                Thread.Sleep(3000);
+            }
+            if (isCheckingStarted)
+            {
+                var result = $"Проверка прервана, результаты проверки записаны в файл.";
+                log.Send(result);
+            }
             Application.Exit();
+            mainThread.Abort();
+
+            /*
+            while (true)
+            {
+
+                if (queue.Count == 0)
+                {
+                    var result = $"Проверка прервана, результаты проверки записаны в файл.";
+                    //log.Send(result);
+                    mainThread.Abort();
+                    break;
+                }   
+            }
+            */
         }
     }
 }
