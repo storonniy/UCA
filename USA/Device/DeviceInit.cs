@@ -15,26 +15,19 @@ namespace UCA.Devices
             return new DeviceInit(DeviceList);
         }
 
-        //public DeviceStatus GetDeviceStatus()
-        //{
-
-        //}
+        public void CloseDevicesSerialPort(List<Device> deviceList)
+        {
+            foreach (var device in deviceList)
+            {
+                device.SerialPort.Close();
+            }
+        }
 
         public DeviceInit(List<Device> deviceList)
         {
             this.DeviceList = deviceList;
             foreach (var device in deviceList)
             {
-                /*
-                try
-                {
-
-                }
-                catch (System.IO.IOException ex)
-                {
-
-                }
-                */
                 IDeviceInterface newDevice = null;
                 switch (device.Name)
                 {
@@ -109,12 +102,12 @@ namespace UCA.Devices
             catch (IOException)
             {
                 var data = $"lowerLimit {deviceData.LowerLimit}; upperLimit {deviceData.UpperLimit}";
-                return DeviceResult.ResultError($"{data} \n NOT_CONNECTED: Порт {deviceData.DeviceName} закрыт");
+                return DeviceResult.ResultNotConnected($"{data} \n NOT_CONNECTED: Порт {deviceData.DeviceName} закрыт");
             }
             catch (InvalidOperationException)
             {
                 var data = $"lowerLimit {deviceData.LowerLimit}; upperLimit {deviceData.UpperLimit}";
-                return DeviceResult.ResultError($"{data} \n NOT_CONNECTED: Порт {deviceData.DeviceName} закрыт");
+                return DeviceResult.ResultNotConnected($"{data} \n NOT_CONNECTED: Порт {deviceData.DeviceName} закрыт");
             }
             /*
             catch (FormatException)

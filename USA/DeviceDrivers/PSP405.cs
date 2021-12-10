@@ -37,7 +37,7 @@ namespace UCA.DeviceDrivers
 
         ~PSP405()
         {
-            this.serialPort.Close();
+            serialPort.Close();
         }
 
 

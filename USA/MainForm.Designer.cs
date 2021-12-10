@@ -54,15 +54,16 @@ namespace UCA
             this.checkBoxDebug = new System.Windows.Forms.CheckBox();
             this.checkBoxCycle = new System.Windows.Forms.CheckBox();
             this.groupBoxDevices = new System.Windows.Forms.GroupBox();
+            this.buttonStep = new System.Windows.Forms.Button();
             this.treeOfChecking = new System.Windows.Forms.TreeView();
             this.groupBoxCheckingManagement = new System.Windows.Forms.GroupBox();
-            this.buttonStop = new System.Windows.Forms.Button();
             this.buttonOpenDataBase = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBoxPreferences.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBoxManualStep.SuspendLayout();
+            this.groupBoxDevices.SuspendLayout();
             this.groupBoxCheckingManagement.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -230,8 +231,16 @@ namespace UCA
             // groupBoxDevices
             // 
             resources.ApplyResources(this.groupBoxDevices, "groupBoxDevices");
+            this.groupBoxDevices.Controls.Add(this.buttonStep);
             this.groupBoxDevices.Name = "groupBoxDevices";
             this.groupBoxDevices.TabStop = false;
+            // 
+            // buttonStep
+            // 
+            resources.ApplyResources(this.buttonStep, "buttonStep");
+            this.buttonStep.Name = "buttonStep";
+            this.buttonStep.UseVisualStyleBackColor = true;
+            this.buttonStep.Click += new System.EventHandler(this.buttonStep_Click);
             // 
             // treeOfChecking
             // 
@@ -243,20 +252,12 @@ namespace UCA
             // 
             // groupBoxCheckingManagement
             // 
-            this.groupBoxCheckingManagement.Controls.Add(this.buttonStop);
             this.groupBoxCheckingManagement.Controls.Add(this.buttonOpenDataBase);
             this.groupBoxCheckingManagement.Controls.Add(this.buttonCheckingStart);
             this.groupBoxCheckingManagement.Controls.Add(this.buttonCheckingPause);
             resources.ApplyResources(this.groupBoxCheckingManagement, "groupBoxCheckingManagement");
             this.groupBoxCheckingManagement.Name = "groupBoxCheckingManagement";
             this.groupBoxCheckingManagement.TabStop = false;
-            // 
-            // buttonStop
-            // 
-            resources.ApplyResources(this.buttonStop, "buttonStop");
-            this.buttonStop.Name = "buttonStop";
-            this.buttonStop.UseVisualStyleBackColor = true;
-            this.buttonStop.Click += new System.EventHandler(this.buttonStop_Click);
             // 
             // buttonOpenDataBase
             // 
@@ -280,6 +281,7 @@ namespace UCA
             this.groupBox2.ResumeLayout(false);
             this.groupBoxManualStep.ResumeLayout(false);
             this.groupBoxManualStep.PerformLayout();
+            this.groupBoxDevices.ResumeLayout(false);
             this.groupBoxCheckingManagement.ResumeLayout(false);
             this.ResumeLayout(false);
 
@@ -303,7 +305,6 @@ namespace UCA
         private System.Windows.Forms.ComboBox comboBoxVoltageSupply;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ComboBox comboBoxCheckingMode;
-        private System.Windows.Forms.Button buttonStop;
         private System.Windows.Forms.GroupBox groupBoxPreferences;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.CheckBox checkBoxCycle;
@@ -314,6 +315,7 @@ namespace UCA
         private System.Windows.Forms.GroupBox groupBoxDevices;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.CheckBox checkBoxIgnoreErrors;
+        private System.Windows.Forms.Button buttonStep;
     }
 }
 

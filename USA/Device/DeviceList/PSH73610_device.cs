@@ -38,11 +38,11 @@ namespace UCA.Devices
                     {
                         return ResultError($"Ошибка: {result}");
                     }
-                case DeviceCommands.SetCurrent:
+                case DeviceCommands.SetCurrentLimit:
                     var lowerLimitCurrent = deviceData.LowerLimit;
                     var upperLimitCurrent = deviceData.UpperLimit;
                     var expectedCurrent = float.Parse(deviceData.Argument);
-                    var actualCurrent = psh73610.SetCurrent(expectedCurrent);
+                    var actualCurrent = psh73610.SetCurrentLimit(expectedCurrent);
                     var resultCurrent = $"Уcтановлено значение тока {GetValueUnitPair(actualCurrent, UnitType.Current)} \t Нижний предел: {GetValueUnitPair(lowerLimitCurrent, UnitType.Current)}\t Верхний предел {GetValueUnitPair(upperLimitCurrent, UnitType.Current)}";
                     if (Math.Abs(actualCurrent) >= Math.Abs(lowerLimitCurrent) && Math.Abs(actualCurrent) <= Math.Abs(upperLimitCurrent))
                     {
@@ -50,7 +50,7 @@ namespace UCA.Devices
                     }
                     else
                     {
-                        return ResultError("Ошибка: " + resultCurrent);
+                        return ResultError($"Ошибка: {resultCurrent}");
                     }
                 case DeviceCommands.PowerOff:
                     var actualStatus = psh73610.ChangeOutputStatus(0);

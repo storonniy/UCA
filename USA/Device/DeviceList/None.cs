@@ -57,11 +57,40 @@ namespace UCA.Devices
                         var data = $"lowerLimit {deviceData.LowerLimit}; upperLimit {deviceData.UpperLimit}";
                         return DeviceResult.ResultError($"{data} \n Для входного воздействия {GetValueUnitPair(value, unitType)} и канала {deviceData.Channel} не измерялись входные и выходные воздействия");
                     }             
-                case DeviceCommands.CalculateCoeff_UCA_T:
-                    return DeviceResult.ResultError($"Напиши метод,  {deviceData.Command}");
+                case DeviceCommands.CalculateCoefficient_UCAT:
+                    return GetCoefficient_UCAT(deviceData);
                 default:
                     return DeviceResult.ResultError($"Неизвестная команда {deviceData.Command}");
             }
+        }
+
+        private DeviceResult GetCoefficient_UCAT(DeviceData deviceData)
+        {
+            var value = double.Parse(deviceData.Argument, NumberStyles.Float);
+            var lowerLimit = deviceData.LowerLimit;
+            var upperLimit = deviceData.UpperLimit;
+            try
+            {
+                var actualCoefficient = CalculateCoefficient_UCAT(deviceData.Channel, value);
+                var result = $"Коэффициент равен {string.Format("{0:0.000}", actualCoefficient)} В/мкА \tНижний предел  {lowerLimit} В/мкА \tВерхний предел {upperLimit} В/мкА";
+                if (actualCoefficient >= lowerLimit && actualCoefficient <= upperLimit)
+                    return DeviceResult.ResultOk(result);
+                else
+                    return DeviceResult.ResultError($"Ошибка: {result}");
+            }
+            catch (KeyNotFoundException)
+            {
+                UnitType unitType = (deviceData.Channel > 2) ? UnitType.Current : UnitType.Voltage;
+                var data = $"lowerLimit {deviceData.LowerLimit}; upperLimit {deviceData.UpperLimit}";
+                return DeviceResult.ResultError($"{data} \n Для входного воздействия {GetValueUnitPair(value, unitType)} и канала {deviceData.Channel} не измерялись входные и выходные воздействия");
+            }
+        }
+
+        private double CalculateCoefficient_UCAT(int channel, double value)
+        {
+            var valuesAtZero = GetCoefficientValues(channel, 0);
+            var values = GetCoefficientValues(channel, value);
+            return (values[0] - valuesAtZero[0]) / value;           
         }
     }
 }

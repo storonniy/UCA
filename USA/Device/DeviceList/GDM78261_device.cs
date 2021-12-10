@@ -22,7 +22,6 @@ namespace UCA.Devices
             switch (deviceData.Command)
             {
                 case DeviceCommands.GetVoltage:
-                    deviceData.ExpectedValue = deviceData.ExpectedValue.Replace("<", "");
                     var actualVoltage = gdm78261.MeasureVoltageDC();
                     var tmp = double.Parse(deviceData.Argument, NumberStyles.Float);
                     AddCoefficientData(deviceData.Channel, tmp, actualVoltage);

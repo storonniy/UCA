@@ -13,7 +13,6 @@ namespace UCA
 {
     public partial class Form1 : Form
     {
-
         #region Глобальные переменные
 
         static Dictionary<TreeNode, Step> treeviewNodeStep = new Dictionary<TreeNode, Step>();
@@ -48,12 +47,10 @@ namespace UCA
                 if (step != null)
                 {
                     var stepResult = DoStep(step);
-                    if (step.ShowStep) //|| form.checkBoxDebug.Checked
+                    if (step.ShowStep) 
                     {
                         ShowStepResult(step, stepResult);
                     }
-                    //TODO убери нах
-                    //Thread.Sleep(1000);
                 }
                 else if (isCheckingStarted)
                 {
@@ -69,8 +66,8 @@ namespace UCA
                     {
                         result = $"Проверка завершена, результаты проверки записаны в файл. {result}";
                     }
-                    MessageBox.Show(result);
                     log.Send(result);
+                    MessageBox.Show(result);                  
                 }
                 else
                 {
@@ -93,7 +90,6 @@ namespace UCA
             //log = new Log(form.settings);
             ShowSettings();
             InitialActions();
-            buttonStop.Enabled = false;
             buttonCheckingPause.Enabled = false;
             //
             mainThread.Start();
@@ -117,7 +113,12 @@ namespace UCA
             {
                 comboBoxVoltageSupply.Items.Add(modeName);
             }
-            comboBoxVoltageSupply.SelectedItem = comboBoxVoltageSupply.Items[1];
+            var selectedItemNumber = 0;
+            if (comboBoxVoltageSupply.Items.Count > 1)
+            {
+                selectedItemNumber = 1;
+            }
+            comboBoxVoltageSupply.SelectedItem = comboBoxVoltageSupply.Items[selectedItemNumber];
         }
 
         private void ShowCheckingModes()
@@ -126,7 +127,12 @@ namespace UCA
             {
                 comboBoxCheckingMode.Items.Add(modeName);
             }
-            comboBoxCheckingMode.SelectedItem = comboBoxCheckingMode.Items[1];
+            var selectedItemNumber = 0;
+            if (comboBoxCheckingMode.Items.Count > 1)
+            {
+                selectedItemNumber = 1;
+            }
+            comboBoxCheckingMode.SelectedItem = comboBoxCheckingMode.Items[selectedItemNumber];
         }
 
         private void SelectCheckingMode()
@@ -216,7 +222,7 @@ namespace UCA
         {
             try
             {
-                string connectionString = string.Format("Provider=Microsoft.ACE.OLEDB.16.0;Data Source={0}; Extended Properties=Excel 12.0;", pathToDataBase);//"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathToDataBase;
+                string connectionString = string.Format("Provider=Microsoft.ACE.OLEDB.12.0;Data Source={0}; Extended Properties=Excel 12.0;", pathToDataBase);//"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathToDataBase;
                 var dbReader = new DBReader(connectionString);
                 var dataSet = dbReader.GetDataSet();
                 stepsInfo = Step.GetStepsInfo(dataSet);
@@ -234,6 +240,7 @@ namespace UCA
             {
                 MessageBox.Show(ex.Message);
             }
+            
             catch (System.InvalidOperationException ex)
             {
                 MessageBox.Show(ex.Message);
@@ -248,7 +255,7 @@ namespace UCA
             {
                 MessageBox.Show(ex.Message);
             }            
-            /*         
+            /*       
             catch (ArgumentException ex)
             {
                 MessageBox.Show(ex.Message);
@@ -262,7 +269,7 @@ namespace UCA
 
         private void InitialActions()
         {
-            string connectionString = "UCA.xlsx;";
+            string connectionString = "UCAT.xlsx;";
             InitialActions(connectionString);
         }
 
@@ -317,23 +324,27 @@ namespace UCA
             var result = $"Шаг {stepNumber}: {step.Description}\r\n{deviceResult.Description}\r\n\r\n";
             log.Send(result);
             form.AddSubTreeNode(node, deviceResult.Description);
+            var color = Color.Black;
             if (deviceResult.State == DeviceStatus.OK)
             {
-                form.HighlightTreeNode(node, Color.Green);
+                color = Color.Green;
             }
-            if (deviceResult.State == DeviceStatus.ERROR)
+            if (deviceResult.State == DeviceStatus.ERROR || deviceResult.State == DeviceStatus.NOT_CONNECTED)
             {
-                form.HighlightTreeNode(node, Color.Red);
+                color = Color.Red;
             }
+            form.HighlightTreeNode(node, color);
         }
 
         private static void ShowErrorDialog(string description)
         {
-            var dialogResult = MessageBox.Show(description, "Внимание!", MessageBoxButtons.YesNo);
+            var dialogResult = MessageBox.Show(description, "Внимание!", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
             if (dialogResult == DialogResult.Yes)
             {
-                //form.AddSubTreeNode(node, "Аварийная остановка проверки");
-                MessageBox.Show("Проверка остановлена. ОК неисправен.");
+                isCheckingInterrupted = true;
+                //form.AddSubTreeNode(node, "Аварийная остановка проверки");               
+                MessageBox.Show("Проверка остановлена.");
+                
                 form.AbortChecking();
             }
             else if (dialogResult == DialogResult.No)
@@ -348,16 +359,25 @@ namespace UCA
         {
             var stepParser = new StepParser(DeviceHandler, step);
             var deviceResult = stepParser.DoStep();
-            if (deviceResult.State == DeviceStatus.ERROR)
+            if (deviceResult.State == DeviceStatus.ERROR || deviceResult.State == DeviceStatus.NOT_CONNECTED)
             {             
                 checkingResult = false;
                 if (!form.checkBoxIgnoreErrors.Checked)
                 {
-                    isCheckingInterrupted = true;
+                    //isCheckingInterrupted = true;
                     isCheckingStarted = false;
                     var description = $"В ходе проверки произошла ошибка:\r\nШаг: {step.Description}\r\nРезультат шага: {deviceResult.Description}\r\nОстановить проверку?";
                     ShowErrorDialog(description);
                 }
+            }
+            if (deviceResult.State == DeviceStatus.NOT_CONNECTED)
+            {
+                /*
+                DeviceHandler.CloseDevicesSerialPort(stepsInfo.DeviceList);
+                form.UpdateDevicesOnForm();
+                DeviceHandler = new DeviceInit(stepsInfo.DeviceList);
+                form.UpdateDevicesOnForm();
+                */
             }
             return deviceResult;
         }
@@ -421,8 +441,7 @@ namespace UCA
 
         private void AbortChecking()
         {         
-            isCheckingStarted = false;
-            ChangeControlState(buttonStop, isCheckingStarted);
+            isCheckingStarted = false;           
             lock (queue)
             {
                 queue.Clear();
@@ -432,6 +451,9 @@ namespace UCA
                     queue.Enqueue(step);
                 }
             }
+            IDeviceInterface.ClearCoefficientDictionary();
+            Thread.Sleep(2000);
+            //ChangeControlState(buttonStop, isCheckingStarted);
             CleanTreeView();
             BlockControls(false);
         }
@@ -492,7 +514,7 @@ namespace UCA
                         }
                         catch (ArgumentException ex)
                         {
-                            MessageBox.Show(ex.Message);
+                            MessageBox.Show("ArgumentException " + ex.Message);
                         }
                     }
                 }
@@ -529,9 +551,9 @@ namespace UCA
 
         private void BlockControls(bool state)
         {
-            ChangeControlState(buttonStop, state);
+            //ChangeControlState(buttonStop, state);
             ChangeControlState(buttonCheckingPause, state);
-            ChangeControlState(buttonCheckingStart, !state);
+            //ChangeControlState(buttonCheckingStart, !state);
             ChangeControlState(buttonOpenDataBase, !state);
             ChangeControlState(checkBoxDebug, !state);
             ChangeControlState(groupBoxPreferences, !state);
@@ -570,19 +592,47 @@ namespace UCA
 
         #region Методы элементов управления
 
+        private void StartStopChecking()
+        {
+            if (this.InvokeRequired)
+            {
+                this.Invoke((MethodInvoker)delegate { StartStopChecking(); });
+                return;
+            }
+            if (isCheckingStarted)
+            {
+                isCheckingInterrupted = true;
+                AbortChecking();
+                //buttonCheckingStart.Text = "Старт";
+            }
+            else
+            {
+                IDeviceInterface.ClearCoefficientDictionary();
+                checkingResult = true;
+                isCheckingInterrupted = false;
+                CreateLog();
+                var modeName = GetModeName();
+                EnQueueCheckingSteps(modeName);
+                isCheckingStarted = true;
+                BlockControls(isCheckingStarted);
+                //buttonCheckingStart.Text = "Стоп";
+            }
+        }
+
         private void buttonCheckingStart_Click(object sender, EventArgs e)
         {
-            checkingResult = true;
-            isCheckingInterrupted = false;
-            CreateLog();
-            var modeName = GetModeName();
-            EnQueueCheckingSteps(modeName);
-            isCheckingStarted = true;
-            BlockControls(isCheckingStarted);
+            StartStopChecking();
         }
+
+        private void buttonStop_Click(object sender, EventArgs e)
+        {
+            //isCheckingInterrupted = true;
+            //AbortChecking();
+        }
+
         private void buttonOpenDataBase_Click(object sender, EventArgs e)
         {
-            DoStepList(stepsInfo.EmergencyStepList);
+            //DoStepList(stepsInfo.EmergencyStepList);
             OpenFileDialog openBinFileDialog = new OpenFileDialog();
             openBinFileDialog.Filter = "Файлы *.xls* | *xls*";//"Файлы *.accdb | *.accdb | Файлы *.mdb | *.mdb"; "Файлы *.*db | *.*db"
             if (openBinFileDialog.ShowDialog() == DialogResult.OK)
@@ -607,12 +657,6 @@ namespace UCA
             SetVoltageSupplyMode();
         }
 
-        private void buttonStop_Click(object sender, EventArgs e)
-        {
-            isCheckingInterrupted = true;
-            AbortChecking();      
-        }
-
         private void Form1_FormClosing(object sender, CancelEventArgs e)
         {
             AbortChecking();
@@ -628,9 +672,9 @@ namespace UCA
                 var node = treeviewStepNode[thisStep];
                 DoStepOfChecking(thisStep, stepsInfo, mainLog);
             }
-            */
-            
+            */          
         }
+
         private void button1_Click(object sender, EventArgs e)
         {
             var stepList = GetSelectedSteps();
@@ -674,6 +718,8 @@ namespace UCA
         */
         #endregion
 
+        #region Обработка закрытия формы
+
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             isCheckingInterrupted = true;
@@ -703,6 +749,49 @@ namespace UCA
                 }   
             }
             */
+        }
+
+        #endregion
+
+        private void buttonStep_Click(object sender, EventArgs e)
+        {
+            Step step = null;
+            lock (queue)
+            {
+                if (queue.Count != 0 && !isCheckingStarted)
+                {
+                    step = queue.Dequeue();
+                }
+            }
+            if (step != null)
+            {
+                var stepResult = DoStep(step);
+                if (step.ShowStep)
+                {
+                    ShowStepResult(step, stepResult);
+                }
+            }
+            else if (!isCheckingStarted)
+            {
+                isCheckingStarted = false;
+                form.CleanTreeView();
+                form.BlockControls(false);
+                var result = checkingResult ? "ОК исправен." : "ОК неисправен";
+                if (isCheckingInterrupted)
+                {
+                    result = $"Проверка прервана, результаты проверки записаны в файл.";
+                }
+                else
+                {
+                    result = $"Проверка завершена, результаты проверки записаны в файл. {result}";
+                }               
+                log.Send(result);
+                MessageBox.Show(result);
+            }
+            else
+            {
+                Thread.Sleep(42);
+            }
         }
     }
 }

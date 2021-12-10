@@ -22,6 +22,11 @@ namespace UCA.Devices
 
         private static Dictionary<InputData, List<double>> coefficientValuesDictionary = new Dictionary<InputData, List<double>>();
 
+        public static void ClearCoefficientDictionary()
+        {
+            coefficientValuesDictionary.Clear();
+        }
+
         public static void AddCoefficientData(int channel, double expectedValue, double value)
         {
             if (channel > 0)

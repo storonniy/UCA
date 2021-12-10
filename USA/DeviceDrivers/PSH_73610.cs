@@ -14,7 +14,7 @@ namespace UCA.DeviceDrivers
         public PSH73610(SerialPort serialPort)
         {
             this.serialPort = serialPort;
-            //this.serialPort.Open();
+            this.serialPort.Open();
         }
 
         private float DoCommandAndGetResult(string command)
@@ -24,25 +24,13 @@ namespace UCA.DeviceDrivers
             return ParseInputData(serialPort.ReadLine());
         }
 
-        // public float Voltage
-        // {
-        //     set
-        //     {
-        //         DoCommandAndGetResult($":chan1:volt {value}/n");
-        //     }
-        //     get
-        //     {
-        //         return DoCommandAndGetResult($":chan1:volt?/n");
-        //     }
-        // }
-
         public float SetVoltage(float voltage)
         {
             var command = $":chan1:volt {voltage};:chan1:volt?/n";
             return DoCommandAndGetResult(command);
         }
 
-        public float SetCurrent(float current)
+        public float SetCurrentLimit(float current)
         {
             var command = $":chan1:curr {current};:chan1:curr?/n";
             return DoCommandAndGetResult(command);

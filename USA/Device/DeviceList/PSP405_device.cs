@@ -20,7 +20,6 @@ namespace UCA.Devices
             Psp405 = new PSP405(serialPort);
         }
 
-        /// TODO - допиши это говно
         public override DeviceResult DoCommand(DeviceData deviceData)
         {
             switch (deviceData.Command)

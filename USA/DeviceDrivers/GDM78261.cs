@@ -18,6 +18,7 @@ namespace UCA.DeviceDrivers
             this.serialPort = serialPort;
             this.serialPort.Open();
         }
+
         ~GDM78261()
         {
             this.serialPort.Close();

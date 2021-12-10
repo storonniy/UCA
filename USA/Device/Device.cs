@@ -13,7 +13,8 @@ namespace UCA.Devices
     public enum DeviceStatus
     {
         ERROR,
-        OK      
+        OK,
+        NOT_CONNECTED
     }
 
     public struct DeviceData
@@ -42,6 +43,11 @@ namespace UCA.Devices
         public static DeviceResult ResultError(string description) => new DeviceResult()
         {
             State = DeviceStatus.ERROR,
+            Description = description
+        };
+        public static DeviceResult ResultNotConnected(string description) => new DeviceResult()
+        {
+            State = DeviceStatus.NOT_CONNECTED,
             Description = description
         };
     }
@@ -73,7 +79,7 @@ namespace UCA.Devices
         // PCI_1762
         Commutate_0,
         Commutate_1,
-        CalculateCoeff_UCA_T,
+        CalculateCoefficient_UCAT,
         SetMeasurementToCurrent, // GDM
         SetMeasurementToVoltage,
         // AKIP_3407
