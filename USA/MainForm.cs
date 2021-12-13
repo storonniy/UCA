@@ -222,7 +222,7 @@ namespace UCA
         {
             try
             {
-                string connectionString = string.Format("Provider=Microsoft.ACE.OLEDB.12.0;Data Source={0}; Extended Properties=Excel 12.0;", pathToDataBase);//"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathToDataBase;
+                string connectionString = string.Format("Provider=Microsoft.ACE.OLEDB.16.0;Data Source={0}; Extended Properties=Excel 12.0;", pathToDataBase);//"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathToDataBase;
                 var dbReader = new DBReader(connectionString);
                 var dataSet = dbReader.GetDataSet();
                 stepsInfo = Step.GetStepsInfo(dataSet);
@@ -344,7 +344,7 @@ namespace UCA
                 isCheckingInterrupted = true;
                 //form.AddSubTreeNode(node, "Аварийная остановка проверки");               
                 MessageBox.Show("Проверка остановлена.");
-                
+                form.ChangeStartButtonState();
                 form.AbortChecking();
             }
             else if (dialogResult == DialogResult.No)
@@ -456,6 +456,18 @@ namespace UCA
             //ChangeControlState(buttonStop, isCheckingStarted);
             CleanTreeView();
             BlockControls(false);
+        }
+
+        private void ChangeStartButtonState()
+        {
+            if (this.InvokeRequired)
+            {
+                this.Invoke((MethodInvoker)delegate { ChangeStartButtonState(); });
+                return;
+            }
+            isCheckingStarted = !isCheckingStarted;
+            var buttonText = isCheckingStarted ? "Стоп" : "Старт";
+            buttonCheckingStart.Text = buttonText;
         }
 
         private void ChangeCheckingState()
@@ -603,7 +615,7 @@ namespace UCA
             {
                 isCheckingInterrupted = true;
                 AbortChecking();
-                //buttonCheckingStart.Text = "Старт";
+                buttonCheckingStart.Text = "Старт";
             }
             else
             {
@@ -615,7 +627,7 @@ namespace UCA
                 EnQueueCheckingSteps(modeName);
                 isCheckingStarted = true;
                 BlockControls(isCheckingStarted);
-                //buttonCheckingStart.Text = "Стоп";
+                buttonCheckingStart.Text = "Стоп";
             }
         }
 

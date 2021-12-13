@@ -24,31 +24,33 @@ namespace UCA.DeviceDrivers
             return ParseInputData(serialPort.ReadLine());
         }
 
-        public float SetVoltage(float voltage)
+        public float SetVoltage(double voltage)
         {
-            var command = $":chan1:volt {voltage};:chan1:volt?/n";
+            var str = voltage.ToString().Replace(",", ".");
+            var command = $":chan1:volt {str};:chan1:volt?/n";
             return DoCommandAndGetResult(command);
         }
 
-        public float SetCurrentLimit(float current)
+        public float SetCurrentLimit(double current)
         {
-            var command = $":chan1:curr {current};:chan1:curr?/n";
+            var str = current.ToString().Replace(",", ".");
+            var command = $":chan1:curr {str};:chan1:curr?/n";
             return DoCommandAndGetResult(command);
         }
 
-        public float SetVoltageProtection(float voltageProtection)
+        public float SetVoltageProtection(double voltageProtection)
         {
             var command = $":chan1:prot:volt {voltageProtection};:chan1:prot:volt?/n";
             return DoCommandAndGetResult(command);
         }
 
-        public float SetCurrentProtection(float currentProtection)
+        public float SetCurrentProtection(double currentProtection)
         {
             var command = $":chan1:prot:curr {currentProtection};:chan1:prot:curr?/n";
             return DoCommandAndGetResult(command);
         }
 
-        public float ChangeOutputStatus(float value)
+        public float ChangeOutputStatus(int value)
         {
             var command = $":outp:stat {value};:outp:stat?";
             return DoCommandAndGetResult(command);
@@ -56,6 +58,7 @@ namespace UCA.DeviceDrivers
 
         private float ParseInputData(string data)
         {
+            var valuee = Single.Parse(data.Replace(".", ","));
             return Single.Parse(data.Replace(".", ","));
         }
 

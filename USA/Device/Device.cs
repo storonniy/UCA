@@ -79,6 +79,8 @@ namespace UCA.Devices
         // PCI_1762
         Commutate_0,
         Commutate_1,
+        ReadPCI1762Data,
+        //
         CalculateCoefficient_UCAT,
         SetMeasurementToCurrent, // GDM
         SetMeasurementToVoltage,
