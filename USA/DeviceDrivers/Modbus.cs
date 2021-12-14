@@ -32,7 +32,7 @@ namespace UCA.DeviceDrivers
             {
                 throw new Exception(ex.Message);
             }
-            master = ModbusSerialMaster.CreateRtu(_serialPort);
+            this.master = ModbusSerialMaster.CreateRtu(_serialPort);
             slaveId = 1;
             //ushort startAddress = 0x0a00;
             //ushort numRegisters = 5;
@@ -93,15 +93,7 @@ namespace UCA.DeviceDrivers
         {
             if (!_serialPort.IsOpen)
             {
-                try
-                {
-                    _serialPort.Open();
-                }
-                catch (Exception ex)
-                {
-                    // MessageBox.Show("Не могу открыть порт "+_serialPort.PortName);
-                    return 0;
-                }
+                _serialPort.Open();
             }
             ushort[] uAns = master.ReadHoldingRegisters(slaveId, adres, count);
             byte[] bAns = new byte[4];

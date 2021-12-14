@@ -236,35 +236,10 @@ namespace UCA
                 UpdateDevicesOnForm();
                 //DeviceHandler = new DeviceInit(stepsInfo.DeviceList);
             }
-            catch (System.Data.OleDb.OleDbException ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            
-            catch (System.InvalidOperationException ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            
-            catch (System.IO.IOException ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }            
-            /*       
-            catch (ArgumentException ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            catch (FormatException ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            */
         }
 
         private void InitialActions()

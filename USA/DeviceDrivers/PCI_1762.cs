@@ -12,12 +12,16 @@ namespace UCA.DeviceDrivers
     public class PCI_1762
     {
         private InstantDoCtrl instantDoCtrl = new InstantDoCtrl();
+        BDaqDevice device;
+        
 
         public PCI_1762 (int deviceNumber, int deviceID)
-        {
+        {         
+            instantDoCtrl.SelectedDevice = new DeviceInformation(deviceNumber);
+            //var errorCode = BDaqDevice.Open(deviceNumber, AccessMode.ModeWrite, out device);
             if (!instantDoCtrl.Initialized)
             {
-                //instantDoCtrl.SelectedDevice = new DeviceInformation(deviceNumber);
+                
             }
         }
 
@@ -27,6 +31,7 @@ namespace UCA.DeviceDrivers
                 //throw new Exception("Ошибка инициализации PCI_1762");
             ErrorCode errorCode = ErrorCode.ErrorUndefined;
             int portCount = 1;
+           // instantDoCtrl.Write()
             errorCode = instantDoCtrl.Write(portStart, portCount, relayNumbers);
             return errorCode == ErrorCode.Success;
         }

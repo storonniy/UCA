@@ -22,15 +22,14 @@ namespace UCA.Devices
             switch (deviceData.Command)
             {
                 case DeviceCommands.Commutate_0:
-                    portStart = 0;
-                    return CommutatePCI(deviceData, portStart);
+                    var relayNumbers = GetRelayNumbersArray(deviceData.Argument);
+                    return CloseRelay(relayNumbers, 0);
                 case DeviceCommands.Commutate_1:
-                    portStart = 1;
-                    return CommutatePCI(deviceData, portStart);
+                    return CloseRelay(GetRelayNumbersArray(deviceData.Argument), 1);
                 case DeviceCommands.ReadPCI1762Data:
                     var port = int.Parse(deviceData.Argument);
                     var portByte = pci1762.Read(port);
-                    if (portByte == 0x00)
+                    if (portByte == 0xFF)
                     {
                         return ResultOk($"{portByte}");
                     }
@@ -43,14 +42,35 @@ namespace UCA.Devices
             }
         }
 
-        private DeviceResult CommutatePCI(DeviceData deviceData, int portStart)
+        public static DeviceResult CloseRelay(byte[] relayNumbers, int portStart)
         {
-            byte[] relayNumbers = new byte[1] { byte.Parse(deviceData.Argument) };
             var resultOK = pci1762.Write(relayNumbers, portStart);
             if (resultOK)
-                return ResultOk($"Реле {relayNumbers[0]} замнкуты успешно");
+                return ResultOk($"Реле замнкуты успешно");
             else
-                return ResultError($"Ошибка: при замыкании реле  {relayNumbers[0]} произошла ошибка");
+                return ResultError($"Ошибка: при замыкании реле произошла ошибка");
+        }
+
+        public static byte[] GetRelayNumbersArray(string relayNames)
+        {
+            try
+            {
+                var relays = relayNames.Replace(" ", "").Split(',');
+                var relayNumbers = new byte[8];
+                for (var i = 0; i < relays.Length; i++)
+                {
+                    relayNumbers[i] = byte.Parse(relays[i]);
+                }
+                return relayNumbers;
+            }
+            catch (IndexOutOfRangeException)
+            {
+                throw new IndexOutOfRangeException("Число реле PCI_1762 не должно превышать 8");
+            }
+            catch (FormatException)
+            {
+                throw new FormatException("Реле PCI_1762 должны быть указаны в формате int через запятую");
+            }
         }
     }
 }
