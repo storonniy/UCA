@@ -15,21 +15,42 @@ namespace UCA.DeviceDrivers
 
         }
 
+        public bool SetCurrentControlMode()
+        {
+            var cmd = new ushort[] { 0x01 };
+            return WriteHoldingRegInt(0x0A00, cmd);
+        }
+
         public bool PowerOn()
         {
             var cmdArr = new ushort[] { 0x2a };
-            return writeHoldingRegInt(0x0A00, cmdArr);
+            return WriteHoldingRegInt(0x0A00, cmdArr);
         }
 
         public bool PowerOff()
         {
             var cmdArr = new ushort[] { 0x2b };
-            return writeHoldingRegInt(0x0A00, cmdArr);
+            return WriteHoldingRegInt(0x0A00, cmdArr);
         }
 
         public bool SetCurrent(float current)
         {
-            return writeHoldingRegFloat(0x0A00, current);
-        }  
+            return WriteHoldingRegFloat(0x0A00, current);
+        }
+
+        public bool SetConstantCurrent(float current)
+        {
+            return WriteHoldingRegFloat(0x0A01, current);
+        }
+
+        public float GetConstantCurrent()
+        {
+            return ReadHoldingReg(0x0A01, 1);
+        }
+
+        public float GetMaxCurrent()
+        {
+            return ReadHoldingReg(0x0A34, 1);
+        }
     }
 }

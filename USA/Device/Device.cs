@@ -8,6 +8,14 @@ namespace UCA.Devices
         public SerialPort SerialPort;
         public DeviceNames Name;
         public DeviceStatus Status;
+        public string Description;
+/*        public Device(DeviceNames name, DeviceStatus status, SerialPort serialPort, string description)
+        {
+            SerialPort = serialPort;
+            Name = name;
+            Status = status;
+            Description = description;
+        }*/
     }
 
     public enum DeviceStatus
@@ -76,16 +84,18 @@ namespace UCA.Devices
         SetVoltageProtection,
         SetCurrentProtection,
         // ATH_8030
+        SetCurrentControlMode,
         // PCI_1762
-        Commutate_0,
-        Commutate_1,
+        Commutate,
         ReadPCI1762Data,
         //
         CalculateCoefficient_UCAT,
         SetMeasurementToCurrent, // GDM
         SetMeasurementToVoltage,
         // AKIP_3407
-        SetFrequency
+        SetFrequency,
+        //
+        Sleep
     }
 
     public enum DeviceNames

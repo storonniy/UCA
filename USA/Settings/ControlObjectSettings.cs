@@ -23,7 +23,7 @@ namespace UCA.ControlObjectSettings
         {
             public Regime Regime;
             public string Comment;
-            public int FactoryNumber;
+            public string FactoryNumber;
             public string OperatorName;
         }        
 

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static UCA.Auxiliary.UnitValuePair;
+using System.Threading;
 
 namespace UCA.Devices
 {
@@ -59,6 +60,15 @@ namespace UCA.Devices
                     }             
                 case DeviceCommands.CalculateCoefficient_UCAT:
                     return GetCoefficient_UCAT(deviceData);
+                case DeviceCommands.Sleep:
+                    var timeInSeconds = int.Parse(deviceData.Argument);
+                    var t = TimeSpan.FromSeconds(timeInSeconds);
+                    var startTime = DateTime.Now;
+                    while (DateTime.Now  - startTime < t)
+                    {
+                        Thread.Sleep(1000);
+                    }
+                    return DeviceResult.ResultOk("");
                 default:
                     return DeviceResult.ResultError($"Неизвестная команда {deviceData.Command}");
             }

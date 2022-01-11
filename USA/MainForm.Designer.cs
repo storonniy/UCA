@@ -29,17 +29,18 @@ namespace UCA
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.buttonCheckingStart = new System.Windows.Forms.Button();
             this.buttonCheckingPause = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.textBoxOperatorName = new System.Windows.Forms.TextBox();
+            this.textBoxFactoryNumber = new System.Windows.Forms.TextBox();
+            this.textBoxComment = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
-            this.labelOperatorName = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.labelFactoryNumber = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.labelComment = new System.Windows.Forms.Label();
             this.groupBoxPreferences = new System.Windows.Forms.GroupBox();
             this.labelAttention = new System.Windows.Forms.Label();
             this.comboBoxCheckingMode = new System.Windows.Forms.ComboBox();
@@ -57,7 +58,10 @@ namespace UCA
             this.buttonStep = new System.Windows.Forms.Button();
             this.treeOfChecking = new System.Windows.Forms.TreeView();
             this.groupBoxCheckingManagement = new System.Windows.Forms.GroupBox();
+            this.buttonCheckingStop = new System.Windows.Forms.Button();
             this.buttonOpenDataBase = new System.Windows.Forms.Button();
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.buttonPowerOn = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBoxPreferences.SuspendLayout();
@@ -94,47 +98,51 @@ namespace UCA
             // groupBox1
             // 
             resources.ApplyResources(this.groupBox1, "groupBox1");
+            this.groupBox1.Controls.Add(this.textBoxOperatorName);
+            this.groupBox1.Controls.Add(this.textBoxFactoryNumber);
+            this.groupBox1.Controls.Add(this.textBoxComment);
             this.groupBox1.Controls.Add(this.label4);
-            this.groupBox1.Controls.Add(this.labelOperatorName);
             this.groupBox1.Controls.Add(this.label2);
-            this.groupBox1.Controls.Add(this.labelFactoryNumber);
             this.groupBox1.Controls.Add(this.label3);
-            this.groupBox1.Controls.Add(this.labelComment);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.TabStop = false;
+            // 
+            // textBoxOperatorName
+            // 
+            resources.ApplyResources(this.textBoxOperatorName, "textBoxOperatorName");
+            this.textBoxOperatorName.Name = "textBoxOperatorName";
+            this.textBoxOperatorName.TextChanged += new System.EventHandler(this.textBoxOperatorName_TextChanged);
+            // 
+            // textBoxFactoryNumber
+            // 
+            resources.ApplyResources(this.textBoxFactoryNumber, "textBoxFactoryNumber");
+            this.textBoxFactoryNumber.Name = "textBoxFactoryNumber";
+            this.textBoxFactoryNumber.TextChanged += new System.EventHandler(this.textBoxFactoryNumber_TextChanged);
+            // 
+            // textBoxComment
+            // 
+            resources.ApplyResources(this.textBoxComment, "textBoxComment");
+            this.textBoxComment.Name = "textBoxComment";
+            this.textBoxComment.TextChanged += new System.EventHandler(this.textBoxComment_TextChanged);
             // 
             // label4
             // 
             resources.ApplyResources(this.label4, "label4");
             this.label4.Name = "label4";
             // 
-            // labelOperatorName
-            // 
-            resources.ApplyResources(this.labelOperatorName, "labelOperatorName");
-            this.labelOperatorName.Name = "labelOperatorName";
-            // 
             // label2
             // 
             resources.ApplyResources(this.label2, "label2");
             this.label2.Name = "label2";
-            // 
-            // labelFactoryNumber
-            // 
-            resources.ApplyResources(this.labelFactoryNumber, "labelFactoryNumber");
-            this.labelFactoryNumber.Name = "labelFactoryNumber";
             // 
             // label3
             // 
             resources.ApplyResources(this.label3, "label3");
             this.label3.Name = "label3";
             // 
-            // labelComment
-            // 
-            resources.ApplyResources(this.labelComment, "labelComment");
-            this.labelComment.Name = "labelComment";
-            // 
             // groupBoxPreferences
             // 
+            this.groupBoxPreferences.Controls.Add(this.buttonPowerOn);
             this.groupBoxPreferences.Controls.Add(this.labelAttention);
             this.groupBoxPreferences.Controls.Add(this.comboBoxCheckingMode);
             this.groupBoxPreferences.Controls.Add(this.comboBoxVoltageSupply);
@@ -252,6 +260,7 @@ namespace UCA
             // 
             // groupBoxCheckingManagement
             // 
+            this.groupBoxCheckingManagement.Controls.Add(this.buttonCheckingStop);
             this.groupBoxCheckingManagement.Controls.Add(this.buttonOpenDataBase);
             this.groupBoxCheckingManagement.Controls.Add(this.buttonCheckingStart);
             this.groupBoxCheckingManagement.Controls.Add(this.buttonCheckingPause);
@@ -259,12 +268,31 @@ namespace UCA
             this.groupBoxCheckingManagement.Name = "groupBoxCheckingManagement";
             this.groupBoxCheckingManagement.TabStop = false;
             // 
+            // buttonCheckingStop
+            // 
+            resources.ApplyResources(this.buttonCheckingStop, "buttonCheckingStop");
+            this.buttonCheckingStop.Name = "buttonCheckingStop";
+            this.buttonCheckingStop.UseVisualStyleBackColor = true;
+            this.buttonCheckingStop.Click += new System.EventHandler(this.buttonCheckingStop_Click);
+            // 
             // buttonOpenDataBase
             // 
             resources.ApplyResources(this.buttonOpenDataBase, "buttonOpenDataBase");
             this.buttonOpenDataBase.Name = "buttonOpenDataBase";
             this.buttonOpenDataBase.UseVisualStyleBackColor = true;
             this.buttonOpenDataBase.Click += new System.EventHandler(this.buttonOpenDataBase_Click);
+            // 
+            // contextMenuStrip1
+            // 
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            resources.ApplyResources(this.contextMenuStrip1, "contextMenuStrip1");
+            // 
+            // buttonPowerOn
+            // 
+            resources.ApplyResources(this.buttonPowerOn, "buttonPowerOn");
+            this.buttonPowerOn.Name = "buttonPowerOn";
+            this.buttonPowerOn.UseVisualStyleBackColor = true;
+            this.buttonPowerOn.Click += new System.EventHandler(this.button3_Click);
             // 
             // Form1
             // 
@@ -295,9 +323,6 @@ namespace UCA
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.TreeView treeOfChecking;
         private System.Windows.Forms.Button buttonOpenDataBase;
-        private System.Windows.Forms.Label labelOperatorName;
-        private System.Windows.Forms.Label labelFactoryNumber;
-        private System.Windows.Forms.Label labelComment;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label3;
@@ -316,6 +341,12 @@ namespace UCA
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.CheckBox checkBoxIgnoreErrors;
         private System.Windows.Forms.Button buttonStep;
+        private System.Windows.Forms.TextBox textBoxOperatorName;
+        private System.Windows.Forms.TextBox textBoxFactoryNumber;
+        private System.Windows.Forms.TextBox textBoxComment;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.Button buttonCheckingStop;
+        private System.Windows.Forms.Button buttonPowerOn;
     }
 }
 

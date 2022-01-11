@@ -5,112 +5,70 @@ using System.Text;
 using System.Threading.Tasks;
 using Modbus.Device;
 using System.IO.Ports;
+using System.Threading;
 
 namespace UCA.DeviceDrivers
 {
     public abstract class Modbus_device
     {//[01 10 0A 00 00 01 02 00 2B 4C 4F] >> [01 10 0A 00 00 01 02 11]
-        SerialPort _serialPort;
+        SerialPort serialPort;
         IModbusSerialMaster master;
         byte slaveId;
-        //public static recive_type device_data;
         public Modbus_device(string portName)
         {
-            _serialPort = new SerialPort(portName);
+            serialPort = new SerialPort(portName);
 
             // configure serial port
-            _serialPort.BaudRate = 9600;
-            _serialPort.DataBits = 8;
-            _serialPort.Parity = Parity.None;
-            _serialPort.StopBits = StopBits.One;
-            try
-            {
-
-                //_serialPort.Open();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-            this.master = ModbusSerialMaster.CreateRtu(_serialPort);
-            slaveId = 1;
-            //ushort startAddress = 0x0a00;
-            //ushort numRegisters = 5;
-            // ushort[] write_data = { 0x2b };
-            // ushort[] registers = master.ReadHoldingRegisters(slaveId, startAddress, numRegisters);
-            //ushort[] registers =  master.ReadWriteMultipleRegisters(slaveId, startAddress, numRegisters, 0x2a, write_data);
-            //master.WriteMultipleRegisters(slaveId, startAddress, write_data);
-
+            serialPort.BaudRate = 9600;
+            serialPort.DataBits = 8;
+            serialPort.Parity = Parity.None;
+            serialPort.StopBits = StopBits.One;
+            this.master = ModbusSerialMaster.CreateRtu(serialPort);
+            this.slaveId = 1;
+            serialPort.Open();
         }
-        public bool writeHoldingRegInt(ushort adres, ushort[] write_data)
+
+        public bool WriteHoldingRegInt(ushort address, ushort[] value)
         {
-            if (!_serialPort.IsOpen)
-            {
-                try
-                {
-                    _serialPort.Open();
-                }
-                catch (Exception ex)
-                {
-                    // MessageBox.Show("Не могу открыть порт "+_serialPort.PortName);
-                    return false;
-                }
-            }
-            var ans = master.WriteMultipleRegistersAsync(slaveId, adres, write_data);
-            if (ans.IsCompleted)
-                return true;
-            else
-                return false;
+            var ans = master.WriteMultipleRegistersAsync(slaveId, address, value);
+            return ans.IsCompleted;
         }
-        public bool writeHoldingRegFloat(ushort adres, float write_data)
+
+        public bool WriteHoldingRegFloat(ushort address, float value)
         {
-            if (!_serialPort.IsOpen)
+            byte[] fData = BitConverter.GetBytes(value);
+            //var fData = new byte[] { 0x40, 0x40 };
+            var reversedFData = fData;
+            for (int i = 0; i < fData.Length; i++)
             {
-                try
-                {
-                    _serialPort.Open();
-                }
-                catch (Exception ex)
-                {
-                    // MessageBox.Show("Не могу открыть порт "+_serialPort.PortName);
-                    return false;
-                }
+                reversedFData[fData.Length - 1 - i] = fData[i];
             }
-            byte[] fData = BitConverter.GetBytes(write_data);
             ushort[] uData = new ushort[4];
-            foreach (int i in fData)
+            for (int i = 0; i < fData.Length; i++)
             {
-                uData[i] = fData[i];
+                uData[i] = reversedFData[i];
             }
             //ushort[] fData = BitConverter.ToUInt16(BitConverter.GetBytes(write_data),0);
-            var ans = master.WriteMultipleRegistersAsync(slaveId, adres, uData);
-            if (ans.IsCompleted)
-                return true;
-            else
-                return false;
+            var ans = master.WriteMultipleRegistersAsync(slaveId, address, new ushort[] { 0x40, 0x40, 0x40, 0x40 });
+            Thread.Sleep(1000);
+            return ans.IsCompleted;
         }
-        public float readHoldingReg(ushort adres, ushort count)
-        {
-            if (!_serialPort.IsOpen)
-            {
-                _serialPort.Open();
-            }
-            ushort[] uAns = master.ReadHoldingRegisters(slaveId, adres, count);
-            byte[] bAns = new byte[4];
-            foreach (int i in uAns)
-            {
-                bAns[i] = (byte)uAns[i];
-            }
-            float fAns = BitConverter.ToSingle(bAns, 0);
-            return fAns;
-        }
-        //public static void port_not_open()
-        //{
-        //    //если не могу открыть порт
-        //    device_data.data = "-1";
-        //    device_data.status = state.NOT_CONNECTION;
-        //    CallBackMy.msg_from_device_Handler(device_data);
-        //}
 
+        public float ReadHoldingReg(ushort address, ushort count)
+        {
+            ushort[] uShortAnswer = master.ReadHoldingRegisters(slaveId, address, count);
+            byte[] byteAnswer = BitConverter.GetBytes(uShortAnswer[0]);
+            byte[] answer = new byte[4];
+            var reverse = new byte[byteAnswer.Length];
+            for (int i = 0; i < byteAnswer.Length; i++)
+            {
+                reverse[byteAnswer.Length - i - 1] = byteAnswer[i];
+            }
+            for (int i = 0; i < reverse.Length; i++)
+            {
+                answer[answer.Length - 1 - i] = reverse[i];
+            }
+            return BitConverter.ToSingle(answer, 0);
+        }
     }
 }

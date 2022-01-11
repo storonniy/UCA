@@ -78,8 +78,10 @@ namespace UCA.Steps
                 var deviceName = row["device"].ToString();
                 var portName = row["portName"].ToString();
                 var baudRate = int.Parse(row["baudRate"].ToString());
+                var description = row["description"].ToString();
                 var device = new Device();
                 device.SerialPort = GetSerialPort(portName, baudRate);
+                device.Description = description;
                 try
                 {
                     device.Name = (DeviceNames)Enum.Parse(typeof(DeviceNames), deviceName);

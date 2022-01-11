@@ -4,7 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using UCA.Devices;
+using static UCA.ControlObjectSettings.ControlObjectSettings;
 
 namespace UCA
 {
@@ -18,7 +18,14 @@ namespace UCA
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new SettingsForm());
+            //Application.Run(new SettingsForm());
+            var settings = new Settings()
+            {
+                Comment = "Не указан",
+                FactoryNumber = "Не указан",
+                OperatorName = "Не указан"
+            };
+            Application.Run(new Form1(settings));
         }
     }
 }

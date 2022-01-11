@@ -45,6 +45,15 @@ namespace UCA.Devices
                         return DeviceResult.ResultOk(resultCurrent);
                     else
                         return DeviceResult.ResultError($"Ошибка: не удалось установить сигнал {GetValueUnitPair(current, UnitType.Current)}");
+                case DeviceCommands.SetCurrentControlMode:
+                    if (ath8030.SetCurrentControlMode())
+                    {
+                        return DeviceResult.ResultOk($"Устройство {deviceData.DeviceName} установлено в режим стабилизации тока");
+                    }
+                    else
+                    {
+                        return DeviceResult.ResultError($"Ошибка: устройство {deviceData.DeviceName} не установлено в режим стабилизации тока");
+                    }
                 default:
                     return DeviceResult.ResultError($"Неизвестная команда {deviceData.Command}");
             }

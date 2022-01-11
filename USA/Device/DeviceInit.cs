@@ -55,7 +55,7 @@ namespace UCA.Devices
                         newDevice = new PSH73610_device(device.SerialPort);
                         break;
                     case DeviceNames.PCI_1762:
-                        newDevice = new PCI1762_device(1, 1);
+                        newDevice = new PCI1762_device(device.Description);
                         break;
                     case DeviceNames.ATH_8030:
                         newDevice = new ATH8030_device(device.SerialPort.PortName);
@@ -65,25 +65,25 @@ namespace UCA.Devices
                         newDevice = new GDM78261_device(device.SerialPort);
                         break;
                     case DeviceNames.PCI_1761_1:
-                        newDevice = new PCI1762_device(1, 1);
+                        newDevice = new PCI1762_device(device.Description);
                         break;
                     case DeviceNames.PCI_1761_2:
-                        newDevice = new PCI1762_device(2, 1);
+                        newDevice = new PCI1762_device(device.Description);
                         break;
                     case DeviceNames.PCI_1762_1:
-                        newDevice = new PCI1762_device(3, 1);
+                        newDevice = new PCI1762_device(device.Description);
                         break;
                     case DeviceNames.PCI_1762_2:
-                        newDevice = new PCI1762_device(4, 1);
+                        newDevice = new PCI1762_device(device.Description);
                         break;
                     case DeviceNames.PCI_1762_3:
-                        newDevice = new PCI1762_device(5, 1);
+                        newDevice = new PCI1762_device(device.Description);
                         break;
                     case DeviceNames.PCI_1762_4:
-                        newDevice = new PCI1762_device(6, 1);
+                        newDevice = new PCI1762_device(device.Description);
                         break;
                     case DeviceNames.PCI_1762_5:
-                        newDevice = new PCI1762_device(7, 1);
+                        newDevice = new PCI1762_device(device.Description);
                         break;
                     case DeviceNames.AKIP_3407:
                         newDevice = new AKIP3407_device(device.SerialPort);

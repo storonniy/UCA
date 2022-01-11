@@ -27,7 +27,7 @@ namespace UCA
                 var settings = new Settings()
                 {
                     Comment = textBoxComment.Text,
-                    FactoryNumber = int.Parse(textBoxFactoryNumber.Text),
+                    FactoryNumber = textBoxFactoryNumber.Text,
                     OperatorName = textBoxOperatorName.Text
                 };
                 var mainForm = new Form1(settings);
