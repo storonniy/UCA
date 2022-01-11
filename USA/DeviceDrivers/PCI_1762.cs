@@ -13,8 +13,6 @@ namespace UCA.DeviceDrivers
     {
         private InstantDoCtrl instantDoCtrl;
         BDaqDevice device;
-        
-
         public PCI_1762 (string description)
         {
             instantDoCtrl = new InstantDoCtrl();
@@ -27,7 +25,6 @@ namespace UCA.DeviceDrivers
 
         public ErrorCode Write(int[] relayNumbers)
         {
-            PortDirection[] portDirs = instantDoCtrl.PortDirection;
             ErrorCode errorCode = ErrorCode.ErrorUndefined;
             var dict = GetPortNumDictionary(relayNumbers);
             foreach (int portNum in dict.Keys)
@@ -72,8 +69,9 @@ namespace UCA.DeviceDrivers
 
         public static int GetData(List<int> relayNumbers)
         {
+            var hashSet = new HashSet<int>(relayNumbers);
             int data = 0;
-            foreach (int relayNumber in relayNumbers)
+            foreach (var relayNumber in hashSet)
             {
                 if (relayNumber < 0 || relayNumber > 7)
                 {

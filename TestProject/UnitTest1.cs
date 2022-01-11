@@ -9,8 +9,10 @@ namespace TestProject
     [TestClass]
     public class UnitTest1
     {
+
         #region PCI_1762
 
+        //PCI_1762 pci1762 = new PCI_1762("PCI-1762,BID#1");
         [TestMethod]
         public void GetRelayNumbersArray_Test()
         {
@@ -62,15 +64,26 @@ namespace TestProject
             }
         }
 
-        /*
+        
         [TestMethod]
-        public void CloseRelay_Test()
+        public void GetData()
         {
-            var relayNumbers = PCI1762_device.GetRelayNumbersArray("1, 2, 3, 4, 5, 6, 7, 8");
-            var deviceResult = PCI1762_device.CloseRelay(relayNumbers, 0);
-            Assert.AreEqual(DeviceResult.ResultError, deviceResult);
-        }
-        */
+            int expected = 135;
+            int actual = PCI_1762.GetData(new List<int>() { 0, 1, 2, 7 });
+            Assert.AreEqual(expected, actual);
+            expected = 44;
+            actual = PCI_1762.GetData(new List<int>() { 2, 3, 5, 5 });
+            Assert.AreEqual(expected, actual);
+            expected = 172;
+            actual = PCI_1762.GetData(new List<int>() { 2, 5, 3, 7 });
+            Assert.AreEqual(expected, actual);
+            expected = 30;
+            actual = PCI_1762.GetData(new List<int>() { 1, 2, 3, 4 });
+            Assert.AreEqual(expected, actual);
+            expected = 62;
+            actual = PCI_1762.GetData(new List<int>() { 1, 2, 3, 4, 5 });
+            Assert.AreEqual(expected, actual);
+        }     
         #endregion
     }
 }
