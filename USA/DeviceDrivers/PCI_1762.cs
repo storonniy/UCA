@@ -29,7 +29,7 @@ namespace UCA.DeviceDrivers
             var dict = GetPortNumDictionary(relayNumbers);
             foreach (int portNum in dict.Keys)
             {
-                errorCode = instantDoCtrl.Write(portNum, (byte)GetData(dict[portNum]));
+                errorCode = instantDoCtrl.Write(portNum, (byte)GetRelaysAsByte(dict[portNum]));
                 if (errorCode != ErrorCode.Success)
                 {
                     return errorCode;
@@ -45,7 +45,7 @@ namespace UCA.DeviceDrivers
             foreach (var portNum in dict.Keys)
             {
                 var portByte = Read(portNum);
-                var data = GetData(dict[portNum]);
+                var data = GetRelaysAsByte(dict[portNum]);
                 byte res = (byte)(portByte & data);
                 errorCode = instantDoCtrl.Write(portNum, (byte)(portByte - res));
                 if (errorCode != ErrorCode.Success)
@@ -67,17 +67,17 @@ namespace UCA.DeviceDrivers
             return errorCode;
         }
 
-        public static int GetData(List<int> relayNumbers)
+        public static byte GetRelaysAsByte(List<int> relayNumbers)
         {
             var hashSet = new HashSet<int>(relayNumbers);
-            int data = 0;
+            byte data = 0;
             foreach (var relayNumber in hashSet)
             {
                 if (relayNumber < 0 || relayNumber > 7)
                 {
                     throw new Exception($"Номер реле не может быть равен {relayNumber}.");
                 }
-                data += (int)Math.Pow(2, relayNumber);
+                data += (byte)Math.Pow(2, relayNumber);
             }
             return data;
         }
@@ -106,6 +106,32 @@ namespace UCA.DeviceDrivers
             byte data;
             instantDoCtrl.Read(port, out data);
             return data;
+        }
+
+        public int[] GetClosedRelaysNumbers()
+        {
+            int maxPortNumber = 2;
+            var relayNumbers = new List<int>();
+            for (int portNum = 0; portNum < maxPortNumber; portNum++)
+            {
+                var data = Read(portNum);
+                relayNumbers.AddRange(ConvertDataToRelayNumbers(data));
+            }
+            return relayNumbers.ToArray();            
+        }
+
+        public static List<int> ConvertDataToRelayNumbers(byte data)
+        {
+            var relayNumbers = new List<int>();
+            var binary = Convert.ToString(data, 2);
+            for (int i = 0; i < binary.Length; i++)
+            {
+                if (binary[i] == '1')
+                {
+                    relayNumbers.Add(7 - i);
+                }
+            }
+            return relayNumbers;
         }
     }
 }
