@@ -10,6 +10,25 @@ namespace TestProject
     [TestClass]
     public class UnitTest1
     {
+        #region ATH_8030
+
+        [TestMethod]
+        public void SetCurrent()
+        {
+            var ath8030 = new ATH_8030("COM8");
+            double current = 0;
+            for (int i = 0; i < 295; i++)
+            {
+                current += 0.1;
+                var c = (float)(current + 0.1);
+                ath8030.SetCurrent(c);
+                Thread.Sleep(50);
+                var actualCurrent = ath8030.GetConstantCurrent();
+                Assert.AreEqual(current, actualCurrent, 0.5);
+            }
+        }
+
+        #endregion
 
         #region PCI_1762
 

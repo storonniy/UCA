@@ -18,7 +18,6 @@ namespace UCA.DeviceDrivers
         {
             serialPort = new SerialPort(portName);
 
-            // configure serial port
             serialPort.BaudRate = 9600;
             serialPort.DataBits = 8;
             serialPort.Parity = Parity.None;
@@ -36,21 +35,13 @@ namespace UCA.DeviceDrivers
 
         public bool WriteHoldingRegFloat(ushort address, float value)
         {
-            byte[] fData = BitConverter.GetBytes(value);
-            //var fData = new byte[] { 0x40, 0x40 };
-            var reversedFData = fData;
-            for (int i = 0; i < fData.Length; i++)
-            {
-                reversedFData[fData.Length - 1 - i] = fData[i];
-            }
+            var fData = BitConverter.GetBytes(value);
             ushort[] uData = new ushort[4];
-            for (int i = 0; i < fData.Length; i++)
-            {
-                uData[i] = reversedFData[i];
-            }
-            //ushort[] fData = BitConverter.ToUInt16(BitConverter.GetBytes(write_data),0);
-            var ans = master.WriteMultipleRegistersAsync(slaveId, address, new ushort[] { 0x40, 0x40, 0x40, 0x40 });
+            ushort firstByte = BitConverter.ToUInt16(fData, 2);
+            ushort[] writtenValue = new ushort[] { firstByte, 0 };
+            var ans = master.WriteMultipleRegistersAsync(slaveId, address, writtenValue);
             Thread.Sleep(1000);
+            var current = ReadHoldingReg(address, 1);
             return ans.IsCompleted;
         }
 
@@ -58,17 +49,11 @@ namespace UCA.DeviceDrivers
         {
             ushort[] uShortAnswer = master.ReadHoldingRegisters(slaveId, address, count);
             byte[] byteAnswer = BitConverter.GetBytes(uShortAnswer[0]);
-            byte[] answer = new byte[4];
-            var reverse = new byte[byteAnswer.Length];
-            for (int i = 0; i < byteAnswer.Length; i++)
-            {
-                reverse[byteAnswer.Length - i - 1] = byteAnswer[i];
-            }
-            for (int i = 0; i < reverse.Length; i++)
-            {
-                answer[answer.Length - 1 - i] = reverse[i];
-            }
-            return BitConverter.ToSingle(answer, 0);
+            var meow = byteAnswer;
+            byteAnswer.Reverse();
+            byte[] writtenData = new byte[4];
+            meow.CopyTo(writtenData, 2);
+            return BitConverter.ToSingle(writtenData, 0);
         }
     }
 }

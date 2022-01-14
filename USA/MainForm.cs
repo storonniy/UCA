@@ -231,7 +231,7 @@ namespace UCA
 
         private void InitialActions(string pathToDataBase)
         {
-            string connectionString = string.Format("Provider=Microsoft.ACE.OLEDB.16.0;Data Source={0}; Extended Properties=Excel 12.0;", pathToDataBase);//"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathToDataBase;
+            string connectionString = string.Format("Provider=Microsoft.ACE.OLEDB.12.0;Data Source={0}; Extended Properties=Excel 12.0;", pathToDataBase);//"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathToDataBase;
             var dbReader = new DBReader(connectionString);
             var dataSet = dbReader.GetDataSet();
             stepsInfo = Step.GetStepsInfo(dataSet);
@@ -686,14 +686,14 @@ namespace UCA
 
         private void treeOfChecking_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            /*
+            
             if (treeviewNodeStep.ContainsKey(e.Node) && mainThread.ThreadState != ThreadState.Running)
             {
                 var thisStep = treeviewNodeStep[e.Node];
                 var node = treeviewStepNode[thisStep];
-                DoStepOfChecking(thisStep, stepsInfo, mainLog);
+                DoStep(thisStep);
             }
-            */          
+                      
         }
 
         private void button1_Click(object sender, EventArgs e)

@@ -85,6 +85,9 @@ namespace UCA.Devices
         SetCurrentProtection,
         // ATH_8030
         SetCurrentControlMode,
+        GetMaxCurrent,
+        SetMaxCurrent,
+        GetLoadCurrent,
         // PCI_1762
         Commutate,
         ReadPCI1762Data,

@@ -42,6 +42,7 @@ namespace UCA
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.groupBoxPreferences = new System.Windows.Forms.GroupBox();
+            this.buttonPowerOn = new System.Windows.Forms.Button();
             this.labelAttention = new System.Windows.Forms.Label();
             this.comboBoxCheckingMode = new System.Windows.Forms.ComboBox();
             this.comboBoxVoltageSupply = new System.Windows.Forms.ComboBox();
@@ -61,7 +62,6 @@ namespace UCA
             this.buttonCheckingStop = new System.Windows.Forms.Button();
             this.buttonOpenDataBase = new System.Windows.Forms.Button();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.buttonPowerOn = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBoxPreferences.SuspendLayout();
@@ -152,6 +152,13 @@ namespace UCA
             this.groupBoxPreferences.Name = "groupBoxPreferences";
             this.groupBoxPreferences.TabStop = false;
             // 
+            // buttonPowerOn
+            // 
+            resources.ApplyResources(this.buttonPowerOn, "buttonPowerOn");
+            this.buttonPowerOn.Name = "buttonPowerOn";
+            this.buttonPowerOn.UseVisualStyleBackColor = true;
+            this.buttonPowerOn.Click += new System.EventHandler(this.button3_Click);
+            // 
             // labelAttention
             // 
             resources.ApplyResources(this.labelAttention, "labelAttention");
@@ -204,6 +211,8 @@ namespace UCA
             // checkBoxIgnoreErrors
             // 
             resources.ApplyResources(this.checkBoxIgnoreErrors, "checkBoxIgnoreErrors");
+            this.checkBoxIgnoreErrors.Checked = true;
+            this.checkBoxIgnoreErrors.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBoxIgnoreErrors.Name = "checkBoxIgnoreErrors";
             this.checkBoxIgnoreErrors.Tag = "Показывает неинформативные шаги проверки";
             this.checkBoxIgnoreErrors.UseVisualStyleBackColor = true;
@@ -286,13 +295,6 @@ namespace UCA
             // 
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             resources.ApplyResources(this.contextMenuStrip1, "contextMenuStrip1");
-            // 
-            // buttonPowerOn
-            // 
-            resources.ApplyResources(this.buttonPowerOn, "buttonPowerOn");
-            this.buttonPowerOn.Name = "buttonPowerOn";
-            this.buttonPowerOn.UseVisualStyleBackColor = true;
-            this.buttonPowerOn.Click += new System.EventHandler(this.button3_Click);
             // 
             // Form1
             // 

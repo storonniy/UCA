@@ -17,13 +17,15 @@ namespace UCA.DeviceDrivers
 
         public bool SetCurrentControlMode()
         {
-            var cmd = new ushort[] { 0x01 };
+            var cmd = new ushort[] { 1 };
+            var meow = WriteHoldingRegInt(0x0A00, cmd);
             return WriteHoldingRegInt(0x0A00, cmd);
         }
 
         public bool PowerOn()
         {
             var cmdArr = new ushort[] { 0x2a };
+            var meow = WriteHoldingRegInt(0x0A00, cmdArr);
             return WriteHoldingRegInt(0x0A00, cmdArr);
         }
 
@@ -35,7 +37,12 @@ namespace UCA.DeviceDrivers
 
         public bool SetCurrent(float current)
         {
-            return WriteHoldingRegFloat(0x0A00, current);
+            return WriteHoldingRegFloat(0x0A01, current);
+        }
+
+        public bool SetMaxCurrent(float current)
+        {
+            return WriteHoldingRegFloat(0x0A34, current);
         }
 
         public bool SetConstantCurrent(float current)
@@ -43,14 +50,22 @@ namespace UCA.DeviceDrivers
             return WriteHoldingRegFloat(0x0A01, current);
         }
 
-        public float GetConstantCurrent()
+        public double GetLoadCurrent()
         {
-            return ReadHoldingReg(0x0A01, 1);
+            var current = ReadHoldingReg(0x0B02, 2);
+            return current;
         }
 
-        public float GetMaxCurrent()
+        public double GetConstantCurrent()
         {
-            return ReadHoldingReg(0x0A34, 1);
+            var current = ReadHoldingReg(0x0A01, 2);
+            return current;
+        }
+
+        public double GetMaxCurrent()
+        {
+            var current = ReadHoldingReg(0x0A34, 1);
+            return current;
         }
     }
 }
