@@ -100,7 +100,8 @@ namespace UCA.Devices
         {
             var valuesAtZero = GetCoefficientValues(channel, 0);
             var values = GetCoefficientValues(channel, value);
-            return (values[0] - valuesAtZero[0]) / value;           
+            var meow = (values[0] - Math.Abs(valuesAtZero[0])) / value;
+            return meow;    
         }
     }
 }

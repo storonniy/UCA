@@ -21,18 +21,20 @@ namespace UCA.Devices
             switch (deviceData.Command)
             {
                 case DeviceCommands.Commutate:
+                    var argument = deviceData.Argument;
                     var relayNumbers = GetRelayNumbersArray(deviceData.Argument);
                     return CloseRelay(relayNumbers);
                 case DeviceCommands.ReadPCI1762Data:
                     var port = int.Parse(deviceData.Argument);
+                    var signal = int.Parse(deviceData.ExpectedValue);
                     var portByte = pci1762.Read(port);
-                    if (portByte != 0xFF)
+                    if (portByte == (byte)signal)
                     {
-                        return ResultOk($"{portByte}");
+                        return ResultOk($"Сигнал {portByte} присутствует");
                     }
                     else
                     {
-                        return ResultError($"Ошибка: {portByte}");
+                        return ResultError($"Ошибка: сигнал {portByte} отсутствует");
                     }
                 case DeviceCommands.OpenRelays:
                     return OpenRelays(deviceData.Argument);

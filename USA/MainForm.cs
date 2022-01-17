@@ -43,6 +43,7 @@ namespace UCA
                     if (queue.Count != 0 && isCheckingStarted)
                     {
                         step = queue.Dequeue();
+                        Thread.Sleep(500);
                     }
                 }
                 if (step != null)
@@ -231,7 +232,7 @@ namespace UCA
 
         private void InitialActions(string pathToDataBase)
         {
-            string connectionString = string.Format("Provider=Microsoft.ACE.OLEDB.12.0;Data Source={0}; Extended Properties=Excel 12.0;", pathToDataBase);//"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathToDataBase;
+            string connectionString = string.Format("Provider=Microsoft.ACE.OLEDB.16.0;Data Source={0}; Extended Properties=Excel 12.0;", pathToDataBase);//"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathToDataBase;
             var dbReader = new DBReader(connectionString);
             var dataSet = dbReader.GetDataSet();
             stepsInfo = Step.GetStepsInfo(dataSet);
@@ -436,16 +437,15 @@ namespace UCA
             isCheckingStarted = false;           
             lock (queue)
             {
-                queue.Clear();
-                isCheckingStarted = true;
+                queue.Clear();         
                 foreach (var step in stepsInfo.EmergencyStepList)
                 {
                     queue.Enqueue(step);
                 }
+                isCheckingStarted = true;
             }
             IDeviceInterface.ClearCoefficientDictionary();
-            Thread.Sleep(2000);
-            //ChangeControlState(buttonStop, isCheckingStarted);
+            Thread.Sleep(3000);
             CleanTreeView();
             BlockControls(false);
         }
@@ -687,12 +687,12 @@ namespace UCA
         private void treeOfChecking_AfterSelect(object sender, TreeViewEventArgs e)
         {
             
-            if (treeviewNodeStep.ContainsKey(e.Node) && mainThread.ThreadState != ThreadState.Running)
+/*            if (treeviewNodeStep.ContainsKey(e.Node) && mainThread.ThreadState != ThreadState.Running)
             {
                 var thisStep = treeviewNodeStep[e.Node];
                 var node = treeviewStepNode[thisStep];
                 DoStep(thisStep);
-            }
+            }*/
                       
         }
 

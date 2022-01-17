@@ -16,7 +16,7 @@ namespace UCA.DeviceDrivers
         public PCI_1762 (string description)
         {
             instantDoCtrl = new InstantDoCtrl();
-            //instantDoCtrl.SelectedDevice = new DeviceInformation(description);
+            instantDoCtrl.SelectedDevice = new DeviceInformation(description);
             if (!instantDoCtrl.Initialized)
             {
                 
@@ -29,7 +29,10 @@ namespace UCA.DeviceDrivers
             var dict = GetPortNumDictionary(relayNumbers);
             foreach (int portNum in dict.Keys)
             {
-                errorCode = instantDoCtrl.Write(portNum, (byte)GetRelaysAsByte(dict[portNum]));
+                var portByte = Read(portNum);
+                var data = GetRelaysAsByte(dict[portNum]);
+                byte res = (byte)(portByte | data);
+                errorCode = instantDoCtrl.Write(portNum, res);
                 if (errorCode != ErrorCode.Success)
                 {
                     return errorCode;
@@ -59,11 +62,12 @@ namespace UCA.DeviceDrivers
         public ErrorCode OpenAllRelays()
         {
             var errorCode = instantDoCtrl.Write(0, 0x00);
+            errorCode = instantDoCtrl.Write(1, 0x00);
             if (errorCode != ErrorCode.Success)
             {
                 return errorCode;
             }
-            errorCode = instantDoCtrl.Write(1, 0x00);
+            
             return errorCode;
         }
 
@@ -115,12 +119,12 @@ namespace UCA.DeviceDrivers
             for (int portNum = 0; portNum < maxPortNumber; portNum++)
             {
                 var data = Read(portNum);
-                relayNumbers.AddRange(ConvertDataToRelayNumbers(data));
+                relayNumbers.AddRange(ConvertDataToRelayNumbers(data, portNum));
             }
-            return relayNumbers.ToArray();            
+            return relayNumbers.ToHashSet().ToArray();            
         }
 
-        public static List<int> ConvertDataToRelayNumbers(byte data)
+        public static List<int> ConvertDataToRelayNumbers(byte data, int portNum)
         {
             var relayNumbers = new List<int>();
             var binary = Convert.ToString(data, 2);
@@ -128,7 +132,7 @@ namespace UCA.DeviceDrivers
             {
                 if (binary[i] == '1')
                 {
-                    relayNumbers.Add(7 - i);
+                    relayNumbers.Add((binary.Length - 1 - i) + 8 * portNum);
                 }
             }
             return relayNumbers;

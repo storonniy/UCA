@@ -25,7 +25,6 @@ namespace UCA.DeviceDrivers
         public bool PowerOn()
         {
             var cmdArr = new ushort[] { 0x2a };
-            var meow = WriteHoldingRegInt(0x0A00, cmdArr);
             return WriteHoldingRegInt(0x0A00, cmdArr);
         }
 
@@ -52,6 +51,7 @@ namespace UCA.DeviceDrivers
 
         public double GetLoadCurrent()
         {
+            Thread.Sleep(500);
             var current = ReadHoldingReg(0x0B02, 2);
             return current;
         }

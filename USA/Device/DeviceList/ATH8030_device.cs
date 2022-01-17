@@ -75,7 +75,7 @@ namespace UCA.Devices
                     {
                         return DeviceResult.ResultError($"Ошибка: {resultGetCurrent}");
                     }
-                case DeviceCommands.GetLoadCurrent:
+                case DeviceCommands.GetLoadCurrent:                  
                     var actualLoadCurrent = ath8030.GetLoadCurrent();
                     var resultLoadCurrent = $"Измерено значение тока {GetValueUnitPair(actualLoadCurrent, UnitType.Current)} \t Нижний предел: {GetValueUnitPair(lowerLimit, UnitType.Current)}\t Верхний предел {GetValueUnitPair(upperLimit, UnitType.Current)}";
                     if (actualLoadCurrent >= lowerLimit && actualLoadCurrent <= upperLimit)
