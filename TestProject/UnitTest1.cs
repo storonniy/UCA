@@ -12,22 +12,6 @@ namespace TestProject
     {
         #region ATH_8030
 
-        [TestMethod]
-        public void SetCurrent()
-        {
-            var ath8030 = new ATH_8030("COM8");
-            double current = 0;
-            for (int i = 0; i < 295; i++)
-            {
-                current += 0.1;
-                var c = (float)(current + 0.1);
-                ath8030.SetCurrent(c);
-                Thread.Sleep(50);
-                var actualCurrent = ath8030.GetConstantCurrent();
-                Assert.AreEqual(current, actualCurrent, 0.5);
-            }
-        }
-
         #endregion
 
         #region PCI_1762
@@ -107,7 +91,7 @@ namespace TestProject
         public void GetDataAsRelayNumbers()
         {
             var expected = new List<int>() { 1, 3, 7 };
-            var actual = PCI_1762.ConvertDataToRelayNumbers(138);
+            var actual = PCI_1762.ConvertDataToRelayNumbers(138, 0);
             CollectionAssert.AreEquivalent(expected, actual);
         }
 
@@ -116,8 +100,9 @@ namespace TestProject
         {
             PCI_1762 pci1762 = new PCI_1762("PCI-1762,BID#1");
             pci1762.Write(new int[] { 0, 7, 8, 15 });
-            Thread.Sleep(100);
+            Thread.Sleep(1000);
             pci1762.OpenAllRelays();
+            Thread.Sleep(1000);
             var expected = new int[] { };
             var actual = pci1762.GetClosedRelaysNumbers();
             CollectionAssert.AreEqual(expected, actual);
@@ -128,11 +113,16 @@ namespace TestProject
         {
             PCI_1762 pci1762 = new PCI_1762("PCI-1762,BID#1");
             pci1762.OpenAllRelays();
-            Thread.Sleep(100);
+            Thread.Sleep(1000);
             var expected = new int[] { 0, 3, 7 };
             pci1762.Write(expected);
-            Thread.Sleep(100);
+            Thread.Sleep(1000);
             var actual = pci1762.GetClosedRelaysNumbers();
+            Thread.Sleep(1000);
+            pci1762.Write(new int[] { 4, 11});
+            Thread.Sleep(1000);
+            expected = new int[] { 0, 3, 7, 4, 11 };
+            actual = pci1762.GetClosedRelaysNumbers();
             CollectionAssert.AreEquivalent(expected, actual);
         }
 

@@ -16,7 +16,7 @@ namespace UCA.DeviceDrivers
         public PST_3201(SerialPort serialPort)
         {
             this.serialPort = serialPort;
-            //this.serialPort.Open();
+            this.serialPort.Open();
         }
 
         private string SendAndParseData(string command)

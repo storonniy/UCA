@@ -14,7 +14,7 @@ namespace UCA.DeviceDrivers
         public PSH73610(SerialPort serialPort)
         {
             this.serialPort = serialPort;
-            //this.serialPort.Open();
+            this.serialPort.Open();
         }
 
         private float DoCommandAndGetResult(string command)
@@ -52,6 +52,7 @@ namespace UCA.DeviceDrivers
 
         public float ChangeOutputStatus(int value)
         {
+            Thread.Sleep(2000);
             var command = $":outp:stat {value};:outp:stat?";
             return DoCommandAndGetResult(command);
         }

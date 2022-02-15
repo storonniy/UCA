@@ -29,8 +29,8 @@ namespace UCA.DeviceDrivers
 
         public bool WriteHoldingRegInt(ushort address, ushort[] value)
         {
-            var ans = master.WriteMultipleRegistersAsync(slaveId, address, value);
-            return ans.IsCompleted;
+            master.WriteMultipleRegistersAsync(slaveId, address, value);     
+            return true;
         }
 
         public bool WriteHoldingRegFloat(ushort address, float value)

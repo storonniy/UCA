@@ -768,6 +768,9 @@
   <data name="groupBoxDevices.Text" xml:space="preserve">
     <value>Устройства</value>
   </data>
+  <data name="groupBoxDevices.Visible" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
   <data name="&gt;&gt;groupBoxDevices.Name" xml:space="preserve">
     <value>groupBoxDevices</value>
   </data>
@@ -955,7 +958,7 @@
     <value>1089, 703</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
-    <value>Программа проверки УСА С-33162 ШЮГИ.468151.110 Версия 1.0.1</value>
+    <value>Программа проверки УСА-Т С-33163 ШЮГИ.468151.111 Версия 1.0.0</value>
   </data>
   <data name="&gt;&gt;$this.Name" xml:space="preserve">
     <value>Form1</value>

@@ -98,7 +98,8 @@ namespace UCA.Devices
         // AKIP_3407
         SetFrequency,
         //
-        Sleep
+        Sleep,
+        Continue
     }
 
     public enum DeviceNames

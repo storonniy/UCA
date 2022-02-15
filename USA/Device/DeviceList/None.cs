@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static UCA.Auxiliary.UnitValuePair;
 using System.Threading;
+using System.Windows.Forms;
 
 namespace UCA.Devices
 {
@@ -69,6 +70,16 @@ namespace UCA.Devices
                         Thread.Sleep(1000);
                     }
                     return DeviceResult.ResultOk("");
+                case DeviceCommands.Continue:
+                    var dialogResult = MessageBox.Show("Продолжить проверку?", "Внимание!", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
+                    if (dialogResult == DialogResult.Yes)
+                    {
+                        return DeviceResult.ResultOk($"{DateTime.Now} : Продолжение проверки");
+                    }
+                    else
+                    {
+                        return DeviceResult.ResultError($"{DateTime.Now} : Остановка проверки по требованию оператора");
+                    }
                 default:
                     return DeviceResult.ResultError($"Неизвестная команда {deviceData.Command}");
             }
@@ -100,7 +111,8 @@ namespace UCA.Devices
         {
             var valuesAtZero = GetCoefficientValues(channel, 0);
             var values = GetCoefficientValues(channel, value);
-            return (values[0] - valuesAtZero[0]) / value;           
+            var meow = (values[0] - Math.Abs(valuesAtZero[0])) / value;
+            return meow;    
         }
     }
 }

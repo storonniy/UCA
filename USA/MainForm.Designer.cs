@@ -211,8 +211,6 @@ namespace UCA
             // checkBoxIgnoreErrors
             // 
             resources.ApplyResources(this.checkBoxIgnoreErrors, "checkBoxIgnoreErrors");
-            this.checkBoxIgnoreErrors.Checked = true;
-            this.checkBoxIgnoreErrors.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBoxIgnoreErrors.Name = "checkBoxIgnoreErrors";
             this.checkBoxIgnoreErrors.Tag = "Показывает неинформативные шаги проверки";
             this.checkBoxIgnoreErrors.UseVisualStyleBackColor = true;

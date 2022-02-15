@@ -13,7 +13,7 @@ namespace UCA.DeviceDrivers
         public Keysight34410(SerialPort serialPort)
         {
             this.serialPort = serialPort;
-            //serialPort.Open();
+            serialPort.Open();
         }
         public double MeasureVoltageDC()
         {
