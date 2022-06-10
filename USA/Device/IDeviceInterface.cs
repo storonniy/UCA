@@ -9,6 +9,8 @@ namespace UCA.Devices
     public abstract class IDeviceInterface
     {
         public abstract DeviceResult DoCommand(DeviceData deviceData);
+
+        #region Coefficient
         public struct InputData
         {
             public InputData(int channel, double inputValue)
@@ -48,5 +50,44 @@ namespace UCA.Devices
             InputData inputData = new InputData(channel, value);
             return coefficientValuesDictionary[inputData];
         }
+
+        #endregion
+
+        #region GDM78261 Saving Values
+
+        public static void AddValues(string key, double measuredValue)
+        {
+            if (valuesDictionary.ContainsKey(key))
+            {
+                valuesDictionary[key] = measuredValue;
+            }
+            else
+            {
+                valuesDictionary.Add(key, measuredValue);
+            }
+        }
+
+        public static double GetValue(string key)
+        {
+            return valuesDictionary[key];
+        }
+
+        private static Dictionary<string, double> valuesDictionary = new Dictionary<string, double>();
+
+        /// <summary>
+        /// Возвращает библиотеку с сохраненными парами ключ-значение (измеренное GDM)
+        /// </summary>
+        /// <returns></returns>
+        public static Dictionary<string, double> GetValuesDictionary()
+        {
+            return valuesDictionary;
+        }
+
+        public static void ClearValuesDictionary()
+        {
+            coefficientValuesDictionary.Clear();
+        }
+
+        #endregion
     }
 }

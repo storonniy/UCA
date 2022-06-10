@@ -24,7 +24,7 @@ namespace UCA.DeviceDrivers
             serialPort.StopBits = StopBits.One;
             this.master = ModbusSerialMaster.CreateRtu(serialPort);
             this.slaveId = 1;
-            serialPort.Open();
+            //serialPort.Open();
         }
 
         public bool WriteHoldingRegInt(ushort address, ushort[] value)

@@ -9,7 +9,7 @@ using System.Threading;
 
 namespace UCA.Devices
 {
-    class None : IDeviceInterface
+    public class None : IDeviceInterface
     {
         private double CalculateUCACoefficient(int channel, double value)
         {
@@ -40,23 +40,25 @@ namespace UCA.Devices
             switch (deviceData.Command)
             {
                 case DeviceCommands.CalculateCoefficient:
-                    var value = double.Parse(deviceData.Argument, NumberStyles.Float);
-                    var lowerLimit = deviceData.LowerLimit;
-                    var upperLimit = deviceData.UpperLimit;
-                    try
                     {
-                        var actualCoefficient = CalculateUCACoefficient(deviceData.Channel, value);
-                        var result = $"Коэффициент равен {string.Format("{0:0.000}", actualCoefficient)} В/мкА \tНижний предел  {lowerLimit} В/мкА \tВерхний предел {upperLimit} В/мкА";
-                        if (actualCoefficient >= lowerLimit && actualCoefficient <= upperLimit)
-                            return DeviceResult.ResultOk(result);
-                        else
-                            return DeviceResult.ResultError($"Ошибка: {result}");
-                    }
-                    catch (KeyNotFoundException)
-                    {
-                        UnitType unitType = (deviceData.Channel > 2) ? UnitType.Current : UnitType.Voltage;
-                        var data = $"lowerLimit {deviceData.LowerLimit}; upperLimit {deviceData.UpperLimit}";
-                        return DeviceResult.ResultError($"{data} \n Для входного воздействия {GetValueUnitPair(value, unitType)} и канала {deviceData.Channel} не измерялись входные и выходные воздействия");
+                        var value = double.Parse(deviceData.Argument, NumberStyles.Float);
+                        var lowerLimit = deviceData.LowerLimit;
+                        var upperLimit = deviceData.UpperLimit;
+                        try
+                        {
+                            var actualCoefficient = CalculateUCACoefficient(deviceData.Channel, value);
+                            var result = $"Коэффициент равен {string.Format("{0:0.000}", actualCoefficient)} В/мкА \tНижний предел  {lowerLimit} В/мкА \tВерхний предел {upperLimit} В/мкА";
+                            if (actualCoefficient >= lowerLimit && actualCoefficient <= upperLimit)
+                                return DeviceResult.ResultOk(result);
+                            else
+                                return DeviceResult.ResultError($"Ошибка: {result}");
+                        }
+                        catch (KeyNotFoundException)
+                        {
+                            UnitType unitType = (deviceData.Channel > 2) ? UnitType.Current : UnitType.Voltage;
+                            var data = $"lowerLimit {deviceData.LowerLimit}; upperLimit {deviceData.UpperLimit}";
+                            return DeviceResult.ResultError($"{data} \n Для входного воздействия {GetValueUnitPair(value, unitType)} и канала {deviceData.Channel} не измерялись входные и выходные воздействия");
+                        }
                     }             
                 case DeviceCommands.CalculateCoefficient_UCAT:
                     return GetCoefficient_UCAT(deviceData);
@@ -69,9 +71,87 @@ namespace UCA.Devices
                         Thread.Sleep(1000);
                     }
                     return DeviceResult.ResultOk("");
+                case DeviceCommands.Divide:
+                    {
+                        var keys = GetKeys(deviceData.Argument);
+                        double value = Divide(GetValue(keys.Keys[0]), GetValue(keys.Keys[1]));
+                        var result = $"Измерено значение {GetValueUnitPair(value, keys.UnitType)} \tНижний предел: {GetValueUnitPair(deviceData.LowerLimit, keys.UnitType)}\t Верхний предел {GetValueUnitPair(deviceData.UpperLimit, keys.UnitType)}";
+                        if (value >= deviceData.LowerLimit && value <= deviceData.UpperLimit)
+                        {
+                            return DeviceResult.ResultOk(result);
+                        }
+                        else
+                        {
+                            return DeviceResult.ResultError("Ошибка: " + result);
+                        }
+                    }
+                case DeviceCommands.Substract:
+                    {
+                        var keys = GetKeys(deviceData.Argument);
+                        double value = Substract(GetValue(keys.Keys[0]), GetValue(keys.Keys[1]));
+                        var result = $"Измерено значение {GetValueUnitPair(value, keys.UnitType)} \tНижний предел: {GetValueUnitPair(deviceData.LowerLimit, keys.UnitType)}\t Верхний предел {GetValueUnitPair(deviceData.UpperLimit, keys.UnitType)}";
+                        if (value >= deviceData.LowerLimit && value <= deviceData.UpperLimit)
+                        {
+                            return DeviceResult.ResultOk(result);
+                        }
+                        else
+                        {
+                            return DeviceResult.ResultError("Ошибка: " + result);
+                        }
+                    }
+                case DeviceCommands.Save:
+                    {
+                        var keys = GetKeys(deviceData.Argument);
+                        var value = double.Parse(deviceData.ExpectedValue, CultureInfo.InvariantCulture);
+                        AddValues(keys.Keys[0], value);
+                        var result = $"Сохранено значение {GetValueUnitPair(value, keys.UnitType)}";
+                        return DeviceResult.ResultOk(result);
+                    }
+                case DeviceCommands.MultiplyAndSave:
+                    {
+                        var keys = GetKeys(deviceData.Argument);
+                        double value = Multiply(GetValue(keys.Keys[0]), GetValue(keys.Keys[1]));
+                        var keyToSave = GetKeys(deviceData.Argument).Keys[0];
+                        AddValues(keyToSave, value);
+                        var result = $"Получено значение {GetValueUnitPair(value, keys.UnitType)}";
+                        if (value >= deviceData.LowerLimit && value <= deviceData.UpperLimit)
+                        {
+                            return DeviceResult.ResultOk(result);
+                        }
+                        else
+                        {
+                            return DeviceResult.ResultError("Ошибка: " + result);
+                        }
+                    }
                 default:
                     return DeviceResult.ResultError($"Неизвестная команда {deviceData.Command}");
             }
+        }
+
+        public static double Divide(double arg1, double arg2)
+        {
+            return arg1 / arg2;
+        }
+
+        public static double Multiply(double arg1, double arg2)
+        {
+            return arg1 * arg2;
+        }
+
+        private static double Substract(double arg1, double arg2)
+        {
+            return arg1 - arg2;
+        }
+
+        public static ValueKeys GetKeys(string rawArgument)
+        {
+            rawArgument = rawArgument.Replace(" ", "").Replace("\r", "");
+            int unitIndex = rawArgument.IndexOf(';');
+            string unitName = rawArgument.Substring(unitIndex + 1);
+            UnitType unitType = GetUnitType(unitName);
+            var keyString = rawArgument.Remove(unitIndex);
+            string[] keys = keyString.Split(',');
+            return new ValueKeys(unitType, keys);
         }
 
         private DeviceResult GetCoefficient_UCAT(DeviceData deviceData)

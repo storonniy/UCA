@@ -22,30 +22,34 @@ namespace UCA.Devices
             switch (deviceData.Command)
             {
                 case DeviceCommands.GetVoltage:
-                    var actualVoltage = gdm78261.MeasureVoltageDC();
-                    var tmp = double.Parse(deviceData.Argument, NumberStyles.Float);
-                    AddCoefficientData(deviceData.Channel, tmp, actualVoltage);
-                    var result = $"Измерено напряжение {GetValueUnitPair(actualVoltage, UnitType.Voltage)} \tНижний предел: {GetValueUnitPair(deviceData.LowerLimit, UnitType.Voltage)}\t Верхний предел {GetValueUnitPair(deviceData.UpperLimit, UnitType.Voltage)}";
-                    if (actualVoltage >= deviceData.LowerLimit && actualVoltage <= deviceData.UpperLimit)
                     {
-                        return DeviceResult.ResultOk(result);
-                    }
-                    else
-                    {
-                        return DeviceResult.ResultError("Ошибка: " + result);
+                        var actualVoltage = gdm78261.MeasureVoltageDC();
+                        var tmp = double.Parse(deviceData.Argument, NumberStyles.Float);
+                        AddCoefficientData(deviceData.Channel, tmp, actualVoltage);
+                        var result = $"Измерено напряжение {GetValueUnitPair(actualVoltage, UnitType.Voltage)} \tНижний предел: {GetValueUnitPair(deviceData.LowerLimit, UnitType.Voltage)}\t Верхний предел {GetValueUnitPair(deviceData.UpperLimit, UnitType.Voltage)}";
+                        if (actualVoltage >= deviceData.LowerLimit && actualVoltage <= deviceData.UpperLimit)
+                        {
+                            return DeviceResult.ResultOk(result);
+                        }
+                        else
+                        {
+                            return DeviceResult.ResultError("Ошибка: " + result);
+                        }
                     }
                 case DeviceCommands.GetCurrent:
-                    var actualCurrent = gdm78261.MeasureCurrentDC();
-                    var tmp1 = double.Parse(deviceData.Argument, NumberStyles.Float);
-                    var resultCurrent = $"Измерен ток {GetValueUnitPair(actualCurrent, UnitType.Current)} \tНижний предел: {GetValueUnitPair(deviceData.LowerLimit, UnitType.Current)}\t Верхний предел {GetValueUnitPair(deviceData.UpperLimit, UnitType.Current)}";
-                    AddCoefficientData(deviceData.Channel, tmp1, actualCurrent);
-                    if (actualCurrent >= deviceData.LowerLimit && actualCurrent <= deviceData.UpperLimit)
                     {
-                        return DeviceResult.ResultOk(resultCurrent);
-                    }
-                    else
-                    {
-                        return DeviceResult.ResultError($"Ошибка: {resultCurrent}");
+                        var actualCurrent = gdm78261.MeasureCurrentDC();
+                        var tmp1 = double.Parse(deviceData.Argument, NumberStyles.Float);
+                        var resultCurrent = $"Измерен ток {GetValueUnitPair(actualCurrent, UnitType.Current)} \tНижний предел: {GetValueUnitPair(deviceData.LowerLimit, UnitType.Current)}\t Верхний предел {GetValueUnitPair(deviceData.UpperLimit, UnitType.Current)}";
+                        AddCoefficientData(deviceData.Channel, tmp1, actualCurrent);
+                        if (actualCurrent >= deviceData.LowerLimit && actualCurrent <= deviceData.UpperLimit)
+                        {
+                            return DeviceResult.ResultOk(resultCurrent);
+                        }
+                        else
+                        {
+                            return DeviceResult.ResultError($"Ошибка: {resultCurrent}");
+                        }
                     }
                 case DeviceCommands.SetMeasurementToCurrent:
                     var currentRange = double.Parse(deviceData.Argument, CultureInfo.InvariantCulture);
@@ -63,6 +67,21 @@ namespace UCA.Devices
                     else
                     {
                         return DeviceResult.ResultError("Ошибка: " + resultRipple);
+                    }
+                case DeviceCommands.GetVoltageAndSave:
+                    {
+                        var voltage = gdm78261.MeasureVoltageDC();
+                        var key = deviceData.Argument;
+                        AddValues(key, voltage);
+                        var result = $"Измерено напряжение {GetValueUnitPair(voltage, UnitType.Voltage)}";
+                        if (voltage >= deviceData.LowerLimit && voltage <= deviceData.UpperLimit)
+                        {
+                            return DeviceResult.ResultOk(result);
+                        }
+                        else
+                        {
+                            return DeviceResult.ResultError("Ошибка: " + result);
+                        }
                     }
                 default:
                     return DeviceResult.ResultError($"Неизвестная команда {deviceData.Command}");

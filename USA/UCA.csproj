@@ -30,7 +30,7 @@
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>x64</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -95,7 +95,7 @@
     <Compile Include="DeviceDrivers\ATH_8030.cs" />
     <Compile Include="DeviceDrivers\Commutator.cs" />
     <Compile Include="DeviceDrivers\GDM78261.cs" />
-    <Compile Include="DeviceDrivers\Keysight34410A.cs" />
+    <Compile Include="DeviceDrivers\Keithley2401.cs" />
     <Compile Include="DeviceDrivers\Modbus.cs" />
     <Compile Include="DeviceDrivers\PCI_1762.cs" />
     <Compile Include="DeviceDrivers\PSH_73610.cs" />
@@ -106,7 +106,7 @@
     <Compile Include="Device\DeviceList\AKIP3407_device.cs" />
     <Compile Include="Device\DeviceList\ATH8030_device.cs" />
     <Compile Include="Device\DeviceList\Commutator_device.cs" />
-    <Compile Include="Device\DeviceList\Keysight34410_device.cs" />
+    <Compile Include="Device\DeviceList\Keithley2401_device.cs" />
     <Compile Include="Device\DeviceList\None.cs" />
     <Compile Include="Device\DeviceList\PCI1762_device.cs" />
     <Compile Include="Device\DeviceList\PSH73610_device.cs" />
@@ -182,6 +182,9 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="TODO.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

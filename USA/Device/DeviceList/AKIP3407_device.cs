@@ -28,7 +28,7 @@ namespace UCA.Devices
                     var expectedVoltage = double.Parse(deviceData.Argument, CultureInfo.InvariantCulture);
                     var actualVoltage = akip3407.SetVoltage(expectedVoltage);
                     var result = $"Уcтановлено напряжение {GetValueUnitPair(actualVoltage, UnitType.Voltage)} \t Нижний предел: {GetValueUnitPair(lowerLimit, UnitType.Voltage)}\t Верхний предел {GetValueUnitPair(upperLimit, UnitType.Voltage)}";
-                    if (Math.Abs(actualVoltage) >= Math.Abs(lowerLimit) && Math.Abs(actualVoltage) <= Math.Abs(upperLimit))
+                    if (actualVoltage >= deviceData.LowerLimit && actualVoltage <= deviceData.UpperLimit)
                     {
                         return DeviceResult.ResultOk($"Установлено напряжение {GetValueUnitPair(actualVoltage, UnitType.Voltage)}");
                     }
@@ -39,7 +39,7 @@ namespace UCA.Devices
                 case DeviceCommands.SetFrequency:
                     var expectedFrequency = double.Parse(deviceData.Argument, CultureInfo.InvariantCulture);
                     var actualFrequency = akip3407.SetVoltage(expectedFrequency);
-                    if (Math.Abs(expectedFrequency - actualFrequency) <= 0.1 * Math.Abs(expectedFrequency))
+                    if (actualFrequency >= deviceData.LowerLimit && actualFrequency <= deviceData.UpperLimit)
                     {
                         return DeviceResult.ResultOk($"Установлено значение {actualFrequency} Гц");
                     }

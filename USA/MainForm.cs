@@ -54,6 +54,10 @@ namespace UCA
                         form.HighlightTreeNode(node, Color.Blue);
                     }
                     var stepResult = DoStep(step);
+                    if (step.Argument == "")
+                    {
+                        MessageBox.Show($"Шаг {step.Description}: Аргумент пустой: {step.Argument}");
+                    }
                     if (step.ShowStep)
                     {
                         ShowStepResult(step, stepResult);
@@ -62,8 +66,6 @@ namespace UCA
                 else if (isCheckingStarted)
                 {
                     isCheckingStarted = false;
-                    form.CleanTreeView();
-                    form.BlockControls(false);
                     var result = checkingResult ? "ОК исправен." : "ОК неисправен";
                     if (isCheckingInterrupted)
                     {
@@ -77,6 +79,8 @@ namespace UCA
                     MessageBox.Show(result);
                     form.ChangeStartButtonState();
                     form.ChangeButton(form.buttonCheckingPause, "Пауза");
+                    form.CleanTreeView();
+                    form.BlockControls(false);
                 }
                 else
                 {
@@ -232,7 +236,7 @@ namespace UCA
 
         private void InitialActions(string pathToDataBase)
         {
-            string connectionString = string.Format("Provider=Microsoft.ACE.OLEDB.16.0;Data Source={0}; Extended Properties=Excel 12.0;", pathToDataBase);//"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathToDataBase;
+            string connectionString = string.Format("Provider=Microsoft.ACE.OLEDB.12.0;Data Source={0}; Extended Properties=Excel 12.0;", pathToDataBase);//"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathToDataBase;
             var dbReader = new DBReader(connectionString);
             var dataSet = dbReader.GetDataSet();
             stepsInfo = Step.GetStepsInfo(dataSet);
@@ -259,7 +263,7 @@ namespace UCA
 
         private void InitialActions()
         {
-            string connectionString = "UCAT.xlsx;";
+            string connectionString = "NS03.xlsx;";
             InitialActions(connectionString);
         }
 
@@ -445,9 +449,10 @@ namespace UCA
                 isCheckingStarted = true;
             }
             IDeviceInterface.ClearCoefficientDictionary();
+            IDeviceInterface.ClearValuesDictionary();
             Thread.Sleep(3000);
             CleanTreeView();
-            BlockControls(false);
+//BlockControls(false);
         }
 
         private void ChangeStartButtonState()
@@ -621,6 +626,7 @@ namespace UCA
             else
             {
                 IDeviceInterface.ClearCoefficientDictionary();
+                IDeviceInterface.ClearValuesDictionary();
                 checkingResult = true;
                 isCheckingInterrupted = false;
                 CreateLog();
@@ -645,6 +651,7 @@ namespace UCA
         }
         private void buttonCheckingStop_Click(object sender, EventArgs e)
         {
+            ChangeControlState(buttonCheckingStop, false);
             isCheckingStarted = false;
             isCheckingInterrupted = true;
             AbortChecking();

@@ -36,6 +36,8 @@ namespace UCA.Auxiliary
                     return "Вт";
                 case UnitType.Frequency:
                     return "Гц";
+                case UnitType.Resistance:
+                    return "Ом";
                 default:
                     throw new Exception("Неизвестный тип величины");
             }
@@ -46,7 +48,38 @@ namespace UCA.Auxiliary
             Voltage, 
             Current,
             Power,
-            Frequency
+            Frequency,
+            Resistance
+        }
+
+        public static UnitType GetUnitType (string unitName)
+        {
+            switch (unitName)
+            {
+                case "V":
+                    return UnitType.Voltage;
+                case "A":
+                    return UnitType.Current;
+                case "W":
+                    return UnitType.Power;
+                case "Hz":
+                    return UnitType.Frequency;
+                case "Ohm":
+                    return UnitType.Resistance;
+                default:
+                    throw new Exception("Неизвестный тип величины");
+            }
+        }
+
+        public class ValueKeys
+        {
+            public UnitType UnitType { get; set; }
+            public string[] Keys { get; set; }
+            public ValueKeys(UnitType unitType, string[] keys)
+            {
+                UnitType = unitType;
+                Keys = keys;
+            }
         }
     }
 }

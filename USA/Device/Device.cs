@@ -62,6 +62,8 @@ namespace UCA.Devices
 
     public enum DeviceCommands
     {
+        // GDM
+        GetVoltageAndSave,
         // УСА
         SetCurrentLimit,
         SetPowerLimit,
@@ -97,6 +99,11 @@ namespace UCA.Devices
         SetMeasurementToVoltage,
         // AKIP_3407
         SetFrequency,
+        // None
+        Divide,
+        Substract,
+        Save,
+        MultiplyAndSave,
         //
         Sleep
     }
@@ -125,6 +132,8 @@ namespace UCA.Devices
         PCI_1762_4,
         PCI_1762_5,
         ASBL,
-        AKIP_3407
+        AKIP_3407,
+        Keithley2401_1,
+        Keithley2401_2
     }
 }

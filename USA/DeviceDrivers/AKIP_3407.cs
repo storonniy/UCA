@@ -33,30 +33,30 @@ namespace UCA.DeviceDrivers
 
         public double SetVoltage (double voltage)
         {
-            var command = $"VOLT {voltage};VOLT ?/n";
+            var command = $"SOUR1:VOLT {voltage}#013#010;VOLT?#013#010";
             return double.Parse(SendAndParseData(command), CultureInfo.InvariantCulture);
         }
 
         public double SetFrequency (double frequency)
         {
-            var command = $"FREQ {frequency};FREQ ?/n";
+            var command = $"FREQ {frequency} #013#010;SOUR1:FREQ?#013#010";
             return double.Parse(SendAndParseData(command), CultureInfo.InvariantCulture);
         }
 
         #region Power Status
         public bool PowerOn()
         {
-            return ChangePowerStatus("1");
+            return ChangePowerStatus("ON");
         }
 
         public bool PowerOff()
         {
-            return ChangePowerStatus("0");
+            return ChangePowerStatus("OFF");
         }
 
         private bool ChangePowerStatus(string status)
         {
-            var command = $":outp:stat {status};:outp:stat?";
+            var command = $"OUTP1 {status}#013#010; OUTP1:STAT?#013#010";
             return SendAndParseData(command) == "1";
         }
 

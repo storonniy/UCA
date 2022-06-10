@@ -38,8 +38,9 @@ namespace UCA.Devices
                     case DeviceNames.GDM_78261:
                         newDevice = new GDM78261_device(device.SerialPort);
                         break;
-                    case DeviceNames.Keysight_34410:
-                        newDevice = new Keysight34410_device(device.SerialPort);
+                    case DeviceNames.Keithley2401_1:
+                    case DeviceNames.Keithley2401_2:
+                        newDevice = new Keithley2401_device(device.SerialPort);
                         break;
                     case DeviceNames.Commutator:
                         newDevice = new Commutator_device(device.SerialPort);
@@ -65,23 +66,13 @@ namespace UCA.Devices
                         newDevice = new GDM78261_device(device.SerialPort);
                         break;
                     case DeviceNames.PCI_1761_1:
-                        newDevice = new PCI1762_device(device.Description);
-                        break;
                     case DeviceNames.PCI_1761_2:
                         newDevice = new PCI1762_device(device.Description);
                         break;
                     case DeviceNames.PCI_1762_1:
-                        newDevice = new PCI1762_device(device.Description);
-                        break;
                     case DeviceNames.PCI_1762_2:
-                        newDevice = new PCI1762_device(device.Description);
-                        break;
                     case DeviceNames.PCI_1762_3:
-                        newDevice = new PCI1762_device(device.Description);
-                        break;
                     case DeviceNames.PCI_1762_4:
-                        newDevice = new PCI1762_device(device.Description);
-                        break;
                     case DeviceNames.PCI_1762_5:
                         newDevice = new PCI1762_device(device.Description);
                         break;

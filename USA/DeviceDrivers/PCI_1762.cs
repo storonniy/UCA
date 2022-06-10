@@ -16,7 +16,7 @@ namespace UCA.DeviceDrivers
         public PCI_1762 (string description)
         {
             instantDoCtrl = new InstantDoCtrl();
-            instantDoCtrl.SelectedDevice = new DeviceInformation(description);
+            //instantDoCtrl.SelectedDevice = new DeviceInformation(description);
             if (!instantDoCtrl.Initialized)
             {
                 

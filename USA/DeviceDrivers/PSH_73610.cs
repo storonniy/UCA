@@ -14,7 +14,7 @@ namespace UCA.DeviceDrivers
         public PSH73610(SerialPort serialPort)
         {
             this.serialPort = serialPort;
-            this.serialPort.Open();
+            //this.serialPort.Open();
         }
 
         private float DoCommandAndGetResult(string command)
