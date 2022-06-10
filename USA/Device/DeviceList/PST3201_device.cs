@@ -14,6 +14,7 @@ namespace UCA.Devices
     public class PST3201_device : IDeviceInterface
     {
         PST_3201 pst3201;
+
         public PST3201_device (SerialPort serialPort)
         {
             this.pst3201 = new PST_3201(serialPort);
