@@ -89,18 +89,19 @@ namespace UCA.Devices
 
         public override double SetCurrentLimit(DeviceData deviceData)
         {
+            keithley2401.SetCurrentRange(0, (int)deviceData.UpperLimit);
             throw new NotImplementedException();
         }
 
         public override double SetVoltage(DeviceData deviceData)
         {
             keithley2401.SelectFixedSourcingModeVoltage();
-            keithley2401.SetVoltageLimit((int)deviceData.UpperLimit);
+            keithley2401.SetVoltageRange(0, (int)deviceData.UpperLimit);
             Thread.Sleep(delay);
             var voltage = double.Parse(deviceData.Argument);
             keithley2401.SetVoltage(voltage);
             Thread.Sleep(delay);
-            return keithley2401.GetOutputVoltage();
+            return keithley2401.GetSourceVoltage();
         }
     }
 }

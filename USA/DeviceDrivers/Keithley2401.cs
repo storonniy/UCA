@@ -81,6 +81,12 @@ namespace UCA.DeviceDrivers
             SendCommand($":SOUR:VOLT:RANG {up} to {to}#013#010");
         }
 
+        public double GetSourceVoltage()
+        {
+            SendCommand($"VOLT?#013#010");
+            return ParseValue(serialPort.ReadLine());
+        }
+
         /// <summary>
         /// Query voltage level
         /// </summary>
