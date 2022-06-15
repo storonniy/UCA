@@ -134,6 +134,7 @@ namespace UCA.Devices
         ASBL,
         AKIP_3407,
         Keithley2401_1,
-        Keithley2401_2
+        Keithley2401_2,
+        Commutator_1
     }
 }

@@ -8,10 +8,11 @@ using System.IO.Ports;
 using static UCA.Devices.DeviceResult;
 using static UCA.Auxiliary.UnitValuePair;
 using System.Globalization;
+using UPD.Device;
 
 namespace UCA.Devices
 {
-    public class PST3201_device : IDeviceInterface
+    public class PST3201_device : Source
     {
         PST_3201 pst3201;
 
@@ -26,48 +27,47 @@ namespace UCA.Devices
             switch (deviceData.Command)
             {
                 case DeviceCommands.SetVoltage:
-                    var lowerLimit = deviceData.LowerLimit;
-                    var upperLimit = deviceData.UpperLimit;
-                    var expectedVoltage = Double.Parse(deviceData.Argument);
-                    var actualVoltage = pst3201.SetVoltage(expectedVoltage, 1);
-                    var result = $"Уcтановлено напряжение {GetValueUnitPair(actualVoltage, UnitType.Voltage)} \t Нижний предел: {GetValueUnitPair(lowerLimit, UnitType.Voltage)}\t Верхний предел {GetValueUnitPair(upperLimit, UnitType.Voltage)}";
-                    if (Math.Abs(actualVoltage) >= Math.Abs(lowerLimit) && Math.Abs(actualVoltage) <= Math.Abs(upperLimit))
-                        return ResultOk(result);
-                    else
-                        return ResultError($"Ошибка: {result}");
+                    var actualVoltage = SetVoltage(deviceData);
+                    return GetResult(message, deviceData, UnitType.Voltage, actualVoltage);
                 case DeviceCommands.SetCurrent:
-                    var lowerLimitCurrent = deviceData.LowerLimit;
-                    var upperLimitCurrent = deviceData.UpperLimit;
-                    var expectedCurrent = Double.Parse(deviceData.Argument);
-                    var actualCurrent = pst3201.SetCurrent(expectedCurrent, 1);
-                    var resultCurrent = $"Уcтановлен ток {GetValueUnitPair(actualCurrent, UnitType.Current)} \t Нижний предел: {GetValueUnitPair(lowerLimitCurrent, UnitType.Current)}\t Верхний предел {GetValueUnitPair(upperLimitCurrent, UnitType.Current)}";
-                    if (Math.Abs(actualCurrent) >= Math.Abs(lowerLimitCurrent) && Math.Abs(actualCurrent) <= Math.Abs(upperLimitCurrent))
-                        return ResultOk(resultCurrent);
-                    else
-                        return ResultError($"Ошибка: {resultCurrent}");
+                    var actualCurrent = SetCurrent(deviceData);
+                    return GetResult(message, deviceData, UnitType.Current, actualCurrent);
                 case DeviceCommands.PowerOff:
-                    var actualStatus = pst3201.ChangeOutputState("0");
-                    if (!actualStatus)
-                    {
-                        return DeviceResult.ResultOk($"Снятие входного сигнала с {deviceData.DeviceName}");
-                    }
-                    else
-                    {
-                        return DeviceResult.ResultError($"ОШИБКА: не удалось отключить входной сигнал с {deviceData.DeviceName}");
-                    }
+                    PowerOff();
+                    return ResultOk($"Подан входной сигнал с {deviceData.DeviceName}");
                 case DeviceCommands.PowerOn:
-                    var status = pst3201.ChangeOutputState("1");
-                    if (status)
-                    {
-                        return DeviceResult.ResultOk($"Подача входного сигнала с {deviceData.DeviceName}");
-                    }
-                    else
-                    {
-                        return DeviceResult.ResultError($"Ошибка: не удалось подать входной сигнал с {deviceData.DeviceName}");
-                    }
+                    PowerOn();
+                    return ResultOk($"Снят входной сигнал с {deviceData.DeviceName}");
                 default:
                     return ResultError($"Неизвестная команда {deviceData.Command}");
             }
+        }
+
+        public override void PowerOff()
+        {
+            pst3201.ChangeOutputState("0");
+        }
+
+        public override void PowerOn()
+        {
+            pst3201.ChangeOutputState("1");
+        }
+
+        public override double SetCurrent(DeviceData deviceData)
+        {
+            var current = Double.Parse(deviceData.Argument);
+            return pst3201.SetCurrent(current, 1);
+        }
+
+        public override double SetCurrentLimit(DeviceData deviceData)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override double SetVoltage(DeviceData deviceData)
+        {
+            var voltage = Double.Parse(deviceData.Argument);
+            return pst3201.SetVoltage(voltage, 1);
         }
     }
 }

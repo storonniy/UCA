@@ -3,12 +3,27 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static UCA.Auxiliary.UnitValuePair;
+
 
 namespace UCA.Devices
 {
     public abstract class IDeviceInterface
     {
         public abstract DeviceResult DoCommand(DeviceData deviceData);
+
+        public DeviceResult GetResult(string message, DeviceData deviceData, UnitType unitType, double value)
+        {
+            var result = $"{message}: {GetValueUnitPair(value, unitType)} \tНижний предел: {GetValueUnitPair(deviceData.LowerLimit, unitType)}\t Верхний предел {GetValueUnitPair(deviceData.UpperLimit, unitType)}";
+            if (value >= deviceData.LowerLimit && value <= deviceData.UpperLimit)
+            {
+                return DeviceResult.ResultOk(result);
+            }
+            else
+            {
+                return DeviceResult.ResultError($"ОШИБКА: {result}");
+            }
+        }
 
         #region Coefficient
         public struct InputData

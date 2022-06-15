@@ -7,10 +7,11 @@ using System.IO.Ports;
 using UCA.DeviceDrivers;
 using System.Globalization;
 using static UCA.Auxiliary.UnitValuePair;
+using UPD.Device;
 
 namespace UCA.Devices
 {
-    class AKIP3407_device : IDeviceInterface
+    class AKIP3407_device : Source
     {
         int delay = 1000;
         private AKIP_3407 akip3407;
@@ -23,53 +24,46 @@ namespace UCA.Devices
             switch (deviceData.Command)
             {
                 case DeviceCommands.SetVoltage:
-                    var lowerLimit = deviceData.LowerLimit;
-                    var upperLimit = deviceData.UpperLimit;
-                    var expectedVoltage = double.Parse(deviceData.Argument, CultureInfo.InvariantCulture);
-                    var actualVoltage = akip3407.SetVoltage(expectedVoltage);
-                    var result = $"Уcтановлено напряжение {GetValueUnitPair(actualVoltage, UnitType.Voltage)} \t Нижний предел: {GetValueUnitPair(lowerLimit, UnitType.Voltage)}\t Верхний предел {GetValueUnitPair(upperLimit, UnitType.Voltage)}";
-                    if (actualVoltage >= deviceData.LowerLimit && actualVoltage <= deviceData.UpperLimit)
-                    {
-                        return DeviceResult.ResultOk($"Установлено напряжение {GetValueUnitPair(actualVoltage, UnitType.Voltage)}");
-                    }
-                    else
-                    {
-                        return DeviceResult.ResultError($"ОШИБКА: установлено напряжение {GetValueUnitPair(actualVoltage, UnitType.Voltage)}, ожидалось {GetValueUnitPair(expectedVoltage, UnitType.Voltage)}");
-                    }
+                    var voltage = SetVoltage(deviceData);
+                    return GetResult(message, deviceData, UnitType.Voltage, voltage);
                 case DeviceCommands.SetFrequency:
                     var expectedFrequency = double.Parse(deviceData.Argument, CultureInfo.InvariantCulture);
-                    var actualFrequency = akip3407.SetVoltage(expectedFrequency);
-                    if (actualFrequency >= deviceData.LowerLimit && actualFrequency <= deviceData.UpperLimit)
-                    {
-                        return DeviceResult.ResultOk($"Установлено значение {actualFrequency} Гц");
-                    }
-                    else
-                    {
-                        return DeviceResult.ResultError($"ОШИБКА: установлено значение {actualFrequency} Гц, ожидалось {expectedFrequency} Гц");
-                    }
+                    var actualFrequency = akip3407.SetFrequency(expectedFrequency);
+                    return GetResult(message, deviceData, UnitType.Frequency, actualFrequency);
                 case DeviceCommands.PowerOn:
-                    var actualStatus = akip3407.PowerOn();
-                    if (actualStatus)
-                    {
-                        return DeviceResult.ResultOk($"Подача входного сигнала с {deviceData.DeviceName}");
-                    }
-                    else
-                    {
-                        return DeviceResult.ResultError($"Ошибка: не удалось подать входной сигнал с {deviceData.DeviceName}");
-                    }
+                    PowerOn();
+                    return DeviceResult.ResultOk($"Подан входной сигнал с {deviceData.DeviceName}");
                 case DeviceCommands.PowerOff:
-                    var actualPowerStatus = akip3407.PowerOff();
-                    if (!actualPowerStatus)
-                    {
-                        return DeviceResult.ResultOk($"Снятие входного сигнала с {deviceData.DeviceName}");
-                    }
-                    else
-                    {
-                        return DeviceResult.ResultError($"ОШИБКА: не удалось отключить входной сигнал с {deviceData.DeviceName}");
-                    }
+                    PowerOff();
+                    return DeviceResult.ResultOk($"Снят входной сигнал с {deviceData.DeviceName}");
                 default:
                     return DeviceResult.ResultError($"Неизвестная команда {deviceData.Command}");
             }
+        }
+
+        public override void PowerOff()
+        {
+            akip3407.PowerOff();        }
+
+        public override void PowerOn()
+        {
+            akip3407.PowerOn();
+        }
+
+        public override double SetCurrent(DeviceData deviceData)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override double SetCurrentLimit(DeviceData deviceData)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override double SetVoltage(DeviceData deviceData)
+        {
+            var voltage = double.Parse(deviceData.Argument, CultureInfo.InvariantCulture);
+            return akip3407.SetVoltage(voltage);
         }
     }
 }

@@ -112,6 +112,8 @@
     <Compile Include="Device\DeviceList\PSH73610_device.cs" />
     <Compile Include="Device\DeviceList\PST3201_device.cs" />
     <Compile Include="Device\IDeviceInterface.cs" />
+    <Compile Include="Device\Multimeter.cs" />
+    <Compile Include="Device\Source.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>

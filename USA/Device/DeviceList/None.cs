@@ -75,29 +75,13 @@ namespace UCA.Devices
                     {
                         var keys = GetKeys(deviceData.Argument);
                         double value = Divide(GetValue(keys.Keys[0]), GetValue(keys.Keys[1]));
-                        var result = $"Измерено значение {GetValueUnitPair(value, keys.UnitType)} \tНижний предел: {GetValueUnitPair(deviceData.LowerLimit, keys.UnitType)}\t Верхний предел {GetValueUnitPair(deviceData.UpperLimit, keys.UnitType)}";
-                        if (value >= deviceData.LowerLimit && value <= deviceData.UpperLimit)
-                        {
-                            return DeviceResult.ResultOk(result);
-                        }
-                        else
-                        {
-                            return DeviceResult.ResultError("Ошибка: " + result);
-                        }
+                        return GetResult("Получено значение", deviceData, keys.UnitType, value);
                     }
                 case DeviceCommands.Substract:
                     {
                         var keys = GetKeys(deviceData.Argument);
                         double value = Substract(GetValue(keys.Keys[0]), GetValue(keys.Keys[1]));
-                        var result = $"Измерено значение {GetValueUnitPair(value, keys.UnitType)} \tНижний предел: {GetValueUnitPair(deviceData.LowerLimit, keys.UnitType)}\t Верхний предел {GetValueUnitPair(deviceData.UpperLimit, keys.UnitType)}";
-                        if (value >= deviceData.LowerLimit && value <= deviceData.UpperLimit)
-                        {
-                            return DeviceResult.ResultOk(result);
-                        }
-                        else
-                        {
-                            return DeviceResult.ResultError("Ошибка: " + result);
-                        }
+                        return GetResult("Получено значение", deviceData, keys.UnitType, value);
                     }
                 case DeviceCommands.Save:
                     {
@@ -113,15 +97,7 @@ namespace UCA.Devices
                         double value = Multiply(GetValue(keys.Keys[0]), GetValue(keys.Keys[1]));
                         var keyToSave = GetKeys(deviceData.Argument).Keys[0];
                         AddValues(keyToSave, value);
-                        var result = $"Получено значение {GetValueUnitPair(value, keys.UnitType)}";
-                        if (value >= deviceData.LowerLimit && value <= deviceData.UpperLimit)
-                        {
-                            return DeviceResult.ResultOk(result);
-                        }
-                        else
-                        {
-                            return DeviceResult.ResultError("Ошибка: " + result);
-                        }
+                        return GetResult("Получено значение", deviceData, keys.UnitType, value);
                     }
                 default:
                     return DeviceResult.ResultError($"Неизвестная команда {deviceData.Command}");

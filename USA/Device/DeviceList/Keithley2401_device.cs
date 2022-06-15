@@ -2,15 +2,18 @@
 using System.Globalization;
 using System.IO;
 using System.IO.Ports;
+using System.Threading;
 using UCA.DeviceDrivers;
+using UPD.Device;
 using static UCA.Auxiliary.UnitValuePair;
 
 
 namespace UCA.Devices
 {
-    class Keithley2401_device : IDeviceInterface
+    class Keithley2401_device : Source
     {
         readonly Keithley2401 keithley2401;
+        private int delay = 1000;
 
         public Keithley2401_device(SerialPort serialPort)
         {
@@ -21,33 +24,18 @@ namespace UCA.Devices
         {
             switch (deviceData.Command)
             {
+                case DeviceCommands.SetVoltage:
+                    var actualVoltage = SetVoltage(deviceData);
+                    return GetResult(message, deviceData, UnitType.Voltage, actualVoltage);
                 case DeviceCommands.GetVoltage:
                     {
-                        var actualVoltage = keithley2401.MeasureVoltage();
-                        var tmp = double.Parse(deviceData.Argument, NumberStyles.Float);
-                        var result = $"Измерено напряжение {GetValueUnitPair(actualVoltage, UnitType.Voltage)} \tНижний предел: {GetValueUnitPair(deviceData.LowerLimit, UnitType.Voltage)}\t Верхний предел {GetValueUnitPair(deviceData.UpperLimit, UnitType.Voltage)}";
-                        if (actualVoltage >= deviceData.LowerLimit && actualVoltage <= deviceData.UpperLimit)
-                        {
-                            return DeviceResult.ResultOk(result);
-                        }
-                        else
-                        {
-                            return DeviceResult.ResultError("Ошибка: " + result);
-                        }
+                        var voltage = GetVoltage();
+                        return GetResult(message, deviceData, UnitType.Voltage, voltage);
                     }
                 case DeviceCommands.GetCurrent:
                     {
-                        var actualCurrent = keithley2401.MeasureCurrent();
-                        var tmp = double.Parse(deviceData.Argument, NumberStyles.Float);
-                        var resultCurrent = $"Измерен ток {GetValueUnitPair(actualCurrent, UnitType.Current)} \tНижний предел: {GetValueUnitPair(deviceData.LowerLimit, UnitType.Current)}\t Верхний предел {GetValueUnitPair(deviceData.UpperLimit, UnitType.Current)}";
-                        if (actualCurrent >= deviceData.LowerLimit && actualCurrent <= deviceData.UpperLimit)
-                        {
-                            return DeviceResult.ResultOk(resultCurrent);
-                        }
-                        else
-                        {
-                            return DeviceResult.ResultError($"Ошибка: {resultCurrent}");
-                        }
+                        var current = GetCurrent();
+                        return GetResult(message, deviceData, UnitType.Current, current);
                     }
                 case DeviceCommands.PowerOn:
                     var actualStatus = keithley2401.PowerOn();
@@ -72,6 +60,47 @@ namespace UCA.Devices
                 default:
                     return DeviceResult.ResultError($"Неизвестная команда {deviceData.Command}");
             }
+        }
+
+        public double GetCurrent()
+        {
+            return keithley2401.GetCurrent();
+        }
+
+        public double GetVoltage()
+        {
+            return keithley2401.GetVoltage();
+        }
+
+        public override void PowerOff()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void PowerOn()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override double SetCurrent(DeviceData deviceData)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override double SetCurrentLimit(DeviceData deviceData)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override double SetVoltage(DeviceData deviceData)
+        {
+            keithley2401.SelectFixedSourcingModeVoltage();
+            keithley2401.SetVoltageLimit((int)deviceData.UpperLimit);
+            Thread.Sleep(delay);
+            var voltage = double.Parse(deviceData.Argument);
+            keithley2401.SetVoltage(voltage);
+            Thread.Sleep(delay);
+            return keithley2401.GetOutputVoltage();
         }
     }
 }

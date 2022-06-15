@@ -43,6 +43,7 @@ namespace UCA.Devices
                         newDevice = new Keithley2401_device(device.SerialPort);
                         break;
                     case DeviceNames.Commutator:
+                    case DeviceNames.Commutator_1:
                         newDevice = new Commutator_device(device.SerialPort);
                         break;
                     case DeviceNames.None:
@@ -92,13 +93,11 @@ namespace UCA.Devices
             }
             catch (IOException)
             {
-                var data = $"lowerLimit {deviceData.LowerLimit}; upperLimit {deviceData.UpperLimit}";
-                return DeviceResult.ResultNotConnected($"{data} \n NOT_CONNECTED: Порт {deviceData.DeviceName} закрыт");
+                return DeviceResult.ResultNotConnected($"NOT_CONNECTED: Порт {deviceData.DeviceName} закрыт");
             }
             catch (InvalidOperationException)
             {
-                var data = $"lowerLimit {deviceData.LowerLimit}; upperLimit {deviceData.UpperLimit}";
-                return DeviceResult.ResultNotConnected($"{data} \n NOT_CONNECTED: Порт {deviceData.DeviceName} закрыт");
+                return DeviceResult.ResultNotConnected($"NOT_CONNECTED: Порт {deviceData.DeviceName} закрыт");
             }
             /*
             catch (FormatException)
