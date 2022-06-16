@@ -277,9 +277,9 @@ namespace VciCAN
         ///   This method is the works as receive thread.
         /// </summary>
         //************************************************************************
-        static bool newMsgEnabled = false;
+        private bool newMsgEnabled = false;
 
-        public ICanMessage lastCanMsg;
+        public ICanMessage lastCanMsg { get; private set; }
         readonly object Locker = new object();
 
         public void ReceiveThreadFunc()
