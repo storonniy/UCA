@@ -27,21 +27,21 @@ namespace UCA.Devices
                         var voltage = GetVoltage();
                         var key = double.Parse(deviceData.Argument, NumberStyles.Float);
                         AddCoefficientData(deviceData.Channel, key, voltage);
-                        return GetResult(message, deviceData, UnitType.Voltage, voltage);
+                        return GetResult(deviceData, UnitType.Voltage, voltage);
                     }
                 case DeviceCommands.GetVoltageAndSave:
                     {
                         var voltage = GetVoltage();
                         var key = deviceData.Argument;
                         AddValues(key, voltage);
-                        return GetResult(message, deviceData, UnitType.Voltage, voltage);
+                        return GetResult(deviceData, UnitType.Voltage, voltage);
                     }
                 case DeviceCommands.GetCurrent:
                     {
                         var current = GetCurrent();
                         var keyCurrent = double.Parse(deviceData.Argument, NumberStyles.Float);
                         AddCoefficientData(deviceData.Channel, keyCurrent, current);
-                        return GetResult(message, deviceData, UnitType.Current, current);
+                        return GetResult(deviceData, UnitType.Current, current);
                     }
                 case DeviceCommands.SetMeasurementToCurrent:
                     var currentRange = double.Parse(deviceData.Argument, CultureInfo.InvariantCulture);
@@ -49,7 +49,7 @@ namespace UCA.Devices
                     return DeviceResult.ResultOk($"{deviceData.DeviceName} переведен в режим измерения тока");
                 case DeviceCommands.GetVoltageRipple:
                     var ripple = gdm78261.MeasureVoltageAC();
-                    return GetResult(message, deviceData, UnitType.Voltage, ripple);
+                    return GetResult(deviceData, UnitType.Voltage, ripple);
                 default:
                     return DeviceResult.ResultError($"Неизвестная команда {deviceData.Command}");
             }

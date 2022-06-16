@@ -26,16 +26,16 @@ namespace UCA.Devices
             {
                 case DeviceCommands.SetVoltage:
                     var actualVoltage = SetVoltage(deviceData);
-                    return GetResult(message, deviceData, UnitType.Voltage, actualVoltage);
+                    return GetResult(deviceData, UnitType.Voltage, actualVoltage);
                 case DeviceCommands.GetVoltage:
                     {
                         var voltage = GetVoltage();
-                        return GetResult(message, deviceData, UnitType.Voltage, voltage);
+                        return GetResult(deviceData, UnitType.Voltage, voltage);
                     }
                 case DeviceCommands.GetCurrent:
                     {
                         var current = GetCurrent();
-                        return GetResult(message, deviceData, UnitType.Current, current);
+                        return GetResult(deviceData, UnitType.Current, current);
                     }
                 case DeviceCommands.PowerOn:
                     var actualStatus = keithley2401.PowerOn();

@@ -693,14 +693,14 @@ namespace UCA
 
         private void treeOfChecking_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            
-/*            if (treeviewNodeStep.ContainsKey(e.Node) && mainThread.ThreadState != ThreadState.Running)
+
+            if (treeviewNodeStep.ContainsKey(e.Node) && mainThread.ThreadState != ThreadState.Running)
             {
                 var thisStep = treeviewNodeStep[e.Node];
                 var node = treeviewStepNode[thisStep];
                 DoStep(thisStep);
-            }*/
-                      
+            }
+
         }
 
         private void button1_Click(object sender, EventArgs e)

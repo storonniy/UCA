@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UCA.Devices;
+using static UCA.Auxiliary.UnitValuePair;
 
 namespace UPD.Device
 {
@@ -16,5 +17,9 @@ namespace UPD.Device
         public abstract void PowerOn();
         public abstract void PowerOff();
 
+        public DeviceResult GetResult(DeviceData deviceData, UnitType unitType, double value)
+        {
+            return GetResult(message, deviceData, unitType, value);
+        }
     }
 }

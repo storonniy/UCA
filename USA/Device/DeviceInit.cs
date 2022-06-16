@@ -99,6 +99,10 @@ namespace UCA.Devices
             {
                 return DeviceResult.ResultNotConnected($"NOT_CONNECTED: Порт {deviceData.DeviceName} закрыт");
             }
+/*            catch (KeyNotFoundException ex)
+            {
+                return DeviceResult.ResultError(ex.Message);
+            }*/
             /*
             catch (FormatException)
             {

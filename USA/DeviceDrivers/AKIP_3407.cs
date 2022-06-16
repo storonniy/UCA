@@ -37,9 +37,10 @@ namespace UCA.DeviceDrivers
             return double.Parse(SendAndParseData(command), CultureInfo.InvariantCulture);
         }
 
-        public double SetFrequency (double frequency)
+        public double SetFrequency (string frequency)
         {
             var command = $"FREQ {frequency} #013#010;SOUR1:FREQ?#013#010";
+            // TODO: проверить формат возвращаемого значения от AKIP_3407 и верно его распарсить
             return double.Parse(SendAndParseData(command), CultureInfo.InvariantCulture);
         }
 

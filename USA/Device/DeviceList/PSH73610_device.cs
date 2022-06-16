@@ -27,10 +27,10 @@ namespace UCA.Devices
             {
                 case DeviceCommands.SetVoltage:
                     var voltage = SetVoltage(deviceData);
-                    return GetResult(message, deviceData, UnitType.Voltage, voltage);
+                    return GetResult(deviceData, UnitType.Voltage, voltage);
                 case DeviceCommands.SetCurrent:
                     var current = SetCurrent(deviceData);
-                    return GetResult(message, deviceData, UnitType.Current, current);
+                    return GetResult(deviceData, UnitType.Current, current);
                 case DeviceCommands.PowerOff:
                     PowerOff();
                     return ResultOk($"Снят входной сигнал с {deviceData.DeviceName}");

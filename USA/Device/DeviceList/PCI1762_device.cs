@@ -21,7 +21,6 @@ namespace UCA.Devices
             switch (deviceData.Command)
             {
                 case DeviceCommands.Commutate:
-                    var argument = deviceData.Argument;
                     var relayNumbers = GetRelayNumbersArray(deviceData.Argument);
                     return CloseRelay(relayNumbers);
                 case DeviceCommands.ReadPCI1762Data:

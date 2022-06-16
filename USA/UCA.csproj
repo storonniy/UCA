@@ -30,7 +30,7 @@
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>x86</PlatformTarget>
+    <PlatformTarget>x64</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -72,7 +72,7 @@
       <HintPath>..\..\..\..\..\..\Windows\assembly\GAC_MSIL\Automation.BDaq\1.0.1.0__463f5928d60183a0\Automation.BDaq.dll</HintPath>
     </Reference>
     <Reference Include="NModbus4">
-      <HintPath>..\packages\NModbus4.2.1.0\lib\net40\NModbus4.dll</HintPath>
+      <HintPath>.\NModbus4.dll</HintPath>
     </Reference>
     <Reference Include="System">
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.dll</HintPath>
@@ -87,6 +87,10 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="vcinet2, Version=3.5.2.4268, Culture=neutral, PublicKeyToken=1fb9dc3563e138e2, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>.\vcinet2.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Auxiliary\UnitValuePair.cs" />
@@ -96,11 +100,15 @@
     <Compile Include="DeviceDrivers\Commutator.cs" />
     <Compile Include="DeviceDrivers\GDM78261.cs" />
     <Compile Include="DeviceDrivers\Keithley2401.cs" />
+    <Compile Include="DeviceDrivers\MC.cs" />
     <Compile Include="DeviceDrivers\Modbus.cs" />
     <Compile Include="DeviceDrivers\PCI_1762.cs" />
     <Compile Include="DeviceDrivers\PSH_73610.cs" />
     <Compile Include="DeviceDrivers\PSP405.cs" />
     <Compile Include="DeviceDrivers\PST_3201.cs" />
+    <Compile Include="DeviceDrivers\VciCAN\VciCAN.cs" />
+    <Compile Include="Device\Command.cs" />
+    <Compile Include="Device\Commands\PowerOn.cs" />
     <Compile Include="Device\DeviceInit.cs" />
     <Compile Include="Device\Device.cs" />
     <Compile Include="Device\DeviceList\AKIP3407_device.cs" />

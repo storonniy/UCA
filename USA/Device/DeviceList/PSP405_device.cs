@@ -26,11 +26,11 @@ namespace UCA.Devices
             {
                 case DeviceCommands.SetVoltage:
                     var actualVoltage = SetVoltage(deviceData);
-                    return GetResult(message, deviceData, UnitType.Voltage, actualVoltage);
+                    return GetResult(deviceData, UnitType.Voltage, actualVoltage);
 
                 case DeviceCommands.SetCurrent:
                     var actualCurrent = SetCurrent(deviceData);
-                    return GetResult(message, deviceData, UnitType.Current, actualCurrent);
+                    return GetResult(deviceData, UnitType.Current, actualCurrent);
                 case DeviceCommands.PowerOn:
                     PowerOn();
                     return ResultOk($"Подан входной сигнал с {deviceData.DeviceName}");

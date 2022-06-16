@@ -25,11 +25,10 @@ namespace UCA.Devices
             {
                 case DeviceCommands.SetVoltage:
                     var voltage = SetVoltage(deviceData);
-                    return GetResult(message, deviceData, UnitType.Voltage, voltage);
+                    return GetResult(deviceData, UnitType.Voltage, voltage);
                 case DeviceCommands.SetFrequency:
-                    var expectedFrequency = double.Parse(deviceData.Argument, CultureInfo.InvariantCulture);
-                    var actualFrequency = akip3407.SetFrequency(expectedFrequency);
-                    return GetResult(message, deviceData, UnitType.Frequency, actualFrequency);
+                    var actualFrequency = akip3407.SetFrequency(deviceData.Argument);
+                    return GetResult(deviceData, UnitType.Frequency, actualFrequency);
                 case DeviceCommands.PowerOn:
                     PowerOn();
                     return DeviceResult.ResultOk($"Подан входной сигнал с {deviceData.DeviceName}");
