@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections;
 using System.Threading;
-using Ixxat.Vci3;
+using Ixxat.Vci4;
+using Ixxat.Vci4.Bal;
+using Ixxat.Vci4.Bal.Can;
+/*using Ixxat.Vci3;
 using Ixxat.Vci3.Bal;
-using Ixxat.Vci3.Bal.Can;
+using Ixxat.Vci3.Bal.Can;*/
 
 namespace VciCAN
 {
@@ -71,8 +74,8 @@ namespace VciCAN
         //************************************************************************
         public IVciDevice SelectDevice()
         {
-
             IVciDeviceManager deviceManager = null;
+            //IVciDeviceManager deviceManager = null;
             IVciDeviceList deviceList = null;
             IEnumerator deviceEnum = null;
 
@@ -81,7 +84,8 @@ namespace VciCAN
                 //
                 // Get device manager from VCI server
                 //
-                deviceManager = VciServer.GetDeviceManager();
+                deviceManager = VciServer.Instance().DeviceManager;
+                //deviceManager = VciServer.GetDeviceManager();
                 //
                 // Get the list of installed VCI devices
                 //
@@ -227,20 +231,20 @@ namespace VciCAN
 
         public void TransmitData(byte[] message, uint ID)
         {
-            CanMessage canMsg = new CanMessage();
-            canMsg.ExtendedFrameFormat = true;
-            canMsg.TimeStamp = 0;
 
-            canMsg.Identifier = ID;
+            IMessageFactory factory = VciServer.Instance().MsgFactory;
+            ICanMessage canMsg = (ICanMessage)factory.CreateMsg(typeof(ICanMessage));
+
+            canMsg.TimeStamp = 0;
+            canMsg.Identifier = 0x100;
             canMsg.FrameType = CanMsgFrameType.Data;
             canMsg.DataLength = 8;
             canMsg.SelfReceptionRequest = true;  // show this message in the console window
+
             for (Byte i = 0; i < canMsg.DataLength; i++)
             {
                 canMsg[i] = message[i];
             }
-            // Write the CAN message into the transmit FIFO
-            mWriter.SendMessage(canMsg);
         }
 
         #endregion
@@ -275,7 +279,8 @@ namespace VciCAN
         public void ReceiveThreadFunc()
         {
             int msgNumber = 0;
-            CanMessage canMessage;
+            IMessageFactory factory = VciServer.Instance().MsgFactory;
+            ICanMessage canMessage = (ICanMessage)factory.CreateMsg(typeof(ICanMessage));
             do
             {
                 // Wait 100 msec for a message reception

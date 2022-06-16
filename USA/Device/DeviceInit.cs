@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.Common;
 using System.IO;
+using UPD.Device.DeviceList;
 
 namespace UCA.Devices
 {
@@ -43,7 +44,6 @@ namespace UCA.Devices
                         newDevice = new Keithley2401_device(device.SerialPort);
                         break;
                     case DeviceNames.Commutator:
-                    case DeviceNames.Commutator_1:
                         newDevice = new Commutator_device(device.SerialPort);
                         break;
                     case DeviceNames.None:
@@ -79,6 +79,13 @@ namespace UCA.Devices
                         break;
                     case DeviceNames.AKIP_3407:
                         newDevice = new AKIP3407_device(device.SerialPort);
+                        break;
+                    case DeviceNames.MK_1:
+                    case DeviceNames.MK_2:
+                    case DeviceNames.MK_3:
+                    case DeviceNames.MK_4:
+                    case DeviceNames.MK_5:
+                        newDevice = new MK_device(device.Description);
                         break;
                 }
                 Devices.Add(device.Name, newDevice);

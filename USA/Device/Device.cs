@@ -135,6 +135,6 @@ namespace UCA.Devices
         AKIP_3407,
         Keithley2401_1,
         Keithley2401_2,
-        Commutator_1
+        MK_1, MK_2, MK_3, MK_4, MK_5
     }
 }

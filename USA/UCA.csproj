@@ -28,9 +28,11 @@
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>x64</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -70,6 +72,12 @@
     <Reference Include="Automation.BDaq, Version=1.0.1.0, Culture=neutral, PublicKeyToken=463f5928d60183a0, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\..\Windows\assembly\GAC_MSIL\Automation.BDaq\1.0.1.0__463f5928d60183a0\Automation.BDaq.dll</HintPath>
+    </Reference>
+    <Reference Include="Ixxat.Vci4, Version=4.0.439.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ixxat.Vci4.Core.4.0.439\lib\net40\Ixxat.Vci4.dll</HintPath>
+    </Reference>
+    <Reference Include="Ixxat.Vci4.Contract, Version=4.0.439.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ixxat.Vci4.Core.4.0.439\lib\net40\Ixxat.Vci4.Contract.dll</HintPath>
     </Reference>
     <Reference Include="NModbus4">
       <HintPath>.\NModbus4.dll</HintPath>
@@ -165,6 +173,9 @@
     <EmbeddedResource Include="SettingsForm.resx">
       <DependentUpon>SettingsForm.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="Net-API_de.pdf" />
+    <None Include="Net-API_en.pdf" />
+    <None Include="packages.config" />
     <None Include="Properties\app.manifest" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -175,6 +186,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <None Include="vci4net4.chm" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -198,4 +210,13 @@
     <Content Include="TODO.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\packages\Ixxat.Vci4.4.0.436\build\net40\Ixxat.Vci4.targets" Condition="Exists('..\packages\Ixxat.Vci4.4.0.436\build\net40\Ixxat.Vci4.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>Данный проект ссылается на пакеты NuGet, отсутствующие на этом компьютере. Используйте восстановление пакетов NuGet, чтобы скачать их.  Дополнительную информацию см. по адресу: http://go.microsoft.com/fwlink/?LinkID=322105. Отсутствует следующий файл: {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Ixxat.Vci4.4.0.436\build\net40\Ixxat.Vci4.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Ixxat.Vci4.4.0.436\build\net40\Ixxat.Vci4.targets'))" />
+    <Error Condition="!Exists('..\packages\Ixxat.Vci4.Core.4.0.439\build\net40\Ixxat.Vci4.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Ixxat.Vci4.Core.4.0.439\build\net40\Ixxat.Vci4.Core.targets'))" />
+  </Target>
+  <Import Project="..\packages\Ixxat.Vci4.Core.4.0.439\build\net40\Ixxat.Vci4.Core.targets" Condition="Exists('..\packages\Ixxat.Vci4.Core.4.0.439\build\net40\Ixxat.Vci4.Core.targets')" />
 </Project>

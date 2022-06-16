@@ -5,6 +5,8 @@ using UCA.DeviceDrivers;
 using System.Collections.Generic;
 using System.Threading;
 using static UCA.Auxiliary.UnitValuePair;
+using UPD.DeviceDrivers;
+using UPD.Device.DeviceList;
 
 namespace TestProject
 {
@@ -17,6 +19,27 @@ namespace TestProject
             OFF,
             ON
         }
+
+        #region MK
+
+        [TestMethod]
+        public void ParseRelayNumbers()
+        {
+            int[] expected = new int[] { 1, 2, 3, 4, 54 };
+            var actual = MK_device.ParseRelayNumbers("1, 2, 3, 4, 54");
+            CollectionAssert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void ParseRelayNumbers_oneRelay()
+        {
+            int[] expected = new int[] { 1 };
+            var actual = MK_device.ParseRelayNumbers("1 ");
+            CollectionAssert.AreEqual(expected, actual);
+        }
+
+
+        #endregion
 
         #region Песочница
 

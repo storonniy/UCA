@@ -10,7 +10,7 @@ namespace UPD.DeviceDrivers
     public class MK
     {
         CanConNet vciDevice;
-        uint mcID;
+        public readonly uint mcID;
         public MK(byte deviceNumber, int blockType, int moduleNumber, int placeNumber, int factoryNumber)
         {
             vciDevice = new CanConNet(deviceNumber);
@@ -75,8 +75,8 @@ namespace UPD.DeviceDrivers
             canMessage[7] = someByte;
             vciDevice.TransmitData(canMessage, msgID);
             CanConNet.DataBuf answerFromMC = GetAnswerFromMC();
-            if (answerFromMC.message == null)
-                throw new ArgumentNullException();
+/*            if (answerFromMC.message == null)
+                throw new ArgumentNullException();*/
             byte status = 0x01;
             if (answerFromMC.message[0] == 0xFE)
             {
@@ -93,9 +93,9 @@ namespace UPD.DeviceDrivers
 
         #region 2 Emergency Breaking
         /// <summary>
-        /// Разомкнуть все реле МК, подключённого к ПК.
+        /// Разомкнуть все реле МК
         /// </summary>
-        /// <returns> Возвращает true, если размыкание прошлоо успешно, и false, если произошла ошибка </returns>
+        /// <returns> Возвращает true, если размыкание прошло успешно, и false, если произошла ошибка </returns>
         public byte EmergencyBreak()
         {
             uint ID = 0x00;
@@ -119,7 +119,7 @@ namespace UPD.DeviceDrivers
         /// </summary>
         /// <returns> Возвращает статус операции (реле МК успешно разомкнуты/произошла ошибка) </returns>
 
-        public byte ConnectRelaysArray(uint ID)
+        public byte CloseRelaysArray(uint ID)
         {
             byte someByte = 0xFF;
             byte[] message1 = { 0x03, 0x01, someByte, someByte, someByte, someByte, someByte, someByte };
@@ -169,20 +169,17 @@ namespace UPD.DeviceDrivers
         /// <summary>
         /// Изменяет состояние одного реле.
         /// </summary>
-        /// <param name="relayNumber"> Номер реле (от 0 до 79).</param>
-        /// <param name="relayState"> Состояние реле. True - замкнуть, false - разомкнуть. </param>
-        public byte ChangeRelayState(uint ID, int relayNumber, bool requestedRelayState)
+        /// <param name="relayNumber"> Номер реле (от 0 до 79) </param>
+        /// <param name="relayState"> Состояние реле. True - замкнуть, false - разомкнуть </param>
+        private byte ChangeRelayState(uint msgID, int relayNumber, bool relayState)
         {
             if (relayNumber < 0 || relayNumber > 79)
             {
                 throw new Exception("Номер реле должен быть в диапазоне от 0 до 79");
             }
-            byte someByte = 0xFF;
-            byte relayStateON = 0x01;
-            byte relayStateOFF = 0x00;
-            byte stateOfRelay = requestedRelayState ? relayStateON : relayStateOFF;
-            byte[] canMessage = { 0x05, (byte)relayNumber, stateOfRelay, someByte, someByte, someByte, someByte, someByte };
-            vciDevice.TransmitData(canMessage, ID);
+            byte stateByte = (byte)(relayState ? 0x01 : 0x00);
+            byte[] canMessage = { 0x05, (byte)relayNumber, stateByte, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
+            vciDevice.TransmitData(canMessage, msgID);
             var answerFromMC = GetAnswerFromMC();
             var returnedRelayNumber = answerFromMC.message[1];
             var status = answerFromMC.message[2];
@@ -197,6 +194,32 @@ namespace UPD.DeviceDrivers
             }
             else
                 return (byte)ErrorCode.InvalidResponse;
+        }
+
+        private byte CloseRelay(uint msgID, int relayNumber)
+        {
+            return ChangeRelayState(msgID, relayNumber, true);
+        }
+
+        private byte OpenRelay(uint msgID, int relayNumber)
+        {
+            return ChangeRelayState(msgID, relayNumber, true);
+        }
+
+        public void CloseRelays(uint msgID, int[] relayNumbers)
+        {
+            foreach (var relayNumber in relayNumbers)
+            {
+                CloseRelay(msgID, relayNumber);
+            }
+        }
+
+        public void OpenRelays(uint msgID, int[] relayNumbers)
+        {
+            foreach (var relayNumber in relayNumbers)
+            {
+                OpenRelay(msgID, relayNumber);
+            }
         }
 
         #endregion

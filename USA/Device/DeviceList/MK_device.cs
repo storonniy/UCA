@@ -23,11 +23,33 @@ namespace UPD.Device.DeviceList
             switch (deviceData.Command)
             {
                 case DeviceCommands.CloseRelays:
-                    mk.ChangeRelayState();
-                    break;
+                    {
+                        var relayNumbers = ParseRelayNumbers(deviceData.Argument);
+                        // TODO: выяснить, какие ID у CAN-сообщений для МК
+                        mk.CloseRelays(0, relayNumbers);
+                        return ResultOk($"{deviceData.DeviceName} замкнуты реле {String.Join(", ", relayNumbers)}");
+                    }
+                case DeviceCommands.OpenRelays:
+                    {
+                        var relayNumbers = ParseRelayNumbers(deviceData.Argument);
+                        // TODO: выяснить, какие ID у CAN-сообщений для МК
+                        mk.CloseRelays(0, relayNumbers);
+                        return ResultOk($"{deviceData.DeviceName} разомкнуты реле {String.Join(", ", relayNumbers)}");
+                    }
                 default:
                     return ResultError($"Неизвестная команда {deviceData.Command}");
             }
+        }
+
+        public static int[] ParseRelayNumbers(string request)
+        {
+            var relayNames = request.Replace(" ", "").Split(',');
+            var relayNumbers = new int[relayNames.Length];
+            for (int i = 0; i < relayNumbers.Length; i++)
+            {
+                relayNumbers[i] = int.Parse(relayNames[i]);
+            }
+            return relayNumbers;
         }
 
         private struct MKParameters
@@ -51,7 +73,7 @@ namespace UPD.Device.DeviceList
 
         private MKParameters ParseDescription(string description)
         {
-            var parameters = description.Split(';');
+            var parameters = description.Split(',');
             if (parameters.Length != 5)
                 throw new Exception("Должно быть указано 5 параметров МК");
             return new MKParameters(byte.Parse(parameters[0]), int.Parse(parameters[1]), int.Parse(parameters[2]), int.Parse(parameters[3]), int.Parse(parameters[4]));
