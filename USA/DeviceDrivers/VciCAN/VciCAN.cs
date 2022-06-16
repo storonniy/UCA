@@ -27,41 +27,52 @@ namespace VciCAN
 
         #region Member variables
 
+        private readonly int delay = 1000;
+
         /// <summary>
         ///   Reference to the used VCI device.
         /// </summary>
-        IVciDevice mDevice;
+        static IVciDevice mDevice;
 
         /// <summary>
         ///   Reference to the CAN controller.
         /// </summary>
-        ICanControl mCanCtl;
+        static ICanControl mCanCtl;
 
         /// <summary>
         ///   Reference to the CAN message communication channel.
         /// </summary>
-        ICanChannel mCanChn;
+        static ICanChannel mCanChn;
+
+        /// <summary>
+        ///   Reference to the CAN message scheduler.
+        /// </summary>
+        static ICanScheduler mCanSched;
 
         /// <summary>
         ///   Reference to the message writer of the CAN message channel.
         /// </summary>
-        ICanMessageWriter mWriter;
+        static ICanMessageWriter mWriter;
 
         /// <summary>
         ///   Reference to the message reader of the CAN message channel.
         /// </summary>
-        ICanMessageReader mReader;
+        static ICanMessageReader mReader;
 
+        /// <summary>
+        ///   Thread that handles the message reception.
+        /// </summary>
+        static Thread rxThread;
 
         /// <summary>
         ///   Quit flag for the receive thread.
         /// </summary>
-        long mMustQuit = 0;
+        static long mMustQuit = 0;
 
         /// <summary>
         ///   Event that's set if at least one message was received.
         /// </summary>
-        AutoResetEvent mRxEvent;
+        static AutoResetEvent mRxEvent;
 
         #endregion
 
@@ -144,14 +155,13 @@ namespace VciCAN
         ///   A value indicating if the socket initialization succeeded or failed.
         /// </returns>
         //************************************************************************
-        public bool InitSocket(Byte canNo)
+        bool InitSocket(Byte canNo)
         {
             IBalObject bal = null;
             bool succeeded = false;
 
             try
             {
-
                 //
                 // Open bus access layer
                 //
@@ -161,6 +171,11 @@ namespace VciCAN
                 // Open a message channel for the CAN controller
                 //
                 mCanChn = bal.OpenSocket(canNo, typeof(ICanChannel)) as ICanChannel;
+
+                //
+                // Open the scheduler of the CAN controller
+                //
+                mCanSched = bal.OpenSocket(canNo, typeof(ICanScheduler)) as ICanScheduler;
 
                 // Initialize the message channel
                 mCanChn.Initialize(1024, 128, false);
@@ -186,27 +201,33 @@ namespace VciCAN
                 mCanChn.Activate();
 
 
-
                 //
                 // Open the CAN controller
                 //
                 mCanCtl = bal.OpenSocket(canNo, typeof(ICanControl)) as ICanControl;
 
                 // Initialize the CAN controller
-                mCanCtl.InitLine(CanOperatingModes.Extended
-                                , CanBitrate.Cia250KBit);
+                mCanCtl.InitLine(CanOperatingModes.Standard |
+                  CanOperatingModes.Extended |
+                  CanOperatingModes.ErrFrame,
+                  CanBitrate.Cia500KBit);
 
-                // Set the acceptance filter
+                // Set the acceptance filter for std identifiers
+                mCanCtl.SetAccFilter(CanFilter.Std,
+                                     (uint)CanAccCode.All, (uint)CanAccMask.All);
+
+                // Set the acceptance filter for ext identifiers
                 mCanCtl.SetAccFilter(CanFilter.Ext,
                                      (uint)CanAccCode.All, (uint)CanAccMask.All);
+
                 // Start the CAN controller
                 mCanCtl.StartLine();
 
                 succeeded = true;
             }
-            catch (Exception)
+            catch (Exception exc)
             {
-                Console.WriteLine("Error: Initializing socket failed");
+                succeeded = false;
             }
             finally
             {
@@ -215,7 +236,6 @@ namespace VciCAN
                 //
                 DisposeVciObject(bal);
             }
-
             return succeeded;
         }
 
@@ -228,7 +248,6 @@ namespace VciCAN
         /// </summary
         /// 
         /// 
-
         public void TransmitData(byte[] message, uint ID)
         {
 
@@ -241,10 +260,12 @@ namespace VciCAN
             canMsg.DataLength = 8;
             canMsg.SelfReceptionRequest = true;  // show this message in the console window
 
-            for (Byte i = 0; i < canMsg.DataLength; i++)
+            for (var i = 0; i < canMsg.DataLength; i++)
             {
                 canMsg[i] = message[i];
             }
+            mWriter.SendMessage(canMsg);
+            Thread.Sleep(1000);
         }
 
         #endregion
@@ -256,29 +277,13 @@ namespace VciCAN
         ///   This method is the works as receive thread.
         /// </summary>
         //************************************************************************
-        static bool __newMessage = false;
+        static bool newMsgEnabled = false;
 
-        /// <summary>
-        /// CAN Message data structure
-        /// </summary>
-        /// <param name = "message"> CAN message </param>
-        /// <param name = "ID"> ID of CAN message </param>
-        /// <param name = "Length"> Message length </param>
-        /// <param name = "Number"> Number of received messages </param>
-        public struct DataBuf
-        {
-            public byte[] message;
-            public uint ID;
-            public int Length;
-            public int Number;
-        }
-
-        public DataBuf __dataBuf;
-        readonly object __locker = new object();
+        public ICanMessage lastCanMsg;
+        readonly object Locker = new object();
 
         public void ReceiveThreadFunc()
         {
-            int msgNumber = 0;
             IMessageFactory factory = VciServer.Instance().MsgFactory;
             ICanMessage canMessage = (ICanMessage)factory.CreateMsg(typeof(ICanMessage));
             do
@@ -288,24 +293,18 @@ namespace VciCAN
                 {
                     while (mReader.ReadMessage(out canMessage))
                     {
-                        __newMessage = !canMessage.RemoteTransmissionRequest;
-                        lock (__locker)
+                        newMsgEnabled = !canMessage.RemoteTransmissionRequest;
+                        lock (Locker)
                         {
                             if (!canMessage.RemoteTransmissionRequest)
                             {
-                                msgNumber++;
                                 byte[] msg = new byte[canMessage.DataLength];
                                 for (int index = 0; index < canMessage.DataLength; index++)
                                 {
                                     msg[index] = canMessage[index];
                                 }
-                                DataBuf thisData = new DataBuf();
-                                thisData.Length = canMessage.DataLength;
-                                thisData.ID = canMessage.Identifier;
-                                thisData.message = msg;
-                                thisData.Number = msgNumber;
-                                __dataBuf = thisData;
-                                __newMessage = false;
+                                lastCanMsg = canMessage;
+                                newMsgEnabled = false;
                             }
                         }
                     }
@@ -313,89 +312,22 @@ namespace VciCAN
             } while (0 == mMustQuit);
         }
 
-        public DataBuf GetData()
+        public ICanMessage GetData()
         {
-            lock (__locker)
-                return __dataBuf;
+            lock (Locker)
+                return lastCanMsg;
         }
 
 
         public bool ThereIsANewMessage()
         {
-            lock (__locker)
-                return __newMessage;
+            lock (Locker)
+                return newMsgEnabled;
         }
 
         #endregion
 
         #region Utility methods
-
-        /// <summary>
-        /// Returns the UniqueHardwareID GUID number as string which
-        /// shows the serial number.
-        /// Note: This function will be obsolete in later version of the VCI.
-        /// Until VCI Version 3.1.4.1784 there is a bug in the .NET API which
-        /// returns always the GUID of the interface. In later versions there
-        /// the serial number itself will be returned by the UniqueHardwareID property.
-        /// </summary>
-        /// <param name="serialNumberGuid">Data read from the VCI.</param>
-        /// <returns>The GUID as string or if possible the  serial number as string.</returns>
-        string GetSerialNumberText(ref object serialNumberGuid)
-        {
-            string resultText;
-
-            // check if the object is really a GUID type
-            if (serialNumberGuid.GetType() == typeof(System.Guid))
-            {
-                // convert the object type to a GUID
-                System.Guid tempGuid = (System.Guid)serialNumberGuid;
-
-                // copy the data into a byte array
-                byte[] byteArray = tempGuid.ToByteArray();
-
-                // serial numbers starts always with "HW"
-                if (((char)byteArray[0] == 'H') && ((char)byteArray[1] == 'W'))
-                {
-                    // run a loop and add the byte data as char to the result string
-                    resultText = "";
-                    int i = 0;
-                    while (true)
-                    {
-                        // the string stops with a zero
-                        if (byteArray[i] != 0)
-                            resultText += (char)byteArray[i];
-                        else
-                            break;
-                        i++;
-
-                        // stop also when all bytes are converted to the string
-                        // but this should never happen
-                        if (i == byteArray.Length)
-                            break;
-                    }
-                }
-                else
-                {
-                    // if the data did not start with "HW" convert only the GUID to a string
-                    resultText = serialNumberGuid.ToString();
-                }
-            }
-            else
-            {
-                // if the data is not a GUID convert it to a string
-                string tempString = (string)(string)serialNumberGuid;
-                resultText = "";
-                for (int i = 0; i < tempString.Length; i++)
-                {
-                    if (tempString[i] != 0)
-                        resultText += tempString[i];
-                    else
-                        break;
-                }
-            }
-
-            return resultText;
-        }
 
 
         //************************************************************************
@@ -411,7 +343,6 @@ namespace VciCAN
 
             // Dispose message reader
             DisposeVciObject(mReader);
-
 
             // Dispose message writer 
             DisposeVciObject(mWriter);
