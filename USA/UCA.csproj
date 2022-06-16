@@ -100,7 +100,7 @@
     <Compile Include="DeviceDrivers\Commutator.cs" />
     <Compile Include="DeviceDrivers\GDM78261.cs" />
     <Compile Include="DeviceDrivers\Keithley2401.cs" />
-    <Compile Include="DeviceDrivers\MC.cs" />
+    <Compile Include="DeviceDrivers\MK.cs" />
     <Compile Include="DeviceDrivers\Modbus.cs" />
     <Compile Include="DeviceDrivers\PCI_1762.cs" />
     <Compile Include="DeviceDrivers\PSH_73610.cs" />
@@ -115,6 +115,7 @@
     <Compile Include="Device\DeviceList\ATH8030_device.cs" />
     <Compile Include="Device\DeviceList\Commutator_device.cs" />
     <Compile Include="Device\DeviceList\Keithley2401_device.cs" />
+    <Compile Include="Device\DeviceList\MK_device.cs" />
     <Compile Include="Device\DeviceList\None.cs" />
     <Compile Include="Device\DeviceList\PCI1762_device.cs" />
     <Compile Include="Device\DeviceList\PSH73610_device.cs" />

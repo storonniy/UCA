@@ -7,18 +7,18 @@ using VciCAN;
 
 namespace UPD.DeviceDrivers
 {
-    public class MC
+    public class MK
     {
         CanConNet vciDevice;
         uint mcID;
-        public MC(byte deviceNumber)
+        public MK(byte deviceNumber, int blockType, int moduleNumber, int placeNumber, int factoryNumber)
         {
             vciDevice = new CanConNet(deviceNumber);
             // TODO: выяснить, где брать инфу про blockType, moduleNumber, ...
-            mcID = AssignBlockID();
+            mcID = AssignBlockID(blockType, moduleNumber, placeNumber, factoryNumber);
         }
 
-        ~MC()
+        ~MK()
         {
             vciDevice.FinalizeApp();
         }
