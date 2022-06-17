@@ -46,6 +46,9 @@ namespace UCA.Devices
                     case DeviceNames.Commutator:
                         newDevice = new Commutator_device(device.SerialPort);
                         break;
+                    case DeviceNames.Simulator:
+                        newDevice = new Simulator_device(device.SerialPort);
+                        break;
                     case DeviceNames.None:
                         newDevice = new None();
                         break;
@@ -77,14 +80,19 @@ namespace UCA.Devices
                     case DeviceNames.PCI_1762_5:
                         newDevice = new PCI1762_device(device.Description);
                         break;
+                    case DeviceNames.PST_3201_p9V:
+                    case DeviceNames.PST_3201_m9V:
+                    case DeviceNames.PST_3201_p5v:
+                        newDevice = new PST3201_device(device.SerialPort);
+                        break;
                     case DeviceNames.AKIP_3407:
                         newDevice = new AKIP3407_device(device.SerialPort);
                         break;
-                    case DeviceNames.MK_1:
-                    case DeviceNames.MK_2:
+                    case DeviceNames.MK:
+/*                    case DeviceNames.MK_2:
                     case DeviceNames.MK_3:
                     case DeviceNames.MK_4:
-                    case DeviceNames.MK_5:
+                    case DeviceNames.MK_5:*/
                         newDevice = new MK_device(device.Description);
                         break;
                 }
@@ -100,7 +108,7 @@ namespace UCA.Devices
             }
             catch (IOException)
             {
-                return DeviceResult.ResultNotConnected($"NOT_CONNECTED: Порт {deviceData.DeviceName} закрыт");
+               return DeviceResult.ResultNotConnected($"NOT_CONNECTED: Порт {deviceData.DeviceName} закрыт");
             }
             catch (InvalidOperationException)
             {

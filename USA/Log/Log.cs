@@ -14,7 +14,7 @@ namespace UCA.Logging
         public Log(Settings settings)
         {
             this.settings = settings;
-            var path = @"C:\UCATlogs\";
+            var path = @"C:\NS03\";
             var dirInfo = new DirectoryInfo(path);
             if (!dirInfo.Exists)
             {

@@ -18,7 +18,7 @@ namespace UPD.DeviceDrivers
         {
             vciDevice = new CanConNet(deviceNumber);
             // TODO: выяснить, где брать инфу про blockType, moduleNumber, ...
-            mcID = AssignBlockID(blockType, moduleNumber, placeNumber, factoryNumber);
+            //mcID = AssignBlockID(blockType, moduleNumber, placeNumber, factoryNumber);
         }
 
         ~MK()
@@ -33,7 +33,7 @@ namespace UPD.DeviceDrivers
             while (true)
             {
                 ICanMessage message = vciDevice.GetData();
-                //WARNING: no cycle time limit. If MC does not respond, the program will freeze
+                // TODO: no cycle time limit. If MC does not respond, the program will freeze
                 if (vciDevice.ThereIsANewMessage())
                 {
                     return message;
@@ -67,17 +67,17 @@ namespace UPD.DeviceDrivers
         {
             uint msgID = 0x00;
             byte[] canMessage = new byte[8];
-            canMessage[0] = 0x00;
+            canMessage[0] = 0x01;
             canMessage[1] = 0xFF;
             canMessage[2] = BitConverter.GetBytes(blockType)[0];
-            canMessage[3] = BitConverter.GetBytes(placeNumber)[0];
-            canMessage[4] = BitConverter.GetBytes(factoryNumber)[0];
-            canMessage[5] = BitConverter.GetBytes(factoryNumber)[1];
-            canMessage[6] = 0xFF;
+            canMessage[2] = BitConverter.GetBytes(moduleNumber)[0];
+            canMessage[4] = BitConverter.GetBytes(placeNumber)[0];
+            canMessage[5] = BitConverter.GetBytes(factoryNumber)[0];
+            canMessage[6] = BitConverter.GetBytes(factoryNumber)[1];
             canMessage[7] = 0xFF;
             vciDevice.TransmitData(canMessage, msgID);
             ICanMessage answerFromMC = GetAnswerFromMC();
-            if (answerFromMC[0] == 0xFE && answerFromMC[2] == 0x01)
+            if (answerFromMC[0] == 0xFE /*&& answerFromMC[2] == 0x01*/)
             {
                 return answerFromMC[2];
             }
@@ -90,7 +90,7 @@ namespace UPD.DeviceDrivers
         /// <summary>
         /// Разомкнуть все реле МК
         /// </summary>
-        /// <returns> Возвращает true, если размыкание прошло успешно, и false, если произошла ошибка </returns>
+        /// <returns> </returns>
         public byte EmergencyBreak()
         {
             uint ID = 0x00;
@@ -173,11 +173,12 @@ namespace UPD.DeviceDrivers
             var answerFromMC = GetAnswerFromMC();
             var returnedRelayNumber = answerFromMC[1];
             var status = answerFromMC[2];
-            if (answerFromMC[0] == 0xFA && returnedRelayNumber == (byte)relayNumber)
+            if (answerFromMC[0] == 0xFA)
             {
+                if (returnedRelayNumber != (byte)relayNumber)
+                    EmergencyBreak();
                 return status;
-            }
-            EmergencyBreak();
+            }          
             throw new Exception($"МК вернул ошибочный ответ: {String.Join(" ", answerFromMC)}");
 
         }
@@ -260,11 +261,10 @@ namespace UPD.DeviceDrivers
         /// <summary>
         /// Проверка наличия оборудования.
         /// </summary>
-        public void WakeUp()
+        public List<ICanMessage> WakeUp()
         {
             uint ID = 0x00;
-            byte someByte = 0xFF;
-            byte[] canMessage = { 0x08, someByte, someByte, someByte, someByte, someByte, someByte, someByte };
+            byte[] canMessage = { 0x08, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
             vciDevice.TransmitData(canMessage, ID);
             int numberOfBlocks = 78; // Комментарии никто не читает. Но в этой переменной отражено реальное число блоков.
             List<ICanMessage> allBlocks = new List<ICanMessage>();
@@ -273,6 +273,7 @@ namespace UPD.DeviceDrivers
                 var answerFromMC = GetAnswerFromMC();
                 allBlocks.Add(answerFromMC);
             }
+            return allBlocks;
         }
 
         #endregion

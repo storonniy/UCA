@@ -32,7 +32,7 @@
     </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -114,6 +114,7 @@
     <Compile Include="DeviceDrivers\PSH_73610.cs" />
     <Compile Include="DeviceDrivers\PSP405.cs" />
     <Compile Include="DeviceDrivers\PST_3201.cs" />
+    <Compile Include="DeviceDrivers\Simulator.cs" />
     <Compile Include="DeviceDrivers\VciCAN\VciCAN.cs" />
     <Compile Include="Device\Command.cs" />
     <Compile Include="Device\Commands\PowerOn.cs" />
@@ -128,6 +129,7 @@
     <Compile Include="Device\DeviceList\PCI1762_device.cs" />
     <Compile Include="Device\DeviceList\PSH73610_device.cs" />
     <Compile Include="Device\DeviceList\PST3201_device.cs" />
+    <Compile Include="Device\DeviceList\Simulator_device.cs" />
     <Compile Include="Device\IDeviceInterface.cs" />
     <Compile Include="Device\Multimeter.cs" />
     <Compile Include="Device\Source.cs" />
