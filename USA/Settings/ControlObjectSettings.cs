@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,11 +22,11 @@ namespace UCA.ControlObjectSettings
     {
         public struct Settings
         {
-            public Regime Regime;
-            public string Comment;
-            public string FactoryNumber;
-            public string OperatorName;
-        }        
+            public Regime Regime { get; set; }
+            public string Comment { get; set; }
+            public string FactoryNumber { get; set; }
+            public string OperatorName { get; set; }
+        }
 
         public static Regime GetRegimeAsEnum(string regimeName)
         {
@@ -57,16 +58,21 @@ namespace UCA.ControlObjectSettings
             }
         }
 
-        public enum Regime 
+        public enum Regime
         {
+            [Description("Номинальный")]
             Nominal,
+            [Description("Минимальный")]
             Min,
+            [Description("Максимальный")]
             Max
         }
 
         public enum CheckingType
         {
+            [Description("Самопроверка")]
             SelfChecking,
+            [Description("Алгоритм")]
             Algorithm
         }
 

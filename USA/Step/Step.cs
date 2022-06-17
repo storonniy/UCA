@@ -12,26 +12,26 @@ namespace UCA.Steps
 { 
     struct StepsInfo
     {
-        public Dictionary<string, Dictionary<string, List<Step>>> VoltageSupplyModesDictionary;
-        public Dictionary<string, Dictionary<string, List<Step>>> ModesDictionary;
-        public List<Step> EmergencyStepList;
+        public Dictionary<string, Dictionary<string, List<Step>>> VoltageSupplyModesDictionary { get; set; }
+        public Dictionary<string, Dictionary<string, List<Step>>> ModesDictionary { get; set; }
+        public List<Step> EmergencyStepList { get; set; }
         //public DeviceInit DeviceHandler;
-        public Dictionary<string, List<Step>> StepsDictionary;
-        public int StepNumber;
-        public List<Device> DeviceList;
+        public Dictionary<string, List<Step>> StepsDictionary { get; set; }
+        public int StepNumber { get; private set; }
+        public List<Device> DeviceList { get; set; }
     }
 
     class Step
     {
-        public string AdditionalArg;
-        public int Channel;
-        public string Device;
-        public string Command;
-        public string Argument;
-        public string Description;
-        public double LowerLimit;
-        public double UpperLimit;
-        public bool ShowStep;
+        public string AdditionalArg { get; private set; }
+        public int Channel { get; private set; }
+        public string Device { get; private set; }
+        public string Command { get; private set; }
+        public string Argument { get; private set; }
+        public string Description { get; private set; }
+        public double LowerLimit { get; private set; }
+        public double UpperLimit { get; private set; }
+        public bool ShowStep { get; private set; }
 
         private static SerialPort GetSerialPort(string portName, int baudrate)
         {
@@ -73,6 +73,7 @@ namespace UCA.Steps
         private static List<Device> GetDeviceList(DataSet dataSet)
         {
             var deviceList = new List<Device>();
+            CheckDataSet(dataSet.Tables["DeviceInformation"]);
             foreach (DataRow row in dataSet.Tables["DeviceInformation"].Rows)
             {
                 var deviceName = row["device"].ToString();
