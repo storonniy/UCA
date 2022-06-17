@@ -86,7 +86,7 @@ namespace UCA.Devices
                 case DeviceCommands.Save:
                     {
                         var keys = GetKeys(deviceData.Argument);
-                        var value = double.Parse(deviceData.ExpectedValue, CultureInfo.InvariantCulture);
+                        var value = double.Parse(deviceData.AdditionalArg, CultureInfo.InvariantCulture);
                         AddValues(keys.Keys[0], value);
                         var result = $"Сохранено значение {GetValueUnitPair(value, keys.UnitType)}";
                         return DeviceResult.ResultOk(result);

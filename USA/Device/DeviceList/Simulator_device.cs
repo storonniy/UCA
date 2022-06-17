@@ -81,7 +81,7 @@ namespace UPD.Device.DeviceList
                     }
                     return DeviceResult.ResultError("ОШИБКА: реле остались замкнутыми");
                 case DeviceCommands.CheckClosedRelays:
-                    string[] signalNames = deviceData.ExpectedValue.Replace(" ", "").Split(',');
+                    string[] signalNames = deviceData.AdditionalArg.Replace(" ", "").Split(',');
                     // Проверим, всё ли разомкнулось:
                     var actualClosedRelayNames3 = Simulator.GetClosedRelayNames();
                     bool isSignalExist = false;
@@ -99,7 +99,7 @@ namespace UPD.Device.DeviceList
                     }
                     return DeviceResult.ResultError($"Сигнал {signalNames[0]} отсутствует");
                 case DeviceCommands.GetSignals:
-                    string[] signalNames1 = deviceData.ExpectedValue.Replace(" ", "").Split(',');
+                    string[] signalNames1 = deviceData.AdditionalArg.Replace(" ", "").Split(',');
                     // Проверим, всё ли разомкнулось:
                     var actualSignals = Simulator.GetSignals();
                     bool isSignalExist1 = false;

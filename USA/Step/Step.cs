@@ -23,7 +23,7 @@ namespace UCA.Steps
 
     class Step
     {
-        public string ExpectedValue;
+        public string AdditionalArg;
         public int Channel;
         public string Device;
         public string Command;
@@ -89,7 +89,7 @@ namespace UCA.Steps
                 }
                 catch (ArgumentException ex)
                 {
-                    throw new ArgumentException($"Устройство {deviceName} не найдено в списке доступных устройств");
+                    throw new ArgumentException($"Устройство {deviceName} не найдено в списке доступных устройств {description}");
                 }
             }
             dataSet.Tables.Remove(dataSet.Tables["DeviceInformation"]);
@@ -220,7 +220,7 @@ namespace UCA.Steps
             step.ShowStep = Convert.ToBoolean(meow);
             if (step.Channel > 0)
                 step.Description = $"Канал {step.Channel}: {step.Description}";
-            step.ExpectedValue = row["expectedValue"].ToString();
+            step.AdditionalArg = row["additionalArg"].ToString();
             return step;
         }
     }

@@ -19,10 +19,10 @@ namespace VciCAN
     //##########################################################################
     public class CanConNet
     {
-        public CanConNet(byte deviceNumber)
+        public CanConNet()
         {
             SelectDevice();
-            InitSocket(deviceNumber);
+            InitSocket(0);
         }
 
         #region Member variables

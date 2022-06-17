@@ -5,20 +5,20 @@ using System.Text;
 using System.Threading.Tasks;
 using VciCAN;
 using Ixxat.Vci4.Bal.Can;
-
+using System.Collections;
+using System.Threading;
 
 namespace UPD.DeviceDrivers
 {
     public class MK
     {
         CanConNet vciDevice;
-        public readonly uint mcID;
+        readonly List<BlockData> blockDataList;
 
-        public MK(byte deviceNumber, int blockType, int moduleNumber, int placeNumber, int factoryNumber)
+        public MK()
         {
-            vciDevice = new CanConNet(deviceNumber);
-            // TODO: выяснить, где брать инфу про blockType, moduleNumber, ...
-            //mcID = AssignBlockID(blockType, moduleNumber, placeNumber, factoryNumber);
+            vciDevice = new CanConNet();
+            blockDataList = WakeUp(); 
         }
 
         ~MK()
@@ -26,9 +26,35 @@ namespace UPD.DeviceDrivers
             vciDevice.FinalizeApp();
         }
 
-        #region CAN Initialization
+        public class BlockData
+        {
+            public BlockData(uint id, int factoryNumber)
+            {
+                Id = id;
+                FactoryNumber = factoryNumber;
+            }
 
-        private ICanMessage GetAnswerFromMC()
+            public uint Id { get; private set; }
+            public int FactoryNumber { get; private set; }
+
+            public override bool Equals(object obj)
+            {
+                if (!(obj is BlockData))
+                    return false;
+                var blockData = (BlockData)obj;
+                return Id.Equals(blockData.Id) && FactoryNumber.Equals(blockData.FactoryNumber);
+            }
+        }
+
+        public class BlockDataComparer : IComparer<BlockData>
+        {
+            public int Compare(BlockData blockData1, BlockData blockData2)
+            {
+                return blockData1.Id.CompareTo(blockData2.Id);
+            }
+        }
+
+        private ICanMessage GetAnswer()
         {
             while (true)
             {
@@ -38,19 +64,11 @@ namespace UPD.DeviceDrivers
                 {
                     return message;
                 }
+                Thread.Sleep(1000);
+                if (message == null)
+                    throw new Exception("Устройство не отвечает");
             }
         }
-        #endregion
-
-        private enum ErrorCode : uint
-        {
-            None = 0x00,
-            InvalidResponse = 0x01,
-            InvalidStatus = 0x02,
-            InvalidRelayNumber = 0x03,
-            BlockReturnedAWrongRelayNumber = 0x04
-        }
-
 
         #region 1 Assign Block ID
 
@@ -76,12 +94,12 @@ namespace UPD.DeviceDrivers
             canMessage[6] = BitConverter.GetBytes(factoryNumber)[1];
             canMessage[7] = 0xFF;
             vciDevice.TransmitData(canMessage, msgID);
-            ICanMessage answerFromMC = GetAnswerFromMC();
-            if (answerFromMC[0] == 0xFE /*&& answerFromMC[2] == 0x01*/)
+            ICanMessage answer = GetAnswer();
+            if (answer[0] == 0xFE /*&& answerFromMC[2] == 0x01*/)
             {
-                return answerFromMC[2];
+                return answer[2];
             }
-            throw new Exception($"МК вернул ошибочный ответ: {String.Join(" ", answerFromMC)}");
+            throw new Exception($"МК вернул ошибочный ответ: {String.Join(" ", answer)}");
         }
 
         #endregion
@@ -96,13 +114,13 @@ namespace UPD.DeviceDrivers
             uint ID = 0x00;
             byte[] canMessage = { 0x02, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
             vciDevice.TransmitData(canMessage, ID);
-            var mkAnswer = GetAnswerFromMC();
-            var status = mkAnswer[2];
-            if (mkAnswer[0] == 0xFD)
+            var answer = GetAnswer();
+            var status = answer[2];
+            if (answer[0] == 0xFD)
             {
                 return status;
             }
-            throw new Exception($"МК вернул ошибочный ответ: {String.Join(" ", mkAnswer)}");
+            throw new Exception($"МК вернул ошибочный ответ: {String.Join(" ", answer)}");
         }
 
         #endregion
@@ -113,21 +131,21 @@ namespace UPD.DeviceDrivers
         /// </summary>
         /// <returns> Возвращает статус операции (реле МК успешно разомкнуты/произошла ошибка) </returns>
 
-        public byte CloseRelaysArray(uint ID)
+        public byte CloseRelaysArray(int blockNumber)
         {
-            byte someByte = 0xFF;
-            byte[] message1 = { 0x03, 0x01, someByte, someByte, someByte, someByte, someByte, someByte };
-            vciDevice.TransmitData(message1, ID);
-            byte[] message2 = { 0x03, 0x02, someByte, someByte, someByte, someByte, someByte, someByte };
-            vciDevice.TransmitData(message2, ID);
-            var answerFromMC = GetAnswerFromMC();
-            var status = answerFromMC[2];
-            if (answerFromMC[0] == 0xFC && status != 0x00)
+            uint id = blockDataList[blockNumber].Id;
+            byte[] message1 = { 0x03, 0x01, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
+            vciDevice.TransmitData(message1, id);
+            byte[] message2 = { 0x03, 0x02, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
+            vciDevice.TransmitData(message2, id);
+            var answer = GetAnswer();
+            var status = answer[2];
+            if (answer[0] == 0xFC && status != 0x00)
             {
                 return status;
             }
             EmergencyBreak();
-            throw new Exception($"МК вернул ошибочный ответ: {String.Join(" ", answerFromMC)}");
+            throw new Exception($"МК вернул ошибочный ответ: {String.Join(" ", answer)}");
         }
 
         #endregion
@@ -138,17 +156,17 @@ namespace UPD.DeviceDrivers
         /// Запрос состояния всех реле.
         /// </summary>
         /// <returns> Возвращает список объектов типа CanConNet.DataBuf, включающий CAN-сообщения от блока МК и его ID. </returns>
-        public List<ICanMessage> RequestAllRelayStatus(uint ID)
+        public List<ICanMessage> RequestAllRelayStatus(int blockNumber)
         {
-            byte someByte = 0xFF;
-            byte[] canMessage = { 0x04, someByte, someByte, someByte, someByte, someByte, someByte, someByte };
-            vciDevice.TransmitData(canMessage, ID);
-            var answerFromMC1 = GetAnswerFromMC();
-            var answerFromMC2 = GetAnswerFromMC();
+            uint id = blockDataList[blockNumber].Id;
+            byte[] canMessage = { 0x04, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
+            vciDevice.TransmitData(canMessage, id);
+            var answer1 = GetAnswer();
+            var answer2 = GetAnswer();
             return new List<ICanMessage>
             {
-                answerFromMC1,
-                answerFromMC2
+                answer1,
+                answer2
             };
         }
 
@@ -161,51 +179,52 @@ namespace UPD.DeviceDrivers
         /// </summary>
         /// <param name="relayNumber"> Номер реле (от 0 до 79) </param>
         /// <param name="relayState"> Состояние реле. True - замкнуть, false - разомкнуть </param>
-        private byte ChangeRelayState(uint msgID, int relayNumber, bool relayState)
+        private byte ChangeRelayState(int blockNumber, int relayNumber, bool relayState)
         {
+            uint id = blockDataList[blockNumber].Id;
             if (relayNumber < 0 || relayNumber > 79)
             {
                 throw new Exception("Номер реле должен быть в диапазоне от 0 до 79");
             }
             byte stateByte = (byte)(relayState ? 0x01 : 0x00);
             byte[] canMessage = { 0x05, (byte)relayNumber, stateByte, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
-            vciDevice.TransmitData(canMessage, msgID);
-            var answerFromMC = GetAnswerFromMC();
-            var returnedRelayNumber = answerFromMC[1];
-            var status = answerFromMC[2];
-            if (answerFromMC[0] == 0xFA)
+            vciDevice.TransmitData(canMessage, id);
+            var answer = GetAnswer();
+            var returnedRelayNumber = answer[1];
+            var status = answer[2];
+            if (answer[0] == 0xFA)
             {
                 if (returnedRelayNumber != (byte)relayNumber)
                     EmergencyBreak();
                 return status;
             }          
-            throw new Exception($"МК вернул ошибочный ответ: {String.Join(" ", answerFromMC)}");
+            throw new Exception($"МК вернул ошибочный ответ: {String.Join(" ", answer)}");
 
         }
 
-        private byte CloseRelay(uint msgID, int relayNumber)
+        private byte CloseRelay(int blockNumber, int relayNumber)
         {
-            return ChangeRelayState(msgID, relayNumber, true);
+            return ChangeRelayState(blockNumber, relayNumber, true);
         }
 
-        private byte OpenRelay(uint msgID, int relayNumber)
+        private byte OpenRelay(int blockNumber, int relayNumber)
         {
-            return ChangeRelayState(msgID, relayNumber, true);
+            return ChangeRelayState(blockNumber, relayNumber, true);
         }
 
-        public void CloseRelays(uint msgID, int[] relayNumbers)
+        public void CloseRelays(int blockNumber, int[] relayNumbers)
         {
             foreach (var relayNumber in relayNumbers)
             {
-                CloseRelay(msgID, relayNumber);
+                CloseRelay(blockNumber, relayNumber);
             }
         }
 
-        public void OpenRelays(uint msgID, int[] relayNumbers)
+        public void OpenRelays(int blockNumber, int[] relayNumbers)
         {
             foreach (var relayNumber in relayNumbers)
             {
-                OpenRelay(msgID, relayNumber);
+                OpenRelay(blockNumber, relayNumber);
             }
         }
 
@@ -218,19 +237,19 @@ namespace UPD.DeviceDrivers
         /// </summary>
         /// <param name="relayNumber"> Номер запрашиваемого реле. </param>
         /// <returns> Возвращает объект типа CanConNet.DataBuf, содержащий данные об ответе МК. </returns>
-        public byte RequestSingleRelayStatus(uint ID, int relayNumber)
+        public byte RequestSingleRelayStatus(int blockNumber, int relayNumber)
         {
-            byte someByte = 0xFF;
-            byte[] canMessage = { 0x06, (byte)relayNumber, someByte, someByte, someByte, someByte, someByte, someByte };
-            vciDevice.TransmitData(canMessage, ID);
-            var answerFromMC = GetAnswerFromMC();
-            var returnedRelayNumber = answerFromMC[1];
-            var status = answerFromMC[2];
-            if (answerFromMC[0] == 0xF9 && returnedRelayNumber == (byte)relayNumber)
+            uint id = blockDataList[blockNumber].Id;
+            byte[] canMessage = { 0x06, (byte)relayNumber, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
+            vciDevice.TransmitData(canMessage, id);
+            var answer = GetAnswer();
+            var returnedRelayNumber = answer[1];
+            var status = answer[2];
+            if (answer[0] == 0xF9 && returnedRelayNumber == (byte)relayNumber)
             {
                 return status;
             }
-            throw new Exception($"МК вернул ошибочный ответ: {String.Join(" ", answerFromMC)}");
+            throw new Exception($"МК вернул ошибочный ответ: {String.Join(" ", answer)}");
         }
 
         #endregion
@@ -240,18 +259,18 @@ namespace UPD.DeviceDrivers
         /// <summary>
         /// Запрос состояния реле РЭК по факту
         /// </summary>
-        public ICanMessage RequestRECRelayState(uint ID)
+        public ICanMessage RequestRECRelayState(int blockNumber)
         {
+            uint id = blockDataList[blockNumber].Id;
             byte byte1 = 0x07;
-            byte someByte = 0xFF;
-            byte[] canMessage = { byte1, someByte, someByte, someByte, someByte, someByte, someByte, someByte };
-            vciDevice.TransmitData(canMessage, ID);
-            var answerFromMC = GetAnswerFromMC();
-            if (answerFromMC[0] != 0xF9)
+            byte[] canMessage = { byte1, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
+            vciDevice.TransmitData(canMessage, id);
+            var answer = GetAnswer();
+            if (answer[0] != 0xF9)
             {
-                throw new Exception($"МК вернул ошибочный ответ: {String.Join(" ", answerFromMC)}");
+                throw new Exception($"МК вернул ошибочный ответ: {String.Join(" ", answer)}");
             }
-            return answerFromMC;
+            return answer;
         }
 
         #endregion 
@@ -261,19 +280,22 @@ namespace UPD.DeviceDrivers
         /// <summary>
         /// Проверка наличия оборудования.
         /// </summary>
-        public List<ICanMessage> WakeUp()
+        public List<BlockData> WakeUp()
         {
-            uint ID = 0x00;
+            uint id = 0x00;
             byte[] canMessage = { 0x08, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
-            vciDevice.TransmitData(canMessage, ID);
-            int numberOfBlocks = 78; // Комментарии никто не читает. Но в этой переменной отражено реальное число блоков.
-            List<ICanMessage> allBlocks = new List<ICanMessage>();
+            vciDevice.TransmitData(canMessage, id);
+            int numberOfBlocks = 7; // Комментарии никто не читает. Но в этой переменной отражено реальное число блоков.
+            List<BlockData> blockDataList = new List<BlockData>();
             for (int i = 0; i < numberOfBlocks; i++)
             {
-                var answerFromMC = GetAnswerFromMC();
-                allBlocks.Add(answerFromMC);
+                var answer = GetAnswer();
+                if (answer[1] != 0xFE)
+                    throw new Exception($"МК вернул ошибочный ответ: {String.Join(" ", answer)}");
+                blockDataList.Add(new BlockData(answer[0], 256 * answer[3] + answer[2]));
             }
-            return allBlocks;
+            blockDataList.Sort(new BlockDataComparer());
+            return blockDataList;         
         }
 
         #endregion

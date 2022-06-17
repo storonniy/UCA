@@ -24,7 +24,7 @@ namespace UCA.Steps
         {
             DeviceData deviceData = new DeviceData();
             deviceData.Argument = step.Argument;
-            deviceData.ExpectedValue = step.ExpectedValue;
+            deviceData.AdditionalArg = step.AdditionalArg;
             deviceData.Channel = step.Channel;
             deviceData.LowerLimit = step.LowerLimit;
             deviceData.UpperLimit = step.UpperLimit;

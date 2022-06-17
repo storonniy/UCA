@@ -77,7 +77,7 @@ namespace UCA.Devices
                     }
                     return DeviceResult.ResultError("ОШИБКА: реле остались замкнутыми");
                 case DeviceCommands.CheckClosedRelays:
-                    string[] signalNames = deviceData.ExpectedValue.Replace(" ", "").Split(',');
+                    string[] signalNames = deviceData.AdditionalArg.Replace(" ", "").Split(',');
                     // Проверим, всё ли разомкнулось:
                     var actualClosedRelayNames3 = Commutator.GetClosedRelayNames();
                     bool isSignalExist = false;
@@ -95,7 +95,7 @@ namespace UCA.Devices
                     }
                     return DeviceResult.ResultError($"Сигнал {signalNames[0]} отсутствует");
                 case DeviceCommands.GetSignals:
-                    string[] signalNames1 = deviceData.ExpectedValue.Replace(" ", "").Split(',');
+                    string[] signalNames1 = deviceData.AdditionalArg.Replace(" ", "").Split(',');
                     // Проверим, всё ли разомкнулось:
                     var actualSignals = Commutator.GetSignals();
                     bool isSignalExist1 = false;

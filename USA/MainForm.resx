@@ -837,6 +837,9 @@
   <data name="&gt;&gt;groupBox2.ZOrder" xml:space="preserve">
     <value>2</value>
   </data>
+  <data name="buttonCheckingStop.Enabled" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
   <data name="buttonCheckingStop.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>

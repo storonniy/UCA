@@ -12,10 +12,9 @@ namespace UPD.Device.DeviceList
     public class MK_device : IDeviceInterface
     {
         readonly MK mk;
-        public MK_device(string description)
+        public MK_device()
         {
-            var parameters = ParseDescription(description);
-            mk = new MK(parameters.deviceNumber, parameters.blockType, parameters.moduleNumber, parameters.placeNumber, parameters.factoryNumber);
+            mk = new MK();
         }
 
         public override DeviceResult DoCommand(DeviceData deviceData)
@@ -25,15 +24,15 @@ namespace UPD.Device.DeviceList
                 case DeviceCommands.CloseRelays:
                     {
                         var relayNumbers = ParseRelayNumbers(deviceData.Argument);
-                        // TODO: выяснить, какие ID у CAN-сообщений для МК
-                        mk.CloseRelays(0, relayNumbers);
+                        var blockNumber = int.Parse(deviceData.AdditionalArg) - 1;
+                        mk.CloseRelays(blockNumber, relayNumbers);
                         return ResultOk($"{deviceData.DeviceName} замкнуты реле {String.Join(", ", relayNumbers)}");
                     }
                 case DeviceCommands.OpenRelays:
                     {
                         var relayNumbers = ParseRelayNumbers(deviceData.Argument);
-                        // TODO: выяснить, какие ID у CAN-сообщений для МК
-                        mk.CloseRelays(0, relayNumbers);
+                        var blockNumber = int.Parse(deviceData.AdditionalArg) - 1;
+                        mk.CloseRelays(blockNumber, relayNumbers);
                         return ResultOk($"{deviceData.DeviceName} разомкнуты реле {String.Join(", ", relayNumbers)}");
                     }
                 default:
@@ -69,14 +68,6 @@ namespace UPD.Device.DeviceList
                 this.factoryNumber = factoryNumber;
             }
 
-        }
-
-        private MKParameters ParseDescription(string description)
-        {
-            var parameters = description.Split(',');
-            if (parameters.Length != 5)
-                throw new Exception("Должно быть указано 5 параметров МК");
-            return new MKParameters(byte.Parse(parameters[0]), int.Parse(parameters[1]), int.Parse(parameters[2]), int.Parse(parameters[3]), int.Parse(parameters[4]));
         }
     }
 }

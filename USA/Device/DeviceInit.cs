@@ -82,18 +82,15 @@ namespace UCA.Devices
                         break;
                     case DeviceNames.PST_3201_p9V:
                     case DeviceNames.PST_3201_m9V:
-                    case DeviceNames.PST_3201_p5v:
+                    case DeviceNames.PST_3201_p5V:
                         newDevice = new PST3201_device(device.SerialPort);
                         break;
                     case DeviceNames.AKIP_3407:
                         newDevice = new AKIP3407_device(device.SerialPort);
                         break;
                     case DeviceNames.MK:
-/*                    case DeviceNames.MK_2:
-                    case DeviceNames.MK_3:
-                    case DeviceNames.MK_4:
-                    case DeviceNames.MK_5:*/
-                        newDevice = new MK_device(device.Description);
+                        // TODO: Раскомментировать при отладке с МК
+                        // newDevice = new MK_device();
                         break;
                 }
                 Devices.Add(device.Name, newDevice);

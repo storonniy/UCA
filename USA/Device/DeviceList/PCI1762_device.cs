@@ -25,7 +25,7 @@ namespace UCA.Devices
                     return CloseRelay(relayNumbers);
                 case DeviceCommands.ReadPCI1762Data:
                     var port = int.Parse(deviceData.Argument);
-                    var signal = int.Parse(deviceData.ExpectedValue);
+                    var signal = int.Parse(deviceData.AdditionalArg);
                     var portByte = pci1762.Read(port);
                     if (portByte == (byte)signal)
                     {

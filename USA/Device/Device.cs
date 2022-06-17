@@ -30,7 +30,7 @@ namespace UCA.Devices
         public DeviceNames DeviceName;
         public DeviceCommands Command;
         public string Argument;
-        public string ExpectedValue;
+        public string AdditionalArg;
         public double LowerLimit;
         public double UpperLimit;
         public int Channel;
@@ -136,6 +136,9 @@ namespace UCA.Devices
         Keithley2401_1,
         Keithley2401_2,
         MK,/*_1, MK_2, MK_3, MK_4, MK_5*/
-        Simulator
+        Simulator,
+        PST_3201_p9V,
+        PST_3201_m9V,
+        PST_3201_p5V
     }
 }
