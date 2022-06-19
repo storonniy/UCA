@@ -27,8 +27,9 @@ namespace UCA.Devices
             switch (deviceData.Command)
             {
                 case DeviceCommands.SetVoltage:
-                    var actualVoltage = SetVoltage(deviceData);
-                    return GetResult(deviceData, UnitType.Voltage, actualVoltage);
+                    return IDeviceInterface.SetVoltage(deviceData, pst3201.SetVoltage);
+                    //var actualVoltage = SetVoltage(deviceData);
+                    //return GetResult(deviceData, UnitType.Voltage, actualVoltage);
                 case DeviceCommands.SetCurrent:
                     var actualCurrent = SetCurrent(deviceData);
                     return GetResult(deviceData, UnitType.Current, actualCurrent);

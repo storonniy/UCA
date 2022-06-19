@@ -17,50 +17,51 @@ namespace UCA.DeviceDrivers
             //this.serialPort.Open();
         }
 
-        private float DoCommandAndGetResult(string command)
+        private double DoCommandAndGetResult(string command)
         {
             serialPort.WriteLine(command);
             Thread.Sleep(1000);
             return ParseInputData(serialPort.ReadLine());
         }
 
-        public float SetVoltage(double voltage)
+        public double SetVoltage(double voltage)
         {
             var str = voltage.ToString().Replace(",", ".");
             var command = $":chan1:volt {str};:chan1:volt?/n";
             return DoCommandAndGetResult(command);
         }
 
-        public float SetCurrentLimit(double current)
+        public double SetCurrentLimit(double current)
         {
             var str = current.ToString().Replace(",", ".");
             var command = $":chan1:curr {str};:chan1:curr?/n";
             return DoCommandAndGetResult(command);
         }
 
-        public float SetVoltageProtection(double voltageProtection)
+        public double SetVoltageProtection(double voltageProtection)
         {
             var command = $":chan1:prot:volt {voltageProtection};:chan1:prot:volt?/n";
             return DoCommandAndGetResult(command);
         }
 
-        public float SetCurrentProtection(double currentProtection)
+        public double SetCurrentProtection(double currentProtection)
         {
             var command = $":chan1:prot:curr {currentProtection};:chan1:prot:curr?/n";
             return DoCommandAndGetResult(command);
         }
 
-        public float ChangeOutputStatus(int value)
+        public void ChangeOutputStatus(int value)
         {
             Thread.Sleep(2000);
             var command = $":outp:stat {value};:outp:stat?";
-            return DoCommandAndGetResult(command);
+            serialPort.WriteLine(command);
+            Thread.Sleep(1000);
+            //return DoCommandAndGetResult(command);
         }
 
-        private float ParseInputData(string data)
+        private double ParseInputData(string data)
         {
-            var valuee = Single.Parse(data.Replace(".", ","));
-            return Single.Parse(data.Replace(".", ","));
+            return (double)Single.Parse(data.Replace(".", ","));
         }
 
         ~PSH73610()

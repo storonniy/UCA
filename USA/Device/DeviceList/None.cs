@@ -37,70 +37,77 @@ namespace UCA.Devices
 
         public override DeviceResult DoCommand(DeviceData deviceData)
         {
-            switch (deviceData.Command)
+            try
             {
-                case DeviceCommands.CalculateCoefficient:
-                    {
-                        var value = double.Parse(deviceData.Argument, NumberStyles.Float);
-                        var lowerLimit = deviceData.LowerLimit;
-                        var upperLimit = deviceData.UpperLimit;
-                        try
+                switch (deviceData.Command)
+                {
+                    case DeviceCommands.CalculateCoefficient:
                         {
-                            var actualCoefficient = CalculateUCACoefficient(deviceData.Channel, value);
-                            var result = $"Коэффициент равен {string.Format("{0:0.000}", actualCoefficient)} В/мкА \tНижний предел  {lowerLimit} В/мкА \tВерхний предел {upperLimit} В/мкА";
-                            if (actualCoefficient >= lowerLimit && actualCoefficient <= upperLimit)
-                                return DeviceResult.ResultOk(result);
-                            else
-                                return DeviceResult.ResultError($"Ошибка: {result}");
+                            var value = double.Parse(deviceData.Argument, NumberStyles.Float);
+                            var lowerLimit = deviceData.LowerLimit;
+                            var upperLimit = deviceData.UpperLimit;
+                            try
+                            {
+                                var actualCoefficient = CalculateUCACoefficient(deviceData.Channel, value);
+                                var result = $"Коэффициент равен {string.Format("{0:0.000}", actualCoefficient)} В/мкА \tНижний предел  {lowerLimit} В/мкА \tВерхний предел {upperLimit} В/мкА";
+                                if (actualCoefficient >= lowerLimit && actualCoefficient <= upperLimit)
+                                    return DeviceResult.ResultOk(result);
+                                else
+                                    return DeviceResult.ResultError($"Ошибка: {result}");
+                            }
+                            catch (KeyNotFoundException)
+                            {
+                                UnitType unitType = (deviceData.Channel > 2) ? UnitType.Current : UnitType.Voltage;
+                                var data = $"lowerLimit {deviceData.LowerLimit}; upperLimit {deviceData.UpperLimit}";
+                                return DeviceResult.ResultError($"{data} \n Для входного воздействия {GetValueUnitPair(value, unitType)} и канала {deviceData.Channel} не измерялись входные и выходные воздействия");
+                            }
                         }
-                        catch (KeyNotFoundException)
+                    case DeviceCommands.CalculateCoefficient_UCAT:
+                        return GetCoefficient_UCAT(deviceData);
+                    case DeviceCommands.Sleep:
+                        var timeInSeconds = int.Parse(deviceData.Argument);
+                        var t = TimeSpan.FromSeconds(timeInSeconds);
+                        var startTime = DateTime.Now;
+                        while (DateTime.Now - startTime < t)
                         {
-                            UnitType unitType = (deviceData.Channel > 2) ? UnitType.Current : UnitType.Voltage;
-                            var data = $"lowerLimit {deviceData.LowerLimit}; upperLimit {deviceData.UpperLimit}";
-                            return DeviceResult.ResultError($"{data} \n Для входного воздействия {GetValueUnitPair(value, unitType)} и канала {deviceData.Channel} не измерялись входные и выходные воздействия");
+                            Thread.Sleep(1000);
                         }
-                    }             
-                case DeviceCommands.CalculateCoefficient_UCAT:
-                    return GetCoefficient_UCAT(deviceData);
-                case DeviceCommands.Sleep:
-                    var timeInSeconds = int.Parse(deviceData.Argument);
-                    var t = TimeSpan.FromSeconds(timeInSeconds);
-                    var startTime = DateTime.Now;
-                    while (DateTime.Now  - startTime < t)
-                    {
-                        Thread.Sleep(1000);
-                    }
-                    return DeviceResult.ResultOk("");
-                case DeviceCommands.Divide:
-                    {
-                        var keys = GetKeys(deviceData.Argument);
-                        double value = Divide(GetValue(keys.Keys[0]), GetValue(keys.Keys[1]));
-                        return GetResult("Получено значение", deviceData, keys.UnitType, value);
-                    }
-                case DeviceCommands.Substract:
-                    {
-                        var keys = GetKeys(deviceData.Argument);
-                        double value = Substract(GetValue(keys.Keys[0]), GetValue(keys.Keys[1]));
-                        return GetResult("Получено значение", deviceData, keys.UnitType, value);
-                    }
-                case DeviceCommands.Save:
-                    {
-                        var keys = GetKeys(deviceData.Argument);
-                        var value = double.Parse(deviceData.AdditionalArg, CultureInfo.InvariantCulture);
-                        AddValues(keys.Keys[0], value);
-                        var result = $"Сохранено значение {GetValueUnitPair(value, keys.UnitType)}";
-                        return DeviceResult.ResultOk(result);
-                    }
-                case DeviceCommands.MultiplyAndSave:
-                    {
-                        var keys = GetKeys(deviceData.Argument);
-                        double value = Multiply(GetValue(keys.Keys[0]), GetValue(keys.Keys[1]));
-                        var keyToSave = GetKeys(deviceData.Argument).Keys[0];
-                        AddValues(keyToSave, value);
-                        return GetResult("Получено значение", deviceData, keys.UnitType, value);
-                    }
-                default:
-                    return DeviceResult.ResultError($"Неизвестная команда {deviceData.Command}");
+                        return DeviceResult.ResultOk("");
+                    case DeviceCommands.Divide:
+                        {
+                            var keys = GetKeys(deviceData.Argument);
+                            double value = Divide(GetValue(keys.Keys[0]), GetValue(keys.Keys[1]));
+                            return GetResult("Получено значение", deviceData, keys.UnitType, value);
+                        }
+                    case DeviceCommands.Substract:
+                        {
+                            var keys = GetKeys(deviceData.Argument);
+                            double value = Substract(GetValue(keys.Keys[0]), GetValue(keys.Keys[1]));
+                            return GetResult("Получено значение", deviceData, keys.UnitType, value);
+                        }
+                    case DeviceCommands.Save:
+                        {
+                            var keys = GetKeys(deviceData.Argument);
+                            var value = double.Parse(deviceData.AdditionalArg, CultureInfo.InvariantCulture);
+                            AddValues(keys.Keys[0], value);
+                            var result = $"Сохранено значение {GetValueUnitPair(value, keys.UnitType)}";
+                            return DeviceResult.ResultOk(result);
+                        }
+                    case DeviceCommands.MultiplyAndSave:
+                        {
+                            var keys = GetKeys(deviceData.Argument);
+                            double value = Multiply(GetValue(keys.Keys[0]), GetValue(keys.Keys[1]));
+                            var keyToSave = GetKeys(deviceData.Argument).Keys[0];
+                            AddValues(keyToSave, value);
+                            return GetResult("Получено значение", deviceData, keys.UnitType, value);
+                        }
+                    default:
+                        return DeviceResult.ResultError($"Неизвестная команда {deviceData.Command}");
+                }
+            }
+            catch (KeyNotFoundException)
+            {
+                return DeviceResult.ResultError($"ОШИБКА: {deviceData.Command}: Ключ не найден");
             }
         }
 

@@ -85,18 +85,6 @@ namespace UCA.Devices
                 relayNumbers[i] = int.Parse(relays[i]);
             }
             return relayNumbers;
-            try
-            {
-
-            }
-            catch (IndexOutOfRangeException)
-            {
-                throw new IndexOutOfRangeException("Число реле PCI_1762 не должно превышать 8");
-            }
-            catch (FormatException)
-            {
-                throw new FormatException("Реле PCI_1762 должны быть указаны в формате int через запятую");
-            }
         }
     }
 }

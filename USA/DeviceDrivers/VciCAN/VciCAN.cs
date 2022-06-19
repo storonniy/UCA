@@ -22,7 +22,8 @@ namespace VciCAN
         public CanConNet()
         {
             SelectDevice();
-            InitSocket(0);
+            // TODO: раскомментировать перед отладкой
+            //InitSocket(0);
         }
 
         #region Member variables

@@ -73,7 +73,6 @@ namespace UCA.Steps
         private static List<Device> GetDeviceList(DataSet dataSet)
         {
             var deviceList = new List<Device>();
-            CheckDataSet(dataSet.Tables["DeviceInformation"]);
             foreach (DataRow row in dataSet.Tables["DeviceInformation"].Rows)
             {
                 var deviceName = row["device"].ToString();

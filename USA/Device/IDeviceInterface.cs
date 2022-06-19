@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static UCA.Auxiliary.UnitValuePair;
+using static UCA.Devices.IDeviceInterface;
 
 
 namespace UCA.Devices
@@ -12,7 +14,23 @@ namespace UCA.Devices
     {
         public abstract DeviceResult DoCommand(DeviceData deviceData);
 
-        public DeviceResult GetResult(string message, DeviceData deviceData, UnitType unitType, double value)
+        public static DeviceResult SetVoltage(DeviceData deviceData, Func<double, double> setVoltage)
+        {
+            var voltage = double.Parse(deviceData.Argument, NumberStyles.Float);
+            var result = setVoltage(voltage);
+            return GetResult("Установлено", deviceData, UnitType.Voltage, result);
+        }
+
+        public static DeviceResult SetVoltage(DeviceData deviceData, Func<double, int, double> setVoltage)
+        {
+            var voltage = double.Parse(deviceData.Argument, NumberStyles.Float);
+            // TODO: уточнить, сколько PST, с каких каналов что подавать
+            var channel = int.Parse(deviceData.AdditionalArg);
+            var result = setVoltage(voltage, channel);
+            return GetResult("Установлено", deviceData, UnitType.Voltage, result);
+        }
+
+        public static DeviceResult GetResult(string message, DeviceData deviceData, UnitType unitType, double value)
         {
             var result = $"{message}: {GetValueUnitPair(value, unitType)} \tНижний предел: {GetValueUnitPair(deviceData.LowerLimit, unitType)}\t Верхний предел {GetValueUnitPair(deviceData.UpperLimit, unitType)}";
             if (value >= deviceData.LowerLimit && value <= deviceData.UpperLimit)

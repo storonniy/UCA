@@ -90,7 +90,7 @@ namespace UCA.Devices
                         break;
                     case DeviceNames.MK:
                         // TODO: Раскомментировать при отладке с МК
-                        // newDevice = new MK_device();
+                        //newDevice = new MK_device();
                         break;
                 }
                 Devices.Add(device.Name, newDevice);
@@ -101,7 +101,10 @@ namespace UCA.Devices
         {
             try
             {
-                return Devices[deviceData.DeviceName].DoCommand(deviceData);
+                var device = Devices[deviceData.DeviceName];
+                if (device == null)
+                    return DeviceResult.ResultNotConnected($"NOT_CONNECTED: Устройство {deviceData.DeviceName} не инициализировано");
+                return device.DoCommand(deviceData);
             }
             catch (IOException)
             {
@@ -111,10 +114,10 @@ namespace UCA.Devices
             {
                 return DeviceResult.ResultNotConnected($"NOT_CONNECTED: Порт {deviceData.DeviceName} закрыт");
             }
-/*            catch (KeyNotFoundException ex)
-            {
-                return DeviceResult.ResultError(ex.Message);
-            }*/
+            /*            catch (KeyNotFoundException ex)
+                        {
+                            return DeviceResult.ResultError(ex.Message);
+                        }*/
             /*
             catch (FormatException)
             {
