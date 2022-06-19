@@ -50,13 +50,23 @@ namespace UCA.DeviceDrivers
             return DoCommandAndGetResult(command);
         }
 
-        public void ChangeOutputStatus(int value)
+        private void ChangeOutputStatus(int value)
         {
             Thread.Sleep(2000);
             var command = $":outp:stat {value};:outp:stat?";
             serialPort.WriteLine(command);
             Thread.Sleep(1000);
             //return DoCommandAndGetResult(command);
+        }
+
+        public void PowerOn()
+        {
+            ChangeOutputStatus(1);
+        }
+
+        public void PowerOff()
+        {
+            ChangeOutputStatus(0);
         }
 
         private double ParseInputData(string data)

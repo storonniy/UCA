@@ -12,7 +12,7 @@ using UPD.Device;
 
 namespace UCA.Devices
 {
-    class PSH73610_device : Source
+    class PSH73610_device : IDeviceInterface
     {
         readonly PSH73610 psh73610;
 
@@ -27,46 +27,15 @@ namespace UCA.Devices
             {
                 case DeviceCommands.SetVoltage:
                     return IDeviceInterface.SetVoltage(deviceData, psh73610.SetVoltage);
-                    var voltage = SetVoltage(deviceData);
-                    return GetResult(deviceData, UnitType.Voltage, voltage);
-                case DeviceCommands.SetCurrent:
-                    var current = SetCurrent(deviceData);
-                    return GetResult(deviceData, UnitType.Current, current);
+                case DeviceCommands.SetCurrentLimit:
+                    return IDeviceInterface.SetCurrentLimit(deviceData, psh73610.SetCurrentLimit);
                 case DeviceCommands.PowerOff:
-                    PowerOff();
-                    return ResultOk($"Снят входной сигнал с {deviceData.DeviceName}");
+                    return IDeviceInterface.PowerOff(deviceData, psh73610.PowerOff);
                 case DeviceCommands.PowerOn:
-                    PowerOn();
-                    return ResultOk($"Подан входной сигнал с {deviceData.DeviceName}");
+                    return IDeviceInterface.PowerOn(deviceData, psh73610.PowerOn);
                 default:
                     return ResultError($"Неизвестная команда {deviceData.Command}");
             }
-        }
-
-        public override void PowerOff()
-        {
-            psh73610.ChangeOutputStatus(0);        }
-
-        public override void PowerOn()
-        {
-            psh73610.ChangeOutputStatus(1);
-        }
-
-        public override double SetCurrent(DeviceData deviceData)
-        {
-            var current = double.Parse(deviceData.Argument, NumberStyles.Float);
-            return psh73610.SetCurrentLimit(current);
-        }
-
-        public override double SetCurrentLimit(DeviceData deviceData)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override double SetVoltage(DeviceData deviceData)
-        {
-            var voltage = Double.Parse(deviceData.Argument, NumberStyles.Float);
-            return psh73610.SetVoltage(voltage);
         }
     }
 }

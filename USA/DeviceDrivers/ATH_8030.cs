@@ -22,10 +22,10 @@ namespace UCA.DeviceDrivers
             return WriteHoldingRegInt(0x0A00, cmd);
         }
 
-        public bool PowerOn()
+        public void PowerOn()
         {
             var cmdArr = new ushort[] { 0x2a };
-            return WriteHoldingRegInt(0x0A00, cmdArr);
+            WriteHoldingRegInt(0x0A00, cmdArr);
         }
 
         public bool PowerOff()

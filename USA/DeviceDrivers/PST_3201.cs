@@ -68,12 +68,21 @@ namespace UCA.DeviceDrivers
             return SendAndParseDataNR2(command);
         }
 
-        public bool ChangeOutputState(string outputState)
+        private bool ChangeOutputState(string outputState)
         {
             if (outputState != "0" && outputState != "1")
                 throw new Exception("Состояние может принимать значение 0 (выключено) и 1 (включено)");
             var command = $":outp:stat {outputState}/n:outp:stat?";
             return SendAndParseDataBoolean(command);
+        }
+
+        public void PowerOn()
+        {
+            ChangeOutputState("1");
+        }
+        public void PowerOff()
+        {
+            ChangeOutputState("0");
         }
 
         ~PST_3201()

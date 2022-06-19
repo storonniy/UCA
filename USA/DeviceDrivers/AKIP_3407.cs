@@ -45,20 +45,20 @@ namespace UCA.DeviceDrivers
         }
 
         #region Power Status
-        public bool PowerOn()
+        public void PowerOn()
         {
-            return ChangePowerStatus("ON");
+            /*return*/ ChangePowerStatus("ON");
         }
 
-        public bool PowerOff()
+        public void PowerOff()
         {
-            return ChangePowerStatus("OFF");
+            /*return*/ ChangePowerStatus("OFF");
         }
 
-        private bool ChangePowerStatus(string status)
+        private void ChangePowerStatus(string status)
         {
             var command = $"OUTP1 {status}#013#010; OUTP1:STAT?#013#010";
-            return SendAndParseData(command) == "1";
+            //return SendAndParseData(command) == "1";
         }
 
         #endregion

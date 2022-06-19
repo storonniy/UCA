@@ -38,25 +38,9 @@ namespace UCA.Devices
                         return GetResult(deviceData, UnitType.Current, current);
                     }
                 case DeviceCommands.PowerOn:
-                    var actualStatus = keithley2401.PowerOn();
-                    if (actualStatus)
-                    {
-                        return DeviceResult.ResultOk($"Подача входного сигнала с {deviceData.DeviceName}");
-                    }
-                    else
-                    {
-                        return DeviceResult.ResultError($"Ошибка: не удалось подать входной сигнал с {deviceData.DeviceName}");
-                    }
+                    return IDeviceInterface.PowerOn(deviceData, keithley2401.PowerOn);
                 case DeviceCommands.PowerOff:
-                    var actualPowerStatus = keithley2401.PowerOff();
-                    if (!actualPowerStatus)
-                    {
-                        return DeviceResult.ResultOk($"Снятие входного сигнала с {deviceData.DeviceName}");
-                    }
-                    else
-                    {
-                        return DeviceResult.ResultError($"ОШИБКА: не удалось отключить входной сигнал с {deviceData.DeviceName}");
-                    }
+                    return IDeviceInterface.PowerOff(deviceData, keithley2401.PowerOff);
                 default:
                     return DeviceResult.ResultError($"Неизвестная команда {deviceData.Command}");
             }

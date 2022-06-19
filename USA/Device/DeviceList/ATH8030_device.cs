@@ -31,10 +31,11 @@ namespace UCA.Devices
                     else
                         return DeviceResult.ResultError($"ОШИБКА: Снятие входного сигнала с {deviceData.DeviceName} завершилось с ошибкой");
                 case DeviceCommands.PowerOn:
-                    if (ath8030.PowerOn())
+                    return IDeviceInterface.PowerOn(deviceData, ath8030.PowerOn);
+/*                    if (ath8030.PowerOn())
                         return DeviceResult.ResultOk($"Подан входной сигнал с {deviceData.DeviceName}");
                     else
-                        return DeviceResult.ResultError($"Ошибка: попытка подачи входного сигнала с {deviceData.DeviceName} завершилась с ошибкой");
+                        return DeviceResult.ResultError($"Ошибка: попытка подачи входного сигнала с {deviceData.DeviceName} завершилась с ошибкой");*/
                 case DeviceCommands.SetCurrent:
                     var current = float.Parse(deviceData.Argument);
                     var fData = BitConverter.GetBytes(current);

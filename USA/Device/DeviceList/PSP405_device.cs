@@ -10,7 +10,7 @@ using UPD.Device;
 
 namespace UCA.Devices
 {
-    class PSP405_device : Source
+    class PSP405_device : IDeviceInterface
     {
         readonly int delay = 500;
         readonly PSP405 Psp405;
@@ -25,40 +25,22 @@ namespace UCA.Devices
             switch (deviceData.Command)
             {
                 case DeviceCommands.SetVoltage:
-                    var actualVoltage = SetVoltage(deviceData);
-                    return GetResult(deviceData, UnitType.Voltage, actualVoltage);
-
+                    return IDeviceInterface.SetVoltage(deviceData, Psp405.SetVoltage);
                 case DeviceCommands.SetCurrent:
                     var actualCurrent = SetCurrent(deviceData);
-                    return GetResult(deviceData, UnitType.Current, actualCurrent);
+                    return GetResult($"{deviceData.DeviceName}: Установлен ток", deviceData, UnitType.Current, actualCurrent);
                 case DeviceCommands.PowerOn:
-                    PowerOn();
-                    return ResultOk($"Подан входной сигнал с {deviceData.DeviceName}");
+                    return IDeviceInterface.PowerOn(deviceData, Psp405.PowerOn);
                 case DeviceCommands.PowerOff:
-                    PowerOff();
-                    return ResultOk($"Снят входной сигнал с {deviceData.DeviceName}");
-                case DeviceCommands.SetCurrentLimit:            
-                    var currentLimit = SetCurrentLimit(deviceData);
-                    return GetResult("Установлен предел по току", deviceData, UnitType.Current, currentLimit);
+                    return IDeviceInterface.PowerOff(deviceData, Psp405.PowerOff);
+                case DeviceCommands.SetCurrentLimit:
+                    return IDeviceInterface.SetCurrentLimit(deviceData, Psp405.SetCurrentLimit);
                 default:
                     return ResultError($"Неизвестная команда {deviceData.Command}");
             }
         }
 
-        public override void PowerOff()
-        {
-            Psp405.TurnOff();
-            Psp405.SetVoltage(0.0);
-            Thread.Sleep(delay);
-        }
-
-        public override void PowerOn()
-        {
-            Psp405.TurnOn();
-            Thread.Sleep(delay);
-        }
-
-        public override double SetCurrent(DeviceData deviceData)
+        public double SetCurrent(DeviceData deviceData)
         {
             Psp405.SetVoltageLimit(40);
             Psp405.SetCurrentLimit(deviceData.UpperLimit);
@@ -72,24 +54,6 @@ namespace UCA.Devices
             var volt = Psp405.GetOutputVoltage();
             var actualCurrent = volt / resistance;
             return actualCurrent;
-        }
-
-        public override double SetCurrentLimit(DeviceData deviceData)
-        {
-            var currentLimit = double.Parse(deviceData.Argument, CultureInfo.InvariantCulture);
-            Psp405.SetCurrentLimit(currentLimit);
-            Thread.Sleep(delay);
-            return Psp405.GetCurrentLimit();
-        }
-
-        public override double SetVoltage(DeviceData deviceData)
-        {
-            Psp405.SetVoltageLimit((int)deviceData.UpperLimit);
-            Thread.Sleep(delay);
-            var voltage = double.Parse(deviceData.Argument);
-            Psp405.SetVoltage(voltage);
-            Thread.Sleep(delay);
-            return Psp405.GetOutputVoltage();
         }
     }
 }

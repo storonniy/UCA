@@ -16,18 +16,54 @@ namespace UCA.Devices
 
         public static DeviceResult SetVoltage(DeviceData deviceData, Func<double, double> setVoltage)
         {
-            var voltage = double.Parse(deviceData.Argument, NumberStyles.Float);
+            var voltage = double.Parse(deviceData.Argument, CultureInfo.InvariantCulture);
             var result = setVoltage(voltage);
-            return GetResult("Установлено", deviceData, UnitType.Voltage, result);
+            return GetResult($"{deviceData.DeviceName}: Установлено напряжение", deviceData, UnitType.Voltage, result);
         }
 
         public static DeviceResult SetVoltage(DeviceData deviceData, Func<double, int, double> setVoltage)
         {
-            var voltage = double.Parse(deviceData.Argument, NumberStyles.Float);
             // TODO: уточнить, сколько PST, с каких каналов что подавать
             var channel = int.Parse(deviceData.AdditionalArg);
+            var voltage = double.Parse(deviceData.Argument, CultureInfo.InvariantCulture);
             var result = setVoltage(voltage, channel);
-            return GetResult("Установлено", deviceData, UnitType.Voltage, result);
+            return GetResult($"{ deviceData.DeviceName}: Установлено напряжение", deviceData, UnitType.Voltage, result);
+        }
+
+        public static DeviceResult SetCurrent(DeviceData deviceData, Func<double, int, double> setCurrent)
+        {
+            // TODO: уточнить, сколько PST, с каких каналов что подавать
+            var channel = int.Parse(deviceData.AdditionalArg);
+            var current = double.Parse(deviceData.Argument, CultureInfo.InvariantCulture);
+            var result = setCurrent(current, channel);
+            return GetResult($"{deviceData.DeviceName}: Установлен ток", deviceData, UnitType.Current, result);
+        }
+
+        public static DeviceResult SetCurrentLimit(DeviceData deviceData, Func<double, double> setCurrentLimit)
+        {
+            var currentLimit = double.Parse(deviceData.Argument, CultureInfo.InvariantCulture);
+            var result = setCurrentLimit(currentLimit);
+            return GetResult("Установлен предел по току", deviceData, UnitType.Current, result);
+        }
+
+        public static DeviceResult SetCurrentLimit(DeviceData deviceData, Func<double, int, double> setCurrentLimit)
+        {
+            var channel = int.Parse(deviceData.AdditionalArg);
+            var currentLimit = double.Parse(deviceData.Argument, CultureInfo.InvariantCulture);
+            var result = setCurrentLimit(currentLimit, channel);
+            return GetResult("Установлен предел по току", deviceData, UnitType.Current, result);
+        }
+
+        public static DeviceResult PowerOn(DeviceData deviceData, Action powerOn)
+        {
+            powerOn();
+            return DeviceResult.ResultOk($"{deviceData.DeviceName}: подан входной сигнал");
+        }
+
+        public static DeviceResult PowerOff(DeviceData deviceData, Action powerOff)
+        {
+            powerOff();
+            return DeviceResult.ResultOk($"{deviceData.DeviceName}: снят входной сигнал");
         }
 
         public static DeviceResult GetResult(string message, DeviceData deviceData, UnitType unitType, double value)

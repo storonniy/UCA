@@ -12,14 +12,14 @@ using UPD.Device;
 
 namespace UCA.Devices
 {
-    public class PST3201_device : Source
+    public class PST3201_device : IDeviceInterface
     {
         PST_3201 pst3201;
 
 
         public PST3201_device (SerialPort serialPort)
         {
-            this.pst3201 = new PST_3201(serialPort);
+            pst3201 = new PST_3201(serialPort);
         }
 
         public override DeviceResult DoCommand (DeviceData deviceData)
@@ -28,47 +28,15 @@ namespace UCA.Devices
             {
                 case DeviceCommands.SetVoltage:
                     return IDeviceInterface.SetVoltage(deviceData, pst3201.SetVoltage);
-                    //var actualVoltage = SetVoltage(deviceData);
-                    //return GetResult(deviceData, UnitType.Voltage, actualVoltage);
                 case DeviceCommands.SetCurrent:
-                    var actualCurrent = SetCurrent(deviceData);
-                    return GetResult(deviceData, UnitType.Current, actualCurrent);
+                    return IDeviceInterface.SetCurrent(deviceData, pst3201.SetCurrent);
                 case DeviceCommands.PowerOff:
-                    PowerOff();
-                    return ResultOk($"Подан входной сигнал с {deviceData.DeviceName}");
+                    return IDeviceInterface.PowerOff(deviceData, pst3201.PowerOff);
                 case DeviceCommands.PowerOn:
-                    PowerOn();
-                    return ResultOk($"Снят входной сигнал с {deviceData.DeviceName}");
+                    return IDeviceInterface.PowerOn(deviceData, pst3201.PowerOn);
                 default:
                     return ResultError($"Неизвестная команда {deviceData.Command}");
             }
-        }
-
-        public override void PowerOff()
-        {
-            pst3201.ChangeOutputState("0");
-        }
-
-        public override void PowerOn()
-        {
-            pst3201.ChangeOutputState("1");
-        }
-
-        public override double SetCurrent(DeviceData deviceData)
-        {
-            var current = Double.Parse(deviceData.Argument);
-            return pst3201.SetCurrent(current, 1);
-        }
-
-        public override double SetCurrentLimit(DeviceData deviceData)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override double SetVoltage(DeviceData deviceData)
-        {
-            var voltage = Double.Parse(deviceData.Argument);
-            return pst3201.SetVoltage(voltage, 1);
         }
     }
 }

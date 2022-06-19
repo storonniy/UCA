@@ -122,17 +122,17 @@ namespace UCA.DeviceDrivers
         /// Turn the output of the Keithley 2401 OFF.
         /// </summary>
 
-        public bool PowerOff()
+        public void PowerOff()
         {
-            return ChangePowerStatus(PowerState.OFF);
+            /*return*/ ChangePowerStatus(PowerState.OFF);
         }
 
         /// <summary>
         /// Turn the output of the Keithley 2401 ON.
         /// </summary>
-        public bool PowerOn()
+        public void PowerOn()
         {
-            return ChangePowerStatus(PowerState.ON);
+            /*return*/ ChangePowerStatus(PowerState.ON);
 /*            serialPort.WriteLine(":OUTP ON#013#010");
             Thread.Sleep(delay);*/
         }

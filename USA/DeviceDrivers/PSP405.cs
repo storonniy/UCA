@@ -128,11 +128,12 @@ namespace UCA.DeviceDrivers
         /// Set the voltage output level of the PSP-405.
         /// </summary>
         /// <param name="voltage"> Voltage value (xx.xx). </param>
-        public void SetVoltage(double voltage)
+        public double SetVoltage(double voltage)
         {
             var commandToSetVoltage = SetTheNumberOfDecimalPlaces(voltage, 2, 2);
             serialPort.Write("SV " + commandToSetVoltage + "\r");
             Thread.Sleep(delay);
+            return GetOutputVoltage();
         }
 
         /// <summary>
@@ -222,13 +223,14 @@ namespace UCA.DeviceDrivers
         /// Sets the current limit of the PSP-405.
         /// </summary>
         /// <param name="currentLimit"> Current limit value (x.xx) </param>
-        public void SetCurrentLimit(double currentLimit)
+        public double SetCurrentLimit(double currentLimit)
         {
             if (currentLimit - 5 >= 0.00001)
                 throw new ArgumentOutOfRangeException("Current limit cannot be greater than or equal to 5 A.");
             var commandToSetCurrentLimit = SetTheNumberOfDecimalPlaces(currentLimit, 1, 2);
             serialPort.Write("SI " + commandToSetCurrentLimit + "\r");
             Thread.Sleep(delay);
+            return GetCurrentLimit();
         }
 
         /// <summary>
@@ -343,7 +345,7 @@ namespace UCA.DeviceDrivers
         /// Turn the output of the PSP-405 OFF.
         /// </summary>
 
-        public void TurnOff()
+        public void PowerOff()
         {
             serialPort.Write("KOD\r");
             Thread.Sleep(delay);
@@ -352,7 +354,7 @@ namespace UCA.DeviceDrivers
         /// <summary>
         /// Turn the output of the PSP-405 ON.
         /// </summary>
-        public void TurnOn()
+        public void PowerOn()
         {
             serialPort.Write("KOE\r");
             Thread.Sleep(delay);
