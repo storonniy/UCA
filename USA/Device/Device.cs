@@ -144,7 +144,6 @@ namespace UCA.Devices
         Simulator,
         PST_3201_p9V,
         PST_3201_m9V,
-        PST_3201_p5V,
-        ASBL
+        PST_3201_p5V
     }
 }

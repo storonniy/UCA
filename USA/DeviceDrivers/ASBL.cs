@@ -15,6 +15,9 @@ namespace UPD.DeviceDrivers
         FTDI device;
         UInt32 ftdiDeviceCount;
         FT_DEVICE_INFO_NODE[] ftdiDeviceList;
+
+        private const int highPinsDir = 0x0C;
+        private const int lowPinsDir = 0x6B;
         public ASBL()
         {
             device = new FTDI();
@@ -46,33 +49,52 @@ namespace UPD.DeviceDrivers
             {
                 throw new Exception("Failed to set data characteristics (error " + ftStatus.ToString() + ")");
             }
-            ftStatus = device.SetFlowControl(FT_FLOW_CONTROL.FT_FLOW_RTS_CTS, 0x11, 0x13);
-            if (ftStatus != FT_STATUS.FT_OK)
-            {
-                throw new Exception("Failed to set flow control (error " + ftStatus.ToString() + ")");
-            }
-            ftStatus = device.SetTimeouts(100, 100);
-            if (ftStatus != FT_STATUS.FT_OK)
-            {
-                throw new Exception("Failed to set timeouts (error " + ftStatus.ToString() + ")");
-            }
-
+            Check("SetFlowControl", () => device.SetFlowControl(FT_FLOW_CONTROL.FT_FLOW_RTS_CTS, 0x11, 0x13));
+            Check("SetTimeouts", () => device.SetTimeouts(100, 100));
+            // настраиваем канал А найденного адаптера как надо
+            Check("ResetDevice()", () => device.ResetDevice());
+            Check("SetLatency", () => device.SetLatency(16));
+            Check("ResetDevice()", () => device.ResetDevice());
+            Thread.Sleep(100);
             FT_W_LowPins(lowPinsState, lowPinsDir);
             FT_W_LowPins(lowPinsState, lowPinsDir);
             FT_W_Highpins(highPinsState, highPinsDir);
             FT_W_Highpins(highPinsState, highPinsDir);
 
         }
+        ~ASBL()
+        {
+            device.Close();
+        }
 
-        private const int highPinsDir = 0x0C;
-        private const int lowPinsDir = 0x6B;
+        private void Check(string errorMsg, Func<FT_STATUS> command)
+        {
+            var status = command();
+            if (status != FT_STATUS.FT_OK)
+                throw new Exception($"{errorMsg} : {status}");
+        }
+
         private byte lowPinsState = 0x68;
         private byte highPinsState = 0x0C;
 
-        public void UnSetLineDirection(uint lineNumber)
+        private void ResetController()
+        {
+            var status = device.SetBitMode(0, 0);
+            if (status != FT_STATUS.FT_OK)
+                throw new Exception($"SetBitMode завершился с ошибкой {status}");
+        }
+
+        private void EnableJtagController()
+        {
+            var status = device.SetBitMode(0, 2);
+            if (status != FT_STATUS.FT_OK)
+                throw new Exception($"SetBitMode завершился с ошибкой {status}");
+        }
+
+        public void ClearLineDirection(uint lineNumber)
         {
             var line = new Line(lineNumber, this);
-            line.UnsetDirection();
+            line.ClearDirection();
         }
 
         public void SetLineDirection(uint lineNumber)
@@ -87,10 +109,10 @@ namespace UPD.DeviceDrivers
             line.SetData();
         }
 
-        public void UnSetLineData(uint lineNumber)
+        public void ClearLineData(uint lineNumber)
         {
             var line = new Line(lineNumber, this);
-            line.UnsetData();
+            line.ClearData();
         }
 
         private enum RegisterType
@@ -161,10 +183,10 @@ namespace UPD.DeviceDrivers
             var buffOut = new byte[] { 0x80, valPin, dirPin };
             Thread.Sleep(10);
             uint numBytesWritten = 0;
-            var status = device.Write(buffOut, 3, ref numBytesWritten);
+            var status = device.Write(buffOut, buffOut.Length, ref numBytesWritten);
             Thread.Sleep(10);
             if (numBytesWritten != 3)
-                status = device.Write(buffOut, 3, ref numBytesWritten);
+                status = device.Write(buffOut, buffOut.Length, ref numBytesWritten);
             if (numBytesWritten != 3)
                 throw new Exception($"Записано {numBytesWritten} вместо 3");
             if (status != FT_STATUS.FT_OK)
@@ -176,7 +198,8 @@ namespace UPD.DeviceDrivers
         /// </summary>
         private void SetAddressFlag()
         {
-            FT_W_Highpins((byte)(highPinsState & 0x0B), highPinsDir);
+            highPinsState &= 0x0B;
+            FT_W_Highpins(highPinsState, highPinsDir);
         }
 
         /// <summary>
@@ -184,7 +207,8 @@ namespace UPD.DeviceDrivers
         /// </summary>
         private void SetDataFlag()
         {
-            FT_W_Highpins((byte)(highPinsState | 0x04), highPinsDir);
+            highPinsState |= 0x04;
+            FT_W_Highpins(highPinsState, highPinsDir);
         }
 
         /// <summary>
@@ -192,7 +216,8 @@ namespace UPD.DeviceDrivers
         /// </summary>
         private void SetReadFlag()
         {
-            FT_W_Highpins((byte)(highPinsState | 0x08), highPinsDir);
+            highPinsState |= 0x08;
+            FT_W_Highpins(highPinsState, highPinsDir);
         }
 
         /// <summary>
@@ -200,7 +225,8 @@ namespace UPD.DeviceDrivers
         /// </summary>
         private void SetWriteFlag()
         {
-            FT_W_Highpins((byte)(highPinsState & 0x07), highPinsDir);
+            highPinsState &= 0x07;
+            FT_W_Highpins(highPinsState, highPinsDir);
         }
 
         /// <summary>
@@ -208,7 +234,8 @@ namespace UPD.DeviceDrivers
         /// </summary>
         private void SetResetFRAGFlag()
         {
-            FT_W_LowPins((byte)(lowPinsState & 0xDF), lowPinsDir);
+            lowPinsState &= 0xDF;
+            FT_W_LowPins(lowPinsState, lowPinsDir);
         }
 
         /// <summary>
@@ -216,7 +243,8 @@ namespace UPD.DeviceDrivers
         /// </summary>
         private void ClearResetFRAGFlag()
         {
-            FT_W_LowPins((byte)(lowPinsState | 0x20), lowPinsDir);
+            lowPinsState |= 0x20;
+            FT_W_LowPins(lowPinsState, lowPinsDir);
         }
 
         private byte[] GetFilledBuffer(uint data)
@@ -228,11 +256,9 @@ namespace UPD.DeviceDrivers
             }
             return dataBuffer;
         }
-
-
     }
 
-    class Line : ASBL
+    class Line 
     {
         readonly ASBL device;
         public uint number { get; private set; }
@@ -243,7 +269,7 @@ namespace UPD.DeviceDrivers
         public Line(uint number, ASBL device)
         {
             this.device = device;
-            if (number < 1 && number > 120)
+            if (number < 1 || number > 120)
                 throw new Exception("Номер линии должен быть от 1 до 120");
             this.number = number;
             SetRegisters();
@@ -253,15 +279,15 @@ namespace UPD.DeviceDrivers
         private void Set(uint register)
         {
             var currentData = device.ReadData(register);
-            var newData = currentData - (currentData & (uint)Math.Pow(2, Position));
+            var newData = currentData | (uint)(1 << (int)Position);
             device.WriteData(register, newData);
         }
 
-        private void UnSet(uint register)
+        private void Clear(uint register)
         {
-            var currentData = ReadData(register);
-            var newData = currentData - (currentData & (uint)Math.Pow(2, Position));
-            WriteData(register, newData);
+            var currentData = device.ReadData(register);
+            var newData = currentData - (currentData & (uint)(1 << (int)Position));
+            device.WriteData(register, newData);
         }
 
         public void SetDirection()
@@ -269,9 +295,9 @@ namespace UPD.DeviceDrivers
             Set(DirectionRegister);
         }
 
-        public void UnsetDirection()
+        public void ClearDirection()
         {
-            UnSet(DirectionRegister);
+            Clear(DirectionRegister);
         }
 
         public void SetData()
@@ -279,9 +305,9 @@ namespace UPD.DeviceDrivers
             Set(DataRegister);
         }
 
-        public void UnsetData()
+        public void ClearData()
         {
-            UnSet(DataRegister);
+            Clear(DataRegister);
         }
 
         private void SetRegisters()

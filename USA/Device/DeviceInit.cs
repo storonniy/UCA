@@ -92,6 +92,9 @@ namespace UCA.Devices
                         // TODO: Раскомментировать при отладке с МК
                         newDevice = new MK_device();
                         break;
+                    case DeviceNames.ASBL:
+                        newDevice = new ASBL_device();
+                        break;
                 }
                 Devices.Add(device.Name, newDevice);
             }
