@@ -190,9 +190,6 @@
     <EmbeddedResource Include="SettingsForm.resx">
       <DependentUpon>SettingsForm.cs</DependentUpon>
     </EmbeddedResource>
-    <None Include="amd64\ftd2xx.lib" />
-    <None Include="amd64\ftdibus.sys" />
-    <None Include="amd64\ftser2k.sys" />
     <None Include="i386\ftd2xx.lib" />
     <None Include="i386\ftdibus.sys" />
     <None Include="i386\ftser2k.sys" />
@@ -230,11 +227,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="amd64\ftbusui.dll" />
-    <Content Include="amd64\ftcserco.dll" />
-    <Content Include="amd64\ftd2xx64.dll" />
-    <Content Include="amd64\ftlang.dll" />
-    <Content Include="amd64\ftserui2.dll" />
     <Content Include="i386\ftbusui.dll" />
     <Content Include="i386\ftcserco.dll" />
     <Content Include="i386\ftd2xx.dll" />

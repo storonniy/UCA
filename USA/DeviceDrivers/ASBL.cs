@@ -39,16 +39,8 @@ namespace UPD.DeviceDrivers
             {
                 throw new Exception("Failed to open device (error " + ftStatus.ToString() + ")");
             }
-            ftStatus = device.SetBaudRate(9600);
-            if (ftStatus != FT_STATUS.FT_OK)
-            {
-                throw new Exception("Failed to set Baud rate (error " + ftStatus.ToString() + ")");
-            }
-            ftStatus = device.SetDataCharacteristics(FT_DATA_BITS.FT_BITS_8, FT_STOP_BITS.FT_STOP_BITS_1, FT_PARITY.FT_PARITY_NONE);
-            if (ftStatus != FT_STATUS.FT_OK)
-            {
-                throw new Exception("Failed to set data characteristics (error " + ftStatus.ToString() + ")");
-            }
+            Check("SetBaudRate", () => device.SetBaudRate(9600));
+            Check("SetDataCharacteristics", () => device.SetDataCharacteristics(FT_DATA_BITS.FT_BITS_8, FT_STOP_BITS.FT_STOP_BITS_1, FT_PARITY.FT_PARITY_NONE));
             Check("SetFlowControl", () => device.SetFlowControl(FT_FLOW_CONTROL.FT_FLOW_RTS_CTS, 0x11, 0x13));
             Check("SetTimeouts", () => device.SetTimeouts(100, 100));
             // настраиваем канал А найденного адаптера как надо
@@ -258,7 +250,7 @@ namespace UPD.DeviceDrivers
         }
     }
 
-    class Line 
+    public class Line 
     {
         readonly ASBL device;
         public uint number { get; private set; }
@@ -273,22 +265,25 @@ namespace UPD.DeviceDrivers
                 throw new Exception("Номер линии должен быть от 1 до 120");
             this.number = number;
             SetRegisters();
-            Position = (number % 20);
+            Position = (number % 20) - 1;
         }
 
+        public static Func<uint, uint> getPowerOfTwo = (degree) => (uint)(1 << (int)degree);
         private void Set(uint register)
         {
             var currentData = device.ReadData(register);
-            var newData = currentData | (uint)(1 << (int)Position);
+            var newData = currentData | getPowerOfTwo(Position);
             device.WriteData(register, newData);
         }
 
         private void Clear(uint register)
         {
             var currentData = device.ReadData(register);
-            var newData = currentData - (currentData & (uint)(1 << (int)Position));
+            var newData = currentData - (currentData & getPowerOfTwo(Position));
             device.WriteData(register, newData);
         }
+
+
 
         public void SetDirection()
         {

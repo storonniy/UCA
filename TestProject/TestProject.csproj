@@ -70,12 +70,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="amd64\ftd2xx.lib" />
-    <None Include="amd64\ftdibus.sys" />
-    <None Include="amd64\ftser2k.sys" />
-    <None Include="i386\ftd2xx.lib" />
-    <None Include="i386\ftdibus.sys" />
-    <None Include="i386\ftser2k.sys" />
     <None Include="Net-API_de.pdf" />
     <None Include="Net-API_en.pdf" />
     <None Include="packages.config" />
@@ -86,18 +80,6 @@
       <Project>{89e2b87a-6250-46c4-9e1e-cb5f2c62e81a}</Project>
       <Name>UCA</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="amd64\ftbusui.dll" />
-    <Content Include="amd64\ftcserco.dll" />
-    <Content Include="amd64\ftd2xx64.dll" />
-    <Content Include="amd64\ftlang.dll" />
-    <Content Include="amd64\ftserui2.dll" />
-    <Content Include="i386\ftbusui.dll" />
-    <Content Include="i386\ftcserco.dll" />
-    <Content Include="i386\ftd2xx.dll" />
-    <Content Include="i386\ftlang.dll" />
-    <Content Include="i386\ftserui2.dll" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
