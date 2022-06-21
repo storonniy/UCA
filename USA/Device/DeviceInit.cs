@@ -90,7 +90,7 @@ namespace UCA.Devices
                         break;
                     case DeviceNames.MK:
                         // TODO: Раскомментировать при отладке с МК
-                        //newDevice = new MK_device();
+                        newDevice = new MK_device();
                         break;
                 }
                 Devices.Add(device.Name, newDevice);

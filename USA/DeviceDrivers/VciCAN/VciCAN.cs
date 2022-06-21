@@ -23,7 +23,7 @@ namespace VciCAN
         {
             SelectDevice();
             // TODO: раскомментировать перед отладкой
-            //InitSocket(0);
+            InitSocket(0);
         }
 
         #region Member variables

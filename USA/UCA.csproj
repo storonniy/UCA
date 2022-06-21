@@ -33,7 +33,7 @@
     </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>x64</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -74,6 +74,18 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\..\Windows\assembly\GAC_MSIL\Automation.BDaq\1.0.1.0__463f5928d60183a0\Automation.BDaq.dll</HintPath>
     </Reference>
+    <Reference Include="D2XXHelper, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\D2XXHelper.0.3.1\lib\netstandard2.0\D2XXHelper.dll</HintPath>
+    </Reference>
+    <Reference Include="FTD2XXHelper, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\FTD2XXHelper.1.2.2\lib\netstandard2.0\FTD2XXHelper.dll</HintPath>
+    </Reference>
+    <Reference Include="FTD2XX_NET">
+      <HintPath>C:\Users\VyalovaSA\Downloads\FTD2XX_NET_v1.1.0\FTD2XX_NET_v1.1.0\FTD2XX_NET.dll</HintPath>
+    </Reference>
+    <Reference Include="FTDIWrapper, Version=6.1.0.73, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Essy.FTDIWrapper.6.2.0\lib\net46\FTDIWrapper.dll</HintPath>
+    </Reference>
     <Reference Include="Ixxat.Vci4, Version=4.0.439.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Ixxat.Vci4.Core.4.0.439\lib\net40\Ixxat.Vci4.dll</HintPath>
     </Reference>
@@ -105,6 +117,7 @@
     <Compile Include="Auxiliary\UnitValuePair.cs" />
     <Compile Include="DataBase\DBReader.cs" />
     <Compile Include="DeviceDrivers\AKIP_3407.cs" />
+    <Compile Include="DeviceDrivers\ASBL.cs" />
     <Compile Include="DeviceDrivers\ATH_8030.cs" />
     <Compile Include="DeviceDrivers\Commutator.cs" />
     <Compile Include="DeviceDrivers\GDM78261.cs" />
@@ -176,6 +189,12 @@
     <EmbeddedResource Include="SettingsForm.resx">
       <DependentUpon>SettingsForm.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="amd64\ftd2xx.lib" />
+    <None Include="amd64\ftdibus.sys" />
+    <None Include="amd64\ftser2k.sys" />
+    <None Include="i386\ftd2xx.lib" />
+    <None Include="i386\ftdibus.sys" />
+    <None Include="i386\ftser2k.sys" />
     <None Include="Net-API_de.pdf" />
     <None Include="Net-API_en.pdf" />
     <None Include="packages.config" />
@@ -210,6 +229,16 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="amd64\ftbusui.dll" />
+    <Content Include="amd64\ftcserco.dll" />
+    <Content Include="amd64\ftd2xx64.dll" />
+    <Content Include="amd64\ftlang.dll" />
+    <Content Include="amd64\ftserui2.dll" />
+    <Content Include="i386\ftbusui.dll" />
+    <Content Include="i386\ftcserco.dll" />
+    <Content Include="i386\ftd2xx.dll" />
+    <Content Include="i386\ftlang.dll" />
+    <Content Include="i386\ftserui2.dll" />
     <Content Include="TODO.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
