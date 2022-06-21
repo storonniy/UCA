@@ -135,6 +135,7 @@
     <Compile Include="Device\DeviceInit.cs" />
     <Compile Include="Device\Device.cs" />
     <Compile Include="Device\DeviceList\AKIP3407_device.cs" />
+    <Compile Include="Device\DeviceList\ASBL_device.cs" />
     <Compile Include="Device\DeviceList\ATH8030_device.cs" />
     <Compile Include="Device\DeviceList\Commutator_device.cs" />
     <Compile Include="Device\DeviceList\Keithley2401_device.cs" />

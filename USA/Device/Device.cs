@@ -105,7 +105,12 @@ namespace UCA.Devices
         Save,
         MultiplyAndSave,
         //
-        Sleep
+        Sleep,
+        // ASBL
+        SetLineDirection,
+        UnSetLineDirection,
+        SetLineData,
+        UnSetLineData
     }
 
     public enum DeviceNames
@@ -139,6 +144,7 @@ namespace UCA.Devices
         Simulator,
         PST_3201_p9V,
         PST_3201_m9V,
-        PST_3201_p5V
+        PST_3201_p5V,
+        ASBL
     }
 }
