@@ -25,14 +25,17 @@ namespace UPD.Device.DeviceList
                 case DeviceCommands.SetLineDirection:
                     asbl.SetLineDirection(lineNumber);
                     return ResultOk("");
-                case DeviceCommands.UnSetLineDirection:
+                case DeviceCommands.ClearLineDirection:
                     asbl.ClearLineDirection(lineNumber);
                     return ResultOk("");
                 case DeviceCommands.SetLineData:
                     asbl.SetLineData(lineNumber);
                     return ResultOk("");
-                case DeviceCommands.UnSetLineData:
+                case DeviceCommands.ClearLineData:
                     asbl.ClearLineData(lineNumber);
+                    return ResultOk("");
+                case DeviceCommands.ClearAll:
+                    asbl.ClearAll();
                     return ResultOk("");
                 default:
                     return ResultError($"Неизвестная команда {deviceData.Command}");

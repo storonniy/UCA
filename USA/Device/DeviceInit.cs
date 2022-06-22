@@ -80,9 +80,7 @@ namespace UCA.Devices
                     case DeviceNames.PCI_1762_5:
                         newDevice = new PCI1762_device(device.Description);
                         break;
-                    case DeviceNames.PST_3201_p9V:
-                    case DeviceNames.PST_3201_m9V:
-                    case DeviceNames.PST_3201_p5V:
+                    case DeviceNames.PST_3201:
                         newDevice = new PST3201_device(device.SerialPort);
                         break;
                     case DeviceNames.AKIP_3407:

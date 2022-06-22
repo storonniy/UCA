@@ -108,9 +108,10 @@ namespace UCA.Devices
         Sleep,
         // ASBL
         SetLineDirection,
-        UnSetLineDirection,
+        ClearLineDirection,
         SetLineData,
-        UnSetLineData
+        ClearLineData,
+        ClearAll
     }
 
     public enum DeviceNames
@@ -141,9 +142,6 @@ namespace UCA.Devices
         Keithley2401_1,
         Keithley2401_2,
         MK,/*_1, MK_2, MK_3, MK_4, MK_5*/
-        Simulator,
-        PST_3201_p9V,
-        PST_3201_m9V,
-        PST_3201_p5V
+        Simulator
     }
 }

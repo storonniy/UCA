@@ -23,7 +23,6 @@ namespace UCA.Devices
 
         public static DeviceResult SetVoltage(DeviceData deviceData, Func<double, int, double> setVoltage)
         {
-            // TODO: уточнить, сколько PST, с каких каналов что подавать
             var channel = int.Parse(deviceData.AdditionalArg);
             var voltage = double.Parse(deviceData.Argument, CultureInfo.InvariantCulture);
             var result = setVoltage(voltage, channel);
@@ -32,7 +31,6 @@ namespace UCA.Devices
 
         public static DeviceResult SetCurrent(DeviceData deviceData, Func<double, int, double> setCurrent)
         {
-            // TODO: уточнить, сколько PST, с каких каналов что подавать
             var channel = int.Parse(deviceData.AdditionalArg);
             var current = double.Parse(deviceData.Argument, CultureInfo.InvariantCulture);
             var result = setCurrent(current, channel);

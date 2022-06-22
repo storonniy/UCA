@@ -28,7 +28,7 @@ namespace UCA.Devices
             {
                 case DeviceCommands.SetVoltage:
                     return IDeviceInterface.SetVoltage(deviceData, pst3201.SetVoltage);
-                case DeviceCommands.SetCurrent:
+                case DeviceCommands.SetCurrentLimit:
                     return IDeviceInterface.SetCurrent(deviceData, pst3201.SetCurrent);
                 case DeviceCommands.PowerOff:
                     return IDeviceInterface.PowerOff(deviceData, pst3201.PowerOff);

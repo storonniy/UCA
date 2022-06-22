@@ -18,6 +18,16 @@ namespace UPD.DeviceDrivers
 
         private const int highPinsDir = 0x0C;
         private const int lowPinsDir = 0x6B;
+
+        /// <summary>
+        /// Создать фиктивное устройство (для тестов)
+        /// </summary>
+        /// <param name="n"></param>
+        public ASBL(uint n)
+        {
+
+        }
+
         public ASBL()
         {
             device = new FTDI();
@@ -52,8 +62,8 @@ namespace UPD.DeviceDrivers
             FT_W_LowPins(lowPinsState, lowPinsDir);
             FT_W_Highpins(highPinsState, highPinsDir);
             FT_W_Highpins(highPinsState, highPinsDir);
-
         }
+
         ~ASBL()
         {
             device.Close();
@@ -89,6 +99,15 @@ namespace UPD.DeviceDrivers
             line.ClearDirection();
         }
 
+        public void ClearLineDirection(params uint[] lineNumbers)
+        {
+            foreach (var lineNumber in lineNumbers)
+            {
+                var line = new Line(lineNumber, this);
+                line.ClearDirection();
+            }
+        }
+
         public void SetLineDirection(uint lineNumber)
         {
             var line = new Line(lineNumber, this);
@@ -105,6 +124,24 @@ namespace UPD.DeviceDrivers
         {
             var line = new Line(lineNumber, this);
             line.ClearData();
+        }
+
+        public void ClearAll()
+        {
+            uint dataState = 0;
+            WriteData(Line.ADR_DATA_REG1, dataState);
+            WriteData(Line.ADR_DATA_REG2, dataState);
+            WriteData(Line.ADR_DATA_REG3, dataState);
+            WriteData(Line.ADR_DATA_REG4, dataState);
+            WriteData(Line.ADR_DATA_REG5, dataState);
+            WriteData(Line.ADR_DATA_REG6, dataState);
+            uint dirState = uint.MaxValue;
+            WriteData(Line.ADR_DIR_REG1, dirState);
+            WriteData(Line.ADR_DIR_REG2, dirState);
+            WriteData(Line.ADR_DIR_REG3, dirState);
+            WriteData(Line.ADR_DIR_REG4, dirState);
+            WriteData(Line.ADR_DIR_REG5, dirState);
+            WriteData(Line.ADR_DIR_REG6, dirState);
         }
 
         private enum RegisterType
@@ -271,19 +308,17 @@ namespace UPD.DeviceDrivers
         public static Func<uint, uint> getPowerOfTwo = (degree) => (uint)(1 << (int)degree);
         private void Set(uint register)
         {
-            var currentData = device.ReadData(register);
-            var newData = currentData | getPowerOfTwo(Position);
+            uint currentData = device.ReadData(register);
+            uint newData = currentData | getPowerOfTwo(Position);
             device.WriteData(register, newData);
         }
 
         private void Clear(uint register)
         {
-            var currentData = device.ReadData(register);
-            var newData = currentData - (currentData & getPowerOfTwo(Position));
+            uint currentData = device.ReadData(register);
+            uint newData = currentData - (currentData & getPowerOfTwo(Position));
             device.WriteData(register, newData);
         }
-
-
 
         public void SetDirection()
         {
@@ -311,82 +346,88 @@ namespace UPD.DeviceDrivers
             {
                 DirectionRegister = ADR_DIR_REG1;
                 DataRegister = ADR_DATA_REG1;
+                return;
             }
-            else if (number < 41)
+            if (number < 41)
             {
                 DirectionRegister = ADR_DIR_REG2;
                 DataRegister = ADR_DATA_REG2;
+                return;
             }
-            else if (number < 61)
+            if (number < 61)
             {
                 DirectionRegister = ADR_DIR_REG3;
                 DataRegister = ADR_DATA_REG3;
+                return;
             }
-            else if (number < 81)
+            if (number < 81)
             {
                 DirectionRegister = ADR_DIR_REG4;
                 DataRegister = ADR_DATA_REG4;
+                return;
             }
-            else if (number < 101)
+            if (number < 101)
             {
                 DirectionRegister = ADR_DIR_REG5;
                 DataRegister = ADR_DATA_REG5;
+                return;
             }
-            else if (number < 121)
+            if (number < 121)
             {
                 DirectionRegister = ADR_DIR_REG6;
                 DataRegister = ADR_DATA_REG6;
+                return;
             }
         }
         /// <summary>
         /// Управление направлением линий I/O1…I/O20 (записать «1» в разряд – настроить линию на выход, «0» - на вход)
         /// </summary>
-        private const uint ADR_DIR_REG1 = 0x00000000;
+        public const uint ADR_DIR_REG1 = 0x00000000;
         /// <summary>
         /// Управление направлением линий I/O21…I/O40
         /// </summary>
-        private const uint ADR_DIR_REG2 = 0x00000001;
+        public const uint ADR_DIR_REG2 = 0x00000001;
         /// <summary>
         /// Хранение состояния линий I/O1…I/O20. Записав «1» на соответствующей линии (если она настроена на выход) будет выставлена «1»
         /// Записав «0» на соответствующей линии(если она настроена на выход) будет выставлен «0». 
         /// При чтение по этому адресу возвращается текущее состояние линий, если на линию подана снаружи или выставлена «1»  в соответствующем разряде будет «1»
         /// </summary>
-        private const uint ADR_DATA_REG1 = 0x00000002;
+        public const uint ADR_DATA_REG1 = 0x00000002;
         /// <summary>
         /// Хранение состояния линий I/O21…I/O40.
         /// </summary>
-        private const uint ADR_DATA_REG2 = 0x00000003;
+        public const uint ADR_DATA_REG2 = 0x00000003;
         /// <summary>
         /// Управление направлением линий I/O41…I/O60
         /// </summary>
-        private const uint ADR_DIR_REG3 = 0x01000000;
+        public const uint ADR_DIR_REG3 = 0x01000000;
         /// <summary>
         /// Управление направлением линий I/O61…I/O80
         /// </summary>
-        private const uint ADR_DIR_REG4 = 0x01000001;
+        public const uint ADR_DIR_REG4 = 0x01000001;
         /// <summary>
         /// Управление состоянием линий I/O41…I/O60
         /// </summary>
-        private const uint ADR_DATA_REG3 = 0x01000002;
+        public const uint ADR_DATA_REG3 = 0x01000002;
         /// <summary>
         /// Управление состоянием линий I/O61…I/O80
         /// </summary>
-        private const uint ADR_DATA_REG4 = 0x01000003;
+        public const uint ADR_DATA_REG4 = 0x01000003;
         /// <summary>
         /// Управление направлением линий I/O81…I/O100
         /// </summary>
-        private const uint ADR_DIR_REG5 = 0x02000000;
+        public const uint ADR_DIR_REG5 = 0x02000000;
         /// <summary>
         /// Управление направлением линий I/O101…I/O120
         /// </summary>
-        private const uint ADR_DIR_REG6 = 0x02000001;
+        public const uint ADR_DIR_REG6 = 0x02000001;
         /// <summary>
         /// Управление состоянием линий I/O81…I/O100
         /// </summary>
-        private const uint ADR_DATA_REG5 = 0x02000002;
+        public const uint ADR_DATA_REG5 = 0x02000002;
         /// <summary>
         /// Управление состоянием линий I/O101…I/O120
         /// </summary>
-        private const uint ADR_DATA_REG6 = 0x02000003;
+        public const uint ADR_DATA_REG6 = 0x02000003;
     }
 }

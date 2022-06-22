@@ -44,7 +44,6 @@ namespace Tester
             Assert.AreEqual("110000110000001", Convert.ToString(newData, 2));
             newData = currentData - (currentData & Line.getPowerOfTwo(3));
             Assert.AreEqual("110000110000101", Convert.ToString(newData, 2));
-
         }
 
         [TestMethod]
@@ -62,6 +61,30 @@ namespace Tester
         {
             var asbl = new ASBL();
             asbl.SetLineDirection(97);
+        }
+
+        [TestMethod]
+        public void TestLinesParameters()
+        {
+            TestNewLineParameters((uint)1, Line.ADR_DIR_REG1, Line.ADR_DATA_REG1);
+            TestNewLineParameters((uint)21, Line.ADR_DIR_REG2, Line.ADR_DATA_REG2);
+            TestNewLineParameters((uint)41, Line.ADR_DIR_REG3, Line.ADR_DATA_REG3);
+            TestNewLineParameters((uint)61, Line.ADR_DIR_REG4, Line.ADR_DATA_REG4);
+            TestNewLineParameters((uint)81, Line.ADR_DIR_REG5, Line.ADR_DATA_REG5);
+            TestNewLineParameters((uint)101, Line.ADR_DIR_REG6, Line.ADR_DATA_REG6);
+        }
+
+        public void TestNewLineParameters(uint firstLineNumber, uint expectedDirectionRegister, uint expectedDataRegister)
+        {
+            uint linePosition = 0;
+            for (uint lineNumber = firstLineNumber; lineNumber < firstLineNumber + 19; lineNumber++)
+            {
+                var line = new Line(lineNumber, new ASBL(0));
+                Assert.AreEqual(line.DirectionRegister, expectedDirectionRegister);
+                Assert.AreEqual(line.DataRegister, expectedDataRegister);
+                Assert.AreEqual(linePosition, line.Position);
+                linePosition++;
+            }
         }
 
     }
