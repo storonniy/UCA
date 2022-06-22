@@ -19,10 +19,16 @@ namespace UCA.DeviceDrivers
 
         private double DoCommandAndGetResult(string command)
         {
-            serialPort.WriteLine(command);
-            Thread.Sleep(1000);
+            DoCommand(command);
             return ParseInputData(serialPort.ReadLine());
         }
+
+        private void DoCommand(string command)
+        {
+            serialPort.WriteLine(command);
+            Thread.Sleep(1000);
+        }
+
 
         /// <summary>
         /// Sets the output voltage (unit: V).
@@ -91,6 +97,7 @@ namespace UCA.DeviceDrivers
         {
             var currProtection = state ? "1" : "0";
             var command = $":chan1:prot:curr {currProtection};:chan1:prot:curr?/n";
+            DoCommand(command);
         }
 
         private void ChangeOutputStatus(int value)
