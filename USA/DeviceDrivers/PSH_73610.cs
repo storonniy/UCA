@@ -24,6 +24,11 @@ namespace UCA.DeviceDrivers
             return ParseInputData(serialPort.ReadLine());
         }
 
+        /// <summary>
+        /// Sets the output voltage (unit: V).
+        /// </summary>
+        /// <param name="voltage"></param>
+        /// <returns> Returns the output voltage (unit: V). </returns>
         public double SetVoltage(double voltage)
         {
             var str = voltage.ToString().Replace(",", ".");
@@ -31,23 +36,61 @@ namespace UCA.DeviceDrivers
             return DoCommandAndGetResult(command);
         }
 
+        /// <summary>
+        /// Returns the actual output load voltage (unit: V).
+        /// </summary>
+        /// <returns></returns>
+        public double GetActualOutputLoadVoltage()
+        {
+            var command = $":chan1:meas:volt?/n";
+            return DoCommandAndGetResult(command);
+        }
+
+        /// <summary>
+        /// Returns the actual output load current (unit: A).
+        /// </summary>
+        /// <returns></returns>
+        public double GetActualOutputLoadCurrent()
+        {
+            var command = $":chan1:meas:curr?/n";
+            return DoCommandAndGetResult(command);
+        }
+
+
+        /// <summary>
+        /// Sets the output current (unit: A).
+        /// </summary>
+        /// <param name="current">Range: 0.01~rating curren t</param>
+        /// <returns>Returns the output current(unit: A).</returns>
         public double SetCurrentLimit(double current)
         {
             var str = current.ToString().Replace(",", ".");
-            var command = $":chan1:curr {str};:chan1:curr?/n";
+            var command = $":chan1:prot:curr 1;:chan1:curr {str};:chan1:curr?/n";
             return DoCommandAndGetResult(command);
         }
 
-        public double SetVoltageProtection(double voltageProtection)
+        /// <summary>
+        /// Sets the Over Voltage Protection value.
+        /// </summary>
+        /// <param name="voltageProtection"> Range: 0 .01~rating (unit: </param>
+        /// <returns> Over Voltage Protection value </returns>
+        public double SetOverVoltageProtectionValue(double voltageProtection)
         {
-            var command = $":chan1:prot:volt {voltageProtection};:chan1:prot:volt?/n";
+            var str = voltageProtection.ToString().Replace(",", ".");
+            var command = $":chan1:prot:volt {str};:chan1:prot:volt?/n";
             return DoCommandAndGetResult(command);
         }
 
-        public double SetCurrentProtection(double currentProtection)
+        /// <summary>
+        /// Sets the Over Current Protection. Range: false (Off), true (On)
+        /// </summary>
+        /// <param name="state"></param>
+        /// <returns></returns>
+
+        public void SetCurrentProtection(bool state)
         {
-            var command = $":chan1:prot:curr {currentProtection};:chan1:prot:curr?/n";
-            return DoCommandAndGetResult(command);
+            var currProtection = state ? "1" : "0";
+            var command = $":chan1:prot:curr {currProtection};:chan1:prot:curr?/n";
         }
 
         private void ChangeOutputStatus(int value)
@@ -56,7 +99,6 @@ namespace UCA.DeviceDrivers
             var command = $":outp:stat {value};:outp:stat?";
             serialPort.WriteLine(command);
             Thread.Sleep(1000);
-            //return DoCommandAndGetResult(command);
         }
 
         public void PowerOn()
