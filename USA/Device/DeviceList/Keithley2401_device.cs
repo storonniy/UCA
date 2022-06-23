@@ -13,11 +13,11 @@ namespace UCA.Devices
     class Keithley2401_device : Source
     {
         readonly Keithley2401 keithley2401;
-        private int delay = 1000;
 
         public Keithley2401_device(SerialPort serialPort)
         {
-            this.keithley2401 = new Keithley2401(serialPort);
+            serialPort.NewLine = "\r";
+            keithley2401 = new Keithley2401(serialPort);
         }
 
         public override DeviceResult DoCommand(DeviceData deviceData)
@@ -79,13 +79,9 @@ namespace UCA.Devices
 
         public override double SetVoltage(DeviceData deviceData)
         {
-            keithley2401.SelectFixedSourcingModeVoltage();
-            keithley2401.SetVoltageRange(0, (int)deviceData.UpperLimit);
-            Thread.Sleep(delay);
-            var voltage = double.Parse(deviceData.Argument);
-            keithley2401.SetVoltage(voltage);
-            Thread.Sleep(delay);
-            return keithley2401.GetSourceVoltage();
+
+            var voltage = double.Parse(deviceData.Argument.Replace(".", ","));
+            return keithley2401.SetVoltage(voltage);
         }
     }
 }

@@ -17,6 +17,7 @@ namespace UCA.Devices
         private AKIP_3407 akip3407;
         public AKIP3407_device (SerialPort serialPort)
         {
+            serialPort.NewLine = "\r";
             akip3407 = new AKIP_3407(serialPort);
         }
         public override DeviceResult DoCommand (DeviceData deviceData)

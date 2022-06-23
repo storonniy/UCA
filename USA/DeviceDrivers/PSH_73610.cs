@@ -14,7 +14,7 @@ namespace UCA.DeviceDrivers
         public PSH73610(SerialPort serialPort)
         {
             this.serialPort = serialPort;
-            //this.serialPort.Open();
+            this.serialPort.Open();
         }
 
         private double DoCommandAndGetResult(string command)
@@ -38,7 +38,7 @@ namespace UCA.DeviceDrivers
         public double SetVoltage(double voltage)
         {
             var str = voltage.ToString().Replace(",", ".");
-            var command = $":chan1:volt {str};:chan1:volt?/n";
+            var command = $":chan1:volt {str};:chan1:volt?\n";
             return DoCommandAndGetResult(command);
         }
 
@@ -48,7 +48,7 @@ namespace UCA.DeviceDrivers
         /// <returns></returns>
         public double GetActualOutputLoadVoltage()
         {
-            var command = $":chan1:meas:volt?/n";
+            var command = $":chan1:meas:volt?\n";
             return DoCommandAndGetResult(command);
         }
 
@@ -58,7 +58,7 @@ namespace UCA.DeviceDrivers
         /// <returns></returns>
         public double GetActualOutputLoadCurrent()
         {
-            var command = $":chan1:meas:curr?/n";
+            var command = $":chan1:meas:curr?\n";
             return DoCommandAndGetResult(command);
         }
 
@@ -71,7 +71,7 @@ namespace UCA.DeviceDrivers
         public double SetCurrentLimit(double current)
         {
             var str = current.ToString().Replace(",", ".");
-            var command = $":chan1:prot:curr 1;:chan1:curr {str};:chan1:curr?/n";
+            var command = $":chan1:prot:curr 1;:chan1:curr {str};:chan1:curr?\n";
             return DoCommandAndGetResult(command);
         }
 
@@ -83,7 +83,7 @@ namespace UCA.DeviceDrivers
         public double SetOverVoltageProtectionValue(double voltageProtection)
         {
             var str = voltageProtection.ToString().Replace(",", ".");
-            var command = $":chan1:prot:volt {str};:chan1:prot:volt?/n";
+            var command = $":chan1:prot:volt {str};:chan1:prot:volt?\n";
             return DoCommandAndGetResult(command);
         }
 
@@ -96,7 +96,7 @@ namespace UCA.DeviceDrivers
         public void SetCurrentProtection(bool state)
         {
             var currProtection = state ? "1" : "0";
-            var command = $":chan1:prot:curr {currProtection};:chan1:prot:curr?/n";
+            var command = $":chan1:prot:curr {currProtection};:chan1:prot:curr?\n";
             DoCommand(command);
         }
 

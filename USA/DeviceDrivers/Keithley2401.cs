@@ -14,8 +14,9 @@ namespace UCA.DeviceDrivers
         readonly SerialPort serialPort;
         public Keithley2401(SerialPort serialPort)
         {
+            string[] portNames = SerialPort.GetPortNames();
             this.serialPort = serialPort;
-            //serialPort.Open();
+            serialPort.Open();
         }
 
         private static readonly int delay = 1000;
@@ -27,7 +28,7 @@ namespace UCA.DeviceDrivers
 
         public void SelectVoltageSource()
         {
-            SendCommand($":SOUR:FUNC VOLT#013#010");
+            SendCommand($":SOUR:FUNC VOLT");
         }
 
         /// <summary>
@@ -35,7 +36,7 @@ namespace UCA.DeviceDrivers
         /// </summary>
         public void SelectFixedSourcingModeVoltage()
         {
-            SendCommand(":SOUR:VOLT:MODE FIX#013#010");
+            SendCommand(":SOUR:VOLT:MODE FIX");
         }
 
         /// <summary>
@@ -43,16 +44,51 @@ namespace UCA.DeviceDrivers
         /// </summary>
         public void SelectFixedSourcingModeCurrent()
         {
-            SendCommand(":SOUR:CURR:MODE FIX#013#010");
+            SendCommand(":SOUR:CURR:MODE FIX");
+        }
+
+        private byte[] GetBytes(string command)
+        {
+            var bytes = Encoding.ASCII.GetBytes(command);
+            byte[] result = new byte[bytes.Length + 2];
+            Array.Copy(bytes, result, bytes.Length);
+            result[bytes.Length] = 0x0D;
+            result[bytes.Length] = 0x0A;
+            return result;
+        }
+
+
+        /// <summary>
+        /// Set I-source amplitude
+        /// </summary>
+        /// <param name="current"> Amplitude in amps </param>
+        public void SetCurrent(double current)
+        {
+            var str = current.ToString().Replace(",", ".");
+            SendCommand($":SOUR:CURR:LEV:AMPL {str}");
         }
 
         /// <summary>
         /// Set V-source amplitude
         /// </summary>
         /// <param name="voltage"> Amplitude in volts </param>
-        public void SetVoltage(double voltage)
+        public double SetVoltage(double voltage)
         {
-            SendCommand($":SOUR:VOLT:LEV:AMPL {voltage}#013#010");
+            SelectFixedSourcingModeVoltage();
+            Thread.Sleep(100);
+            var str = voltage.ToString().Replace(",", ".");
+            SendCommand($":SOUR:VOLT:LEV:AMPL {str}");
+            return GetVoltage();
+        }
+
+        /// <summary>
+        /// Query voltage level
+        /// </summary>
+        /// <returns></returns>
+        public double GetVoltage()
+        {
+            SendCommand(":SOUR:VOLT:LEV:AMPL?");
+            return ParseValue(serialPort.ReadExisting());
         }
 
         /// <summary>
@@ -62,12 +98,12 @@ namespace UCA.DeviceDrivers
         /// <param name="to"> Maximum, A </param>
         public void SetCurrentRange(double up, double to)
         {
-            SendCommand($":SOUR:CURR:RANG {up} to {to}#013#010");
+            SendCommand($":SOUR:CURR:RANG {up} to {to}");
         }
 
         public double GetCurrentRange()
         {
-            SendCommand($"CURR? MAX#013#010");
+            SendCommand($"CURR? MAX");
             return ParseValue(serialPort.ReadLine());
         }
 
@@ -78,42 +114,20 @@ namespace UCA.DeviceDrivers
         /// <param name="to"> Maximum, V </param>
         public void SetVoltageRange(double up, double to)
         {
-            SendCommand($":SOUR:VOLT:RANG {up} to {to}#013#010");
+            SendCommand($":SOUR:VOLT:RANG {up} to {to}");
         }
 
         public double GetSourceVoltage()
         {
-            SendCommand($"VOLT?#013#010");
+            SendCommand($"VOLT?");
             return ParseValue(serialPort.ReadLine());
-        }
-
-        /// <summary>
-        /// Query voltage level
-        /// </summary>
-        /// <returns></returns>
-        public double GetVoltage()
-        {
-            //SendCommand(":FORM:ELEM VOLT#013#010");
-            //SendCommand(":READ?#013#010");
-            //SendCommand(":FORM:ELEM VOLT#013#010");
-            SendCommand(":SOUR:VOLT:LEV:IMM:AMPL?#013#010");
-            return ParseValue(serialPort.ReadLine());
-        }
-
-        /// <summary>
-        /// Set I-source amplitude
-        /// </summary>
-        /// <param name="current"> Amplitude in amps </param>
-        public void SetCurrent(double current)
-        {
-            SendCommand($":SOUR:CURR:LEV:AMPL {current}#013#010");
         }
 
 
         public double GetCurrent()
         {
-            SendCommand(":FORM:ELEM CURR#013#010");
-            SendCommand(":READ?#013#010");
+            SendCommand(":FORM:ELEM CURR");
+            SendCommand(":READ?");
             return ParseValue(serialPort.ReadLine());
         }
 
@@ -139,15 +153,15 @@ namespace UCA.DeviceDrivers
 
         private bool ChangePowerStatus(PowerState state)
         {
-            SendCommand($":OUTP {state}#013#010");
-            SendCommand(":OUTP:STAT?013#010");
-            // TODO: проверить, отвечает 0 or OFF
-            return serialPort.ReadLine() == state.ToString(); // return serialPort.ReadLine() == Convert.ToInt32(state);
+            SendCommand($":OUTP {state}");
+            SendCommand(":OUTP:STAT?");
+            return serialPort.ReadLine() == "1"; // return serialPort.ReadLine() == Convert.ToInt32(state);
         }
 
         private void SendCommand(string command)
         {
-            serialPort.WriteLine(command);
+            var bytes = GetBytes(command);
+            serialPort.Write(bytes, 0, bytes.Length);
             Thread.Sleep(delay);
         }
 

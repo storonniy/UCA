@@ -40,7 +40,6 @@ namespace UCA.Devices
                         newDevice = new GDM78261_device(device.SerialPort);
                         break;
                     case DeviceNames.Keithley2401_1:
-                    case DeviceNames.Keithley2401_2:
                         newDevice = new Keithley2401_device(device.SerialPort);
                         break;
                     case DeviceNames.Commutator:
@@ -87,7 +86,6 @@ namespace UCA.Devices
                         newDevice = new AKIP3407_device(device.SerialPort);
                         break;
                     case DeviceNames.MK:
-                        // TODO: Раскомментировать при отладке с МК
                         newDevice = new MK_device();
                         break;
                     case DeviceNames.ASBL:

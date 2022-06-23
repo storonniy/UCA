@@ -56,18 +56,11 @@ namespace UPD.DeviceDrivers
 
         private ICanMessage GetAnswer()
         {
-            while (true)
-            {
-                ICanMessage message = vciDevice.GetData();
-                // TODO: no cycle time limit. If MC does not respond, the program will freeze
-                if (vciDevice.ThereIsANewMessage())
-                {
-                    return message;
-                }
-                Thread.Sleep(1000);
-                if (message == null)
-                    throw new Exception("Устройство не отвечает");
-            }
+
+            var answer = vciDevice.GetData();
+            if (answer == null)
+                throw new Exception("Устройство не отвечает");
+            return answer;
         }
 
         #region 1 Assign Block ID
@@ -195,7 +188,10 @@ namespace UPD.DeviceDrivers
             if (answer[0] == 0xFA)
             {
                 if (returnedRelayNumber != (byte)relayNumber)
+                {
                     EmergencyBreak();
+                    throw new Exception($"МК не замкнул нужные реле: {String.Join(" ", answer)}");
+                }
                 return status;
             }          
             throw new Exception($"МК вернул ошибочный ответ: {String.Join(" ", answer)}");
@@ -283,16 +279,19 @@ namespace UPD.DeviceDrivers
         public List<BlockData> WakeUp()
         {
             uint id = 0x00;
-            byte[] canMessage = { 0x08, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
+            byte[] canMessage = { 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
             vciDevice.TransmitData(canMessage, id);
             int numberOfBlocks = 7; // Комментарии никто не читает. Но в этой переменной отражено реальное число блоков.
             List<BlockData> blockDataList = new List<BlockData>();
-            for (int i = 0; i < numberOfBlocks; i++)
+            for (int i = 0; i < numberOfBlocks + 4; i++)
             {
+                Thread.Sleep(100);
                 var answer = GetAnswer();
-                if (answer[1] != 0xFE)
+                if (i == 0 | i == 1 | i == 2 | i == 3)
+                    continue;
+                if (answer[0] != 0xF7)
                     throw new Exception($"МК вернул ошибочный ответ: {String.Join(" ", answer)}");
-                blockDataList.Add(new BlockData(answer[0], 256 * answer[3] + answer[2]));
+                blockDataList.Add(new BlockData(answer.Identifier, 256 * answer[3] + answer[2]));
             }
             blockDataList.Sort(new BlockDataComparer());
             return blockDataList;         

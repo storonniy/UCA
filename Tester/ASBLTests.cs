@@ -3,12 +3,23 @@ using System;
 using System.Threading;
 using FTD2XX_NET;
 using UPD.DeviceDrivers;
+using UCA.DeviceDrivers;
+using System.IO.Ports;
 
 namespace Tester
 {
     [TestClass]
     public class ASBLTests
     {
+        [TestMethod]
+        public void InitAKIP()
+        {
+            var serialPort = new SerialPort("COM5", 9600);
+            var akip = new AKIP_3407(serialPort);
+            Assert.AreEqual(3.24, akip.SetVoltage(3.24));
+        }
+
+
         /// <summary>
         /// Показывает, что массив - это ссылочный тип
         /// </summary>

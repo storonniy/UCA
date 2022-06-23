@@ -19,19 +19,22 @@ namespace UPD.Device.DeviceList
 
         public override DeviceResult DoCommand(DeviceData deviceData)
         {
-            var lineNumber = uint.Parse(deviceData.Argument);
+            
             switch (deviceData.Command)
             {
                 case DeviceCommands.SetLineDirection:
+                    var lineNumber = uint.Parse(deviceData.Argument);
                     asbl.SetLineDirection(lineNumber);
                     return ResultOk("");
                 case DeviceCommands.ClearLineDirection:
-                    asbl.ClearLineDirection(lineNumber);
+                    lineNumber = uint.Parse(deviceData.Argument); asbl.ClearLineDirection(lineNumber);
                     return ResultOk("");
                 case DeviceCommands.SetLineData:
+                    lineNumber = uint.Parse(deviceData.Argument);
                     asbl.SetLineData(lineNumber);
                     return ResultOk("");
                 case DeviceCommands.ClearLineData:
+                    lineNumber = uint.Parse(deviceData.Argument);
                     asbl.ClearLineData(lineNumber);
                     return ResultOk("");
                 case DeviceCommands.ClearAll:

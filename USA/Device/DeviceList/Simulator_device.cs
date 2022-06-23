@@ -16,6 +16,7 @@ namespace UPD.Device.DeviceList
 
         public Simulator_device(SerialPort serialPort)
         {
+            serialPort.NewLine = "\r";
             Simulator = new Simulator(serialPort);
         }
 

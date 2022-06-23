@@ -199,10 +199,10 @@ namespace UPD.DeviceDrivers
             Thread.Sleep(10);
             uint numBytesWritten = 0;
             var status = device.Write(buffer, 3, ref numBytesWritten);
-            if (numBytesWritten != 3)
+/*            if (numBytesWritten != 3)
                 status = device.Write(buffer, 3, ref numBytesWritten);
             if (numBytesWritten != 3)
-                throw new Exception($"Записано {numBytesWritten} вместо 3");
+                throw new Exception($"Записано {numBytesWritten} вместо 3");*/
             if (status != FT_STATUS.FT_OK)
                 throw new Exception(status.ToString());
         }

@@ -390,7 +390,7 @@ namespace UCA.DeviceDrivers
                 throw new Exception("PSP-405 returned an incorrect response.");
             }
             string stringValue = data.Substring(value.Flag.Length, value.Length);
-            return double.Parse(stringValue, CultureInfo.InvariantCulture); ;
+            return double.Parse(stringValue, CultureInfo.InvariantCulture);
         }
 
         /// <summary>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Threading;
 using Ixxat.Vci4;
 using Ixxat.Vci4.Bal;
@@ -24,6 +25,9 @@ namespace VciCAN
             SelectDevice();
             // TODO: раскомментировать перед отладкой
             InitSocket(0);
+            rxThread = new Thread(new ThreadStart(ReceiveThreadFunc));
+            rxThread.Start();
+
         }
 
         #region Member variables
@@ -254,19 +258,20 @@ namespace VciCAN
 
             IMessageFactory factory = VciServer.Instance().MsgFactory;
             ICanMessage canMsg = (ICanMessage)factory.CreateMsg(typeof(ICanMessage));
+            canMsg.ExtendedFrameFormat = true;
 
             canMsg.TimeStamp = 0;
-            canMsg.Identifier = 0x100;
+            canMsg.Identifier = ID;
             canMsg.FrameType = CanMsgFrameType.Data;
             canMsg.DataLength = 8;
-            canMsg.SelfReceptionRequest = true;  // show this message in the console window
+            canMsg.SelfReceptionRequest = false;  // show this message in the console window
 
             for (var i = 0; i < canMsg.DataLength; i++)
             {
                 canMsg[i] = message[i];
             }
             mWriter.SendMessage(canMsg);
-            Thread.Sleep(1000);
+            Thread.Sleep(10);
         }
 
         #endregion
@@ -281,12 +286,34 @@ namespace VciCAN
         private bool newMsgEnabled = false;
 
         public ICanMessage lastCanMsg { get; private set; }
+
+
         readonly object Locker = new object();
+
+        private Queue<ICanMessage> msgQueue = new Queue<ICanMessage>();
 
         public void ReceiveThreadFunc()
         {
+            /*            ICanMessage canMessage;
+
+                        do
+                        {
+                            // Wait 100 msec for a message reception
+                            if (mRxEvent.WaitOne(100, false))
+                            {
+                                // read a CAN message from the receive FIFO
+                                lock (msgQueue)
+                                {
+                                    while (mReader.ReadMessage(out canMessage))
+                                    {
+                                        msgQueue.Enqueue(canMessage);
+                                    }
+                                }
+                            }
+                        } while (0 == mMustQuit);*/
             IMessageFactory factory = VciServer.Instance().MsgFactory;
             ICanMessage canMessage = (ICanMessage)factory.CreateMsg(typeof(ICanMessage));
+            lastCanMsg = (ICanMessage)factory.CreateMsg(typeof(ICanMessage));
             do
             {
                 // Wait 100 msec for a message reception
@@ -299,13 +326,10 @@ namespace VciCAN
                         {
                             if (!canMessage.RemoteTransmissionRequest)
                             {
-                                byte[] msg = new byte[canMessage.DataLength];
-                                for (int index = 0; index < canMessage.DataLength; index++)
+                                lock (msgQueue)
                                 {
-                                    msg[index] = canMessage[index];
+                                    msgQueue.Enqueue(canMessage);
                                 }
-                                lastCanMsg = canMessage;
-                                newMsgEnabled = false;
                             }
                         }
                     }
@@ -315,8 +339,12 @@ namespace VciCAN
 
         public ICanMessage GetData()
         {
-            lock (Locker)
-                return lastCanMsg;
+            lock (msgQueue)
+            {
+                if (msgQueue.Count == 0)
+                    return null;
+                return msgQueue.Dequeue();
+            }
         }
 
 

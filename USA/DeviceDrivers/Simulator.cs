@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.IO.Ports;
 using System.Threading;
+using System.Text;
 
 namespace UPD.DeviceDrivers
 {
@@ -13,7 +14,7 @@ namespace UPD.DeviceDrivers
         public Simulator(SerialPort serialPort)
         {
             this.serialPort = serialPort;
-            //serialPort.Open();
+            serialPort.Open();
         }
 
         ~Simulator()
@@ -23,7 +24,7 @@ namespace UPD.DeviceDrivers
 
         public static string[] GetRelayNamesAsAnArray(string relayNamesString)
         {
-            relayNamesString = relayNamesString.Replace(" ", "").Replace("\r", "");
+            relayNamesString = relayNamesString.Replace(" ", "").Replace("\r", "").Replace("\n", "");
             return relayNamesString.Split(',');
         }
 
@@ -40,8 +41,7 @@ namespace UPD.DeviceDrivers
         /// <returns>Возвращает массив типа string[], содержащий имена замкнутых реле</returns>
         public string[] GetClosedRelayNames()
         {
-            serialPort.WriteLine("*GetClosedRelayNames\r");
-            Thread.Sleep(delay);
+            SendCommand("*GetClosedRelayNemes");
             string closedRelayNamesString = serialPort.ReadExisting();
             string checkedClosedRelayNamesString = DeleteIdentifierFromAnswer(closedRelayNamesString, "*ClosedRelayNames:");
             return GetRelayNamesAsAnArray(checkedClosedRelayNamesString);
@@ -49,63 +49,53 @@ namespace UPD.DeviceDrivers
 
         public string PrepareCommandForAdapter(params string[] relays)
         {
-/*            string command = "";
-            for (var i = 0; i < relays.Length; i++)
-            {
-                command += relays[i];
-                if (i != relays.Length - 1)
-                    command += ',';
-                else
-                    command += "\r";
-            }*/
-            return string.Join(",", relays) + "\r";
-        }
-
-        public class CommutatorException : Exception
-        {
-            public CommutatorException(string message) : base(message)
-            {
-
-            }
+            return string.Join(",", relays);// "#010";
         }
 
         public void CloseRelays(params string[] relays)
         {
             string command = "*CloseRelays:" + PrepareCommandForAdapter(relays);
-            serialPort.WriteLine(command);
+            SendCommand(command);
             Thread.Sleep(delay);
             var answerFromAdapter = serialPort.ReadExisting();
-            if (answerFromAdapter.ToLower() != "*CloseRelays:OK\r".ToLower())
-                throw new CommutatorException($"При замыкании реле {command} возникла ошибка");
-            try
-            {
-
-            }
-            catch { TimeoutException e; }
-            {
-                // Время ожидания ответа от коммутационного адаптера превышено.
-            }
-            //return answerFromAdapter.Replace("\r", "");
+            if (answerFromAdapter != "*CloseRelays:Ok\r")
+                throw new Exception($"При замыкании реле {command} возникла ошибка");
         }
+
+        private byte[] GetBytes(string command)
+        {
+            var bytes = Encoding.ASCII.GetBytes(command);
+            byte[] result = new byte[bytes.Length + 1];
+            Array.Copy(bytes, result, bytes.Length);
+            result[bytes.Length] = 0x0A;
+            return result;
+        }
+
 
         public void OpenRelays(params string[] relays)
         {
             string command = "*OpenRelays:" + PrepareCommandForAdapter(relays);
-            serialPort.WriteLine(command);
+            SendCommand(command);
             Thread.Sleep(delay);
             var answerFromAdapter = serialPort.ReadExisting();
-            //if (answerFromAdapter != "*OpenRelays:OK\r" && answerFromAdapter != "*OpenRelays:all\r" && answerFromAdapter != "* OpenRelays:all\r* OpenRelays:all\r")
-            //throw new Exception($"При размыкании реле {command} возникла ошибка");
+            if (answerFromAdapter != "*OpenRelays:Ok\r")
+                throw new Exception($"При размыкании реле {command} возникла ошибка");
         }
 
         public void ConnectRelays(params string[] relays)
         {
             string command = "*ConnectRelays:" + PrepareCommandForAdapter(relays);
-            serialPort.WriteLine(command);
-            Thread.Sleep(delay);
+            SendCommand(command);
             var answerFromAdapter = serialPort.ReadExisting();
             if (answerFromAdapter.ToLower() != "*DisconnectRelays:Ok\r".ToLower())
-                throw new CommutatorException($"При коннекте реле {command} возникла ошибка");
+                throw new Exception($"При коннекте реле {command} возникла ошибка");
+        }
+
+        private void SendCommand(string command)
+        {
+            var bytes = GetBytes(command);
+            serialPort.Write(bytes, 0, bytes.Length);
+            Thread.Sleep(delay);
         }
 
         public string GetIdentifier()

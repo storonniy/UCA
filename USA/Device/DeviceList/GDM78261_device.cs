@@ -25,8 +25,8 @@ namespace UCA.Devices
                 case DeviceCommands.GetVoltage:
                     {
                         var voltage = GetVoltage();
-                        var key = double.Parse(deviceData.Argument, NumberStyles.Float);
-                        AddCoefficientData(deviceData.Channel, key, voltage);
+                        //var key = double.Parse(deviceData.Argument, NumberStyles.Float);
+                        //AddCoefficientData(deviceData.Channel, key, voltage);
                         return GetResult(deviceData, UnitType.Voltage, voltage);
                     }
                 case DeviceCommands.GetVoltageAndSave:

@@ -64,6 +64,20 @@ namespace UCA.Devices
             return DeviceResult.ResultOk($"{deviceData.DeviceName}: снят входной сигнал");
         }
 
+        public static DeviceResult PowerOn(DeviceData deviceData, Func<bool> powerOn)
+        {
+            powerOn();
+            return DeviceResult.ResultOk($"{deviceData.DeviceName}: подан входной сигнал");
+        }
+
+        public static DeviceResult PowerOff(DeviceData deviceData, Func<bool> powerOff)
+        {
+            var status = powerOff();
+            if (status)
+                return DeviceResult.ResultOk($"{deviceData.DeviceName}: снят входной сигнал");
+            return DeviceResult.ResultError($"{deviceData.DeviceName}: ошибка при снятии входного сигнала");
+        }
+
         public static DeviceResult GetResult(string message, DeviceData deviceData, UnitType unitType, double value)
         {
             var result = $"{message}: {GetValueUnitPair(value, unitType)} \tНижний предел: {GetValueUnitPair(deviceData.LowerLimit, unitType)}\t Верхний предел {GetValueUnitPair(deviceData.UpperLimit, unitType)}";

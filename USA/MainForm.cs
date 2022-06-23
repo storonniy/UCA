@@ -43,7 +43,7 @@ namespace UCA
                     if (queue.Count != 0 && isCheckingStarted)
                     {
                         step = queue.Dequeue();
-                        Thread.Sleep(500);
+                        Thread.Sleep(10);
                     }
                 }
                 if (step != null)
