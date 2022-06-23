@@ -142,6 +142,10 @@ namespace UPD.DeviceDrivers
             WriteData(Line.ADR_DIR_REG4, dirState);
             WriteData(Line.ADR_DIR_REG5, dirState);
             WriteData(Line.ADR_DIR_REG6, dirState);
+            var readData = ReadData(Line.ADR_DATA_REG1);
+            var dirData = ReadData(Line.ADR_DIR_REG1);
+            if (readData != dataState && dirData != dirState)
+                throw new Exception($"Хьюстон, у нас проблемы: readData = {readData}, expected {dataState}; dirdata = {dirData}, expected {dirState}");
         }
 
         private enum RegisterType

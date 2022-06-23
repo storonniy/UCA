@@ -259,13 +259,11 @@ namespace VciCAN
             IMessageFactory factory = VciServer.Instance().MsgFactory;
             ICanMessage canMsg = (ICanMessage)factory.CreateMsg(typeof(ICanMessage));
             canMsg.ExtendedFrameFormat = true;
-
             canMsg.TimeStamp = 0;
             canMsg.Identifier = ID;
             canMsg.FrameType = CanMsgFrameType.Data;
             canMsg.DataLength = 8;
             canMsg.SelfReceptionRequest = false;  // show this message in the console window
-
             for (var i = 0; i < canMsg.DataLength; i++)
             {
                 canMsg[i] = message[i];
@@ -283,7 +281,6 @@ namespace VciCAN
         ///   This method is the works as receive thread.
         /// </summary>
         //************************************************************************
-        private bool newMsgEnabled = false;
 
         public ICanMessage lastCanMsg { get; private set; }
 
@@ -294,26 +291,8 @@ namespace VciCAN
 
         public void ReceiveThreadFunc()
         {
-            /*            ICanMessage canMessage;
-
-                        do
-                        {
-                            // Wait 100 msec for a message reception
-                            if (mRxEvent.WaitOne(100, false))
-                            {
-                                // read a CAN message from the receive FIFO
-                                lock (msgQueue)
-                                {
-                                    while (mReader.ReadMessage(out canMessage))
-                                    {
-                                        msgQueue.Enqueue(canMessage);
-                                    }
-                                }
-                            }
-                        } while (0 == mMustQuit);*/
             IMessageFactory factory = VciServer.Instance().MsgFactory;
             ICanMessage canMessage = (ICanMessage)factory.CreateMsg(typeof(ICanMessage));
-            lastCanMsg = (ICanMessage)factory.CreateMsg(typeof(ICanMessage));
             do
             {
                 // Wait 100 msec for a message reception
@@ -321,15 +300,11 @@ namespace VciCAN
                 {
                     while (mReader.ReadMessage(out canMessage))
                     {
-                        newMsgEnabled = !canMessage.RemoteTransmissionRequest;
-                        lock (Locker)
+                        if (!canMessage.RemoteTransmissionRequest)
                         {
-                            if (!canMessage.RemoteTransmissionRequest)
+                            lock (msgQueue)
                             {
-                                lock (msgQueue)
-                                {
-                                    msgQueue.Enqueue(canMessage);
-                                }
+                                msgQueue.Enqueue(canMessage);
                             }
                         }
                     }
@@ -347,12 +322,6 @@ namespace VciCAN
             }
         }
 
-
-        public bool ThereIsANewMessage()
-        {
-            lock (Locker)
-                return newMsgEnabled;
-        }
 
         #endregion
 

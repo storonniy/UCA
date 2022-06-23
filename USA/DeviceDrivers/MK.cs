@@ -195,12 +195,11 @@ namespace UPD.DeviceDrivers
                 return status;
             }          
             throw new Exception($"МК вернул ошибочный ответ: {String.Join(" ", answer)}");
-
         }
 
         private byte CloseRelay(int blockNumber, int relayNumber)
         {
-            return ChangeRelayState(blockNumber, relayNumber, true);
+            return ChangeRelayState(blockNumber, relayNumber, false);
         }
 
         private byte OpenRelay(int blockNumber, int relayNumber)
