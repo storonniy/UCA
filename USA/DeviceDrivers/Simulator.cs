@@ -14,7 +14,8 @@ namespace UPD.DeviceDrivers
         public Simulator(SerialPort serialPort)
         {
             this.serialPort = serialPort;
-            serialPort.Open();
+            if (SerialPort.GetPortNames().ToList().Contains(serialPort.PortName))
+                this.serialPort.Open();
         }
 
         ~Simulator()

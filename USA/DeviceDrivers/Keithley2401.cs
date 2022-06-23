@@ -16,7 +16,8 @@ namespace UCA.DeviceDrivers
         {
             string[] portNames = SerialPort.GetPortNames();
             this.serialPort = serialPort;
-            serialPort.Open();
+            if (SerialPort.GetPortNames().ToList().Contains(serialPort.PortName))
+                serialPort.Open();
         }
 
         private static readonly int delay = 1000;

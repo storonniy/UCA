@@ -546,9 +546,6 @@
   <data name="groupBoxManualStep.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Left, Right</value>
   </data>
-  <data name="checkBoxIgnoreErrors.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Top, Right</value>
-  </data>
   <data name="checkBoxIgnoreErrors.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>

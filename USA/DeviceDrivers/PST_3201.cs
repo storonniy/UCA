@@ -16,7 +16,8 @@ namespace UCA.DeviceDrivers
         public PST_3201(SerialPort serialPort)
         {
             this.serialPort = serialPort;
-            this.serialPort.Open();
+            if (SerialPort.GetPortNames().ToList().Contains(serialPort.PortName))
+                this.serialPort.Open();
         }
 
         private string DoCommandAndGetResult(string command)

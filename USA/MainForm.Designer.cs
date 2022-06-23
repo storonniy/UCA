@@ -261,7 +261,7 @@ namespace UCA
             // 
             this.treeOfChecking.AllowDrop = true;
             resources.ApplyResources(this.treeOfChecking, "treeOfChecking");
-            this.treeOfChecking.CheckBoxes = true;
+            this.treeOfChecking.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.treeOfChecking.Name = "treeOfChecking";
             this.treeOfChecking.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeOfChecking_AfterSelect);
             // 

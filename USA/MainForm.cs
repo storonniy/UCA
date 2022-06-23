@@ -248,17 +248,6 @@ namespace UCA
             UpdateDevicesOnForm();
             DeviceHandler = new DeviceInit(stepsInfo.DeviceList);
             UpdateDevicesOnForm();
-            try
-            {
-
-                //DeviceHandler = new DeviceInit(stepsInfo.DeviceList);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            //DeviceHandler = new DeviceInit(stepsInfo.DeviceList);
-
         }
 
         private void InitialActions()
@@ -548,7 +537,7 @@ namespace UCA
                 this.Invoke((MethodInvoker)delegate { HighlightTreeNode(treeNode, color); });
                 return;
             }
-            var imageKey = "ok";
+            treeNode.EnsureVisible();
             treeNode.ForeColor = color;
         }
 
@@ -694,12 +683,12 @@ namespace UCA
         private void treeOfChecking_AfterSelect(object sender, TreeViewEventArgs e)
         {
 
-            if (treeviewNodeStep.ContainsKey(e.Node) && mainThread.ThreadState != ThreadState.Running)
+/*            if (treeviewNodeStep.ContainsKey(e.Node) && mainThread.ThreadState != ThreadState.Running)
             {
                 var thisStep = treeviewNodeStep[e.Node];
                 var node = treeviewStepNode[thisStep];
                 DoStep(thisStep);
-            }
+            }*/
 
         }
 

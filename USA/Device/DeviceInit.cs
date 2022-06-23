@@ -86,10 +86,10 @@ namespace UCA.Devices
                         newDevice = new AKIP3407_device(device.SerialPort);
                         break;
                     case DeviceNames.MK:
-                        newDevice = new MK_device();
+                        //newDevice = new MK_device();
                         break;
                     case DeviceNames.ASBL:
-                        newDevice = new ASBL_device();
+                        //newDevice = new ASBL_device();
                         break;
                 }
                 Devices.Add(device.Name, newDevice);
