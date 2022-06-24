@@ -41,7 +41,7 @@ namespace UCA.Devices
         {
             var currentLimit = double.Parse(deviceData.Argument, CultureInfo.InvariantCulture);
             var result = setCurrentLimit(currentLimit);
-            return GetResult("Установлен предел по току", deviceData, UnitType.Current, result);
+            return GetResult($"{deviceData.DeviceName}: Установлен предел по току", deviceData, UnitType.Current, result);
         }
 
         public static DeviceResult SetCurrentLimit(DeviceData deviceData, Func<double, int, double> setCurrentLimit)
@@ -49,7 +49,7 @@ namespace UCA.Devices
             var channel = int.Parse(deviceData.AdditionalArg);
             var currentLimit = double.Parse(deviceData.Argument, CultureInfo.InvariantCulture);
             var result = setCurrentLimit(currentLimit, channel);
-            return GetResult("Установлен предел по току", deviceData, UnitType.Current, result);
+            return GetResult($"{deviceData.DeviceName}: Установлен предел по току", deviceData, UnitType.Current, result);
         }
 
         public static DeviceResult PowerOn(DeviceData deviceData, Action powerOn)
@@ -166,7 +166,7 @@ namespace UCA.Devices
 
         public static void ClearValuesDictionary()
         {
-            coefficientValuesDictionary.Clear();
+            valuesDictionary.Clear();
         }
 
         #endregion

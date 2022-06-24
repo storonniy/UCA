@@ -28,15 +28,21 @@ namespace UPD.Device.DeviceList
                     {
                         var relayNumbers = ParseRelayNumbers(deviceData.Argument);
                         var blockNumber = int.Parse(deviceData.AdditionalArg) - 1;
-                        mk.CloseRelays(blockNumber, relayNumbers);
-                        return ResultOk($"{deviceData.DeviceName} замкнуты реле {String.Join(", ", relayNumbers)}");
+                        var status = mk.CloseRelays(blockNumber, relayNumbers);
+                        if (status)
+                            return ResultOk($"{deviceData.DeviceName} замкнуты реле {String.Join(", ", relayNumbers)}");
+                        else
+                            return ResultError($"ОШИБКА: {deviceData.DeviceName} не замкнуты реле {String.Join(", ", relayNumbers)}");
                     }
                 case DeviceCommands.OpenRelays:
                     {
                         var relayNumbers = ParseRelayNumbers(deviceData.Argument);
                         var blockNumber = int.Parse(deviceData.AdditionalArg) - 1;
-                        mk.CloseRelays(blockNumber, relayNumbers);
-                        return ResultOk($"{deviceData.DeviceName} разомкнуты реле {String.Join(", ", relayNumbers)}");
+                        var status = mk.CloseRelays(blockNumber, relayNumbers);
+                        if (status)
+                            return ResultOk($"{deviceData.DeviceName} разомкнуты реле {String.Join(", ", relayNumbers)}");
+                        else
+                            return ResultError($"ОШИБКА: {deviceData.DeviceName} не разомкнуты реле {String.Join(", ", relayNumbers)}");
                     }
                 default:
                     return ResultError($"Неизвестная команда {deviceData.Command}");
@@ -52,25 +58,6 @@ namespace UPD.Device.DeviceList
                 relayNumbers[i] = int.Parse(relayNames[i]);
             }
             return relayNumbers;
-        }
-
-        private struct MKParameters
-        {
-            public byte deviceNumber { get; set; }
-            public int blockType { get; set; }
-            public int moduleNumber { get; set; }
-            public int placeNumber { get; set; }
-            public int factoryNumber { get; set; }
-
-            public MKParameters(byte deviceNumber, int blockType, int moduleNumber, int placeNumber, int factoryNumber)
-            {
-                this.deviceNumber = deviceNumber;
-                this.blockType = blockType;
-                this.moduleNumber = moduleNumber;
-                this.placeNumber = placeNumber;
-                this.factoryNumber = factoryNumber;
-            }
-
         }
     }
 }

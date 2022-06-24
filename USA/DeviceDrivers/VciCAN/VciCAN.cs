@@ -317,7 +317,11 @@ namespace VciCAN
             lock (msgQueue)
             {
                 if (msgQueue.Count == 0)
-                    return null;
+                {
+                    Thread.Sleep(100);
+                    if (msgQueue.Count == 0)
+                        return null;
+                }
                 return msgQueue.Dequeue();
             }
         }

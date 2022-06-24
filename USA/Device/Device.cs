@@ -111,7 +111,8 @@ namespace UCA.Devices
         ClearLineDirection,
         SetLineData,
         ClearLineData,
-        ClearAll
+        ClearAll,
+        GetCurrentAndSave
     }
 
     public enum DeviceNames

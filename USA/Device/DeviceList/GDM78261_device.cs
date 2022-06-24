@@ -25,8 +25,11 @@ namespace UCA.Devices
                 case DeviceCommands.GetVoltage:
                     {
                         var voltage = GetVoltage();
-                        //var key = double.Parse(deviceData.Argument, NumberStyles.Float);
-                        //AddCoefficientData(deviceData.Channel, key, voltage);
+/*                        if (deviceData.Argument != "-")
+                        {
+                            //var key = double.Parse(deviceData.Argument, NumberStyles.Float);
+                            //AddCoefficientData(deviceData.Channel, key, voltage);
+                        }*/
                         return GetResult(deviceData, UnitType.Voltage, voltage);
                     }
                 case DeviceCommands.GetVoltageAndSave:
@@ -36,11 +39,21 @@ namespace UCA.Devices
                         AddValues(key, voltage);
                         return GetResult(deviceData, UnitType.Voltage, voltage);
                     }
+                case DeviceCommands.GetCurrentAndSave:
+                    {
+                        var current = GetCurrent();
+                        var key = deviceData.Argument;
+                        AddValues(key, current);
+                        return GetResult(deviceData, UnitType.Current, current);
+                    }
                 case DeviceCommands.GetCurrent:
                     {
                         var current = GetCurrent();
-                        var keyCurrent = double.Parse(deviceData.Argument, NumberStyles.Float);
-                        AddCoefficientData(deviceData.Channel, keyCurrent, current);
+/*                        if (deviceData.Argument != "-")
+                        {
+                            var keyCurrent = double.Parse(deviceData.Argument, NumberStyles.Float);
+                            AddCoefficientData(deviceData.Channel, keyCurrent, current);
+                        }*/
                         return GetResult(deviceData, UnitType.Current, current);
                     }
                 case DeviceCommands.SetMeasurementToCurrent:

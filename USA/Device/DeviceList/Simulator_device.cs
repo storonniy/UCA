@@ -43,11 +43,11 @@ namespace UPD.Device.DeviceList
                     }
                     if (isAllTheseRelaysClosed)
                     {
-                        return DeviceResult.ResultOk("Замыкание реле прошло успешно");
+                        return DeviceResult.ResultOk($"{deviceData.DeviceName} Замыкание реле прошло успешно");
                     }
                     else
                     {
-                        return DeviceResult.ResultError($"ОШИБКА: реле {relayName} не замкнуто");
+                        return DeviceResult.ResultError($"ОШИБКА: {deviceData.DeviceName} реле {relayName} не замкнуто");
                     }
                 case DeviceCommands.OpenRelays:
                     string[] breakableRelays = deviceData.Argument.Replace(" ", "").Split(',');
@@ -67,9 +67,9 @@ namespace UPD.Device.DeviceList
                     }
                     if (!anyOfTheseRelaysClosed)
                     {
-                        return DeviceResult.ResultOk("Размыкание реле прошло успешно");
+                        return DeviceResult.ResultOk($"{deviceData.DeviceName} Размыкание реле прошло успешно");
                     }
-                    return DeviceResult.ResultError($"ОШИБКА: реле {closedRelayName} замкнуто");
+                    return DeviceResult.ResultError($"ОШИБКА: {deviceData.DeviceName} реле {closedRelayName} замкнуто");
                 case DeviceCommands.OpenAllRelays:
                     string[] breakableRelays1 = new string[] { "all" };
                     Simulator.OpenRelays(breakableRelays1);
@@ -78,9 +78,9 @@ namespace UPD.Device.DeviceList
                     bool anyOfTheseRelaysClosed2 = actualClosedRelayNames2[0] == "none";
                     if (anyOfTheseRelaysClosed2)
                     {
-                        return DeviceResult.ResultOk("Размыкание реле прошло успешно");
+                        return DeviceResult.ResultOk($"{deviceData.DeviceName} Размыкание реле прошло успешно");
                     }
-                    return DeviceResult.ResultError("ОШИБКА: реле остались замкнутыми");
+                    return DeviceResult.ResultError($"ОШИБКА: {deviceData.DeviceName} реле остались замкнутыми");
                 case DeviceCommands.CheckClosedRelays:
                     string[] signalNames = deviceData.AdditionalArg.Replace(" ", "").Split(',');
                     // Проверим, всё ли разомкнулось:
@@ -96,9 +96,9 @@ namespace UPD.Device.DeviceList
                     }
                     if (isSignalExist)
                     {
-                        return DeviceResult.ResultOk($"Сигнал {signalNames[0]} присутствует");
+                        return DeviceResult.ResultOk($"{deviceData.DeviceName} Сигнал {signalNames[0]} присутствует");
                     }
-                    return DeviceResult.ResultError($"Сигнал {signalNames[0]} отсутствует");
+                    return DeviceResult.ResultError($"{deviceData.DeviceName} Сигнал {signalNames[0]} отсутствует");
                 case DeviceCommands.GetSignals:
                     string[] signalNames1 = deviceData.AdditionalArg.Replace(" ", "").Split(',');
                     // Проверим, всё ли разомкнулось:
@@ -114,11 +114,11 @@ namespace UPD.Device.DeviceList
                     }
                     if (isSignalExist1)
                     {
-                        return DeviceResult.ResultOk($"Сигнал {signalNames1[0]} присутствует");
+                        return DeviceResult.ResultOk($"{deviceData.DeviceName} Сигнал {signalNames1[0]} присутствует");
                     }
-                    return DeviceResult.ResultError($"Сигнал {signalNames1[0]} отсутствует");
+                    return DeviceResult.ResultError($"{deviceData.DeviceName} Сигнал {signalNames1[0]} отсутствует");
                 default:
-                    return DeviceResult.ResultError($"Неизвестная команда {deviceData.Command}");
+                    return DeviceResult.ResultError($"{deviceData.DeviceName} Неизвестная команда {deviceData.Command}");
             }
         }
     }

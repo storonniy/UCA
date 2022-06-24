@@ -17,7 +17,7 @@ namespace UCA.DeviceDrivers
         public AKIP_3407(SerialPort serialPort)
         {
             this.serialPort = serialPort;
-                //this.serialPort.Open();
+            this.serialPort.Open();
         }
 
         #region Auxiliary methods
@@ -59,7 +59,7 @@ namespace UCA.DeviceDrivers
         public double SetFrequency (string frequency)
         {
             var command = $"SOUR1:FREQ {frequency}";
-            // TODO: проверить формат возвращаемого значения от AKIP_3407 и верно его распарсить
+            DoCommand(command);
             var result = DoCommandAndGetResult("SOUR1:FREQ?");
             return double.Parse(result, CultureInfo.InvariantCulture);
         }

@@ -37,8 +37,8 @@ namespace UCA.Devices
 
         public override DeviceResult DoCommand(DeviceData deviceData)
         {
-            try
-            {
+            //try
+            //{
                 switch (deviceData.Command)
                 {
                     case DeviceCommands.CalculateCoefficient:
@@ -97,18 +97,18 @@ namespace UCA.Devices
                         {
                             var keys = GetKeys(deviceData.Argument);
                             double value = Multiply(GetValue(keys.Keys[0]), GetValue(keys.Keys[1]));
-                            var keyToSave = GetKeys(deviceData.Argument).Keys[0];
+                            var keyToSave = deviceData.AdditionalArg;
                             AddValues(keyToSave, value);
                             return GetResult("Получено значение", deviceData, keys.UnitType, value);
                         }
                     default:
                         return DeviceResult.ResultError($"Неизвестная команда {deviceData.Command}");
                 }
-            }
-            catch (KeyNotFoundException)
+            //}
+/*            catch (KeyNotFoundException)
             {
                 return DeviceResult.ResultError($"ОШИБКА: {deviceData.Command}: Ключ не найден");
-            }
+            }*/
         }
 
         public static double Divide(double arg1, double arg2)
@@ -142,7 +142,13 @@ namespace UCA.Devices
             var value = double.Parse(deviceData.Argument, NumberStyles.Float);
             var lowerLimit = deviceData.LowerLimit;
             var upperLimit = deviceData.UpperLimit;
-            try
+            var actualCoefficient = CalculateCoefficient_UCAT(deviceData.Channel, value);
+            var result = $"Коэффициент равен {string.Format("{0:0.000}", actualCoefficient)} В/мкА \tНижний предел  {lowerLimit} В/мкА \tВерхний предел {upperLimit} В/мкА";
+            if (actualCoefficient >= lowerLimit && actualCoefficient <= upperLimit)
+                return DeviceResult.ResultOk(result);
+            else
+                return DeviceResult.ResultError($"Ошибка: {result}");
+/*            try
             {
                 var actualCoefficient = CalculateCoefficient_UCAT(deviceData.Channel, value);
                 var result = $"Коэффициент равен {string.Format("{0:0.000}", actualCoefficient)} В/мкА \tНижний предел  {lowerLimit} В/мкА \tВерхний предел {upperLimit} В/мкА";
@@ -156,7 +162,7 @@ namespace UCA.Devices
                 UnitType unitType = (deviceData.Channel > 2) ? UnitType.Current : UnitType.Voltage;
                 var data = $"lowerLimit {deviceData.LowerLimit}; upperLimit {deviceData.UpperLimit}";
                 return DeviceResult.ResultError($"{data} \n Для входного воздействия {GetValueUnitPair(value, unitType)} и канала {deviceData.Channel} не измерялись входные и выходные воздействия");
-            }
+            }*/
         }
 
         private double CalculateCoefficient_UCAT(int channel, double value)

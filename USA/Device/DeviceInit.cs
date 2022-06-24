@@ -39,6 +39,7 @@ namespace UCA.Devices
                     case DeviceNames.GDM_78261:
                         newDevice = new GDM78261_device(device.SerialPort);
                         break;
+                    case DeviceNames.Keithley2401_2:
                     case DeviceNames.Keithley2401_1:
                         newDevice = new Keithley2401_device(device.SerialPort);
                         break;
@@ -86,10 +87,10 @@ namespace UCA.Devices
                         newDevice = new AKIP3407_device(device.SerialPort);
                         break;
                     case DeviceNames.MK:
-                        //newDevice = new MK_device();
+                        newDevice = new MK_device();
                         break;
                     case DeviceNames.ASBL:
-                        //newDevice = new ASBL_device();
+                        newDevice = new ASBL_device();
                         break;
                 }
                 Devices.Add(device.Name, newDevice);

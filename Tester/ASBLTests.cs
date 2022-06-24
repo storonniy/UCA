@@ -70,8 +70,12 @@ namespace Tester
         [TestMethod]
         public void TestASBL()
         {
+            uint m = (uint)BitConverter.ToInt32(new byte[] { 250, 0, 250, 0 }, 0);
             var asbl = new ASBL();
-            asbl.SetLineDirection(97);
+            uint meow = (uint)0x01;
+            //asbl.WriteData(Line.ADR_DIR_REG1, meow);
+            uint read = asbl.ReadData(Line.ADR_DIR_REG1);
+            uint read1 = asbl.ReadData(Line.ADR_DIR_REG1);
         }
 
         [TestMethod]

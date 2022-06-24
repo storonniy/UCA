@@ -56,7 +56,6 @@ namespace UPD.DeviceDrivers
 
         private ICanMessage GetAnswer()
         {
-
             var answer = vciDevice.GetData();
             if (answer == null)
                 throw new Exception("Устройство не отвечает");
@@ -107,13 +106,18 @@ namespace UPD.DeviceDrivers
             uint ID = 0x00;
             byte[] canMessage = { 0x02, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
             vciDevice.TransmitData(canMessage, ID);
-            var answer = GetAnswer();
-            var status = answer[2];
-            if (answer[0] == 0xFD)
+            Thread.Sleep(30);
+            byte finalStatus = 0x00;
+            for (int i = 0; i < blockDataList.Count; i++)
             {
-                return status;
+                var answer = GetAnswer();
+                finalStatus = answer[2];
+                if (answer[0] != 0xFD)
+                {
+                    throw new Exception($"МК вернул ошибочный ответ: {String.Join(" ", answer)}");
+                }
             }
-            throw new Exception($"МК вернул ошибочный ответ: {String.Join(" ", answer)}");
+            return finalStatus;
         }
 
         #endregion
@@ -172,8 +176,9 @@ namespace UPD.DeviceDrivers
         /// </summary>
         /// <param name="relayNumber"> Номер реле (от 0 до 79) </param>
         /// <param name="relayState"> Состояние реле. True - замкнуть, false - разомкнуть </param>
-        private byte ChangeRelayState(int blockNumber, int relayNumber, bool relayState)
+        private bool ChangeRelayState(int blockNumber, int relayNumber, bool relayState)
         {
+            byte requestedRelayStatus = (byte)(relayState ? 0x01 : 0x00);
             uint id = blockDataList[blockNumber].Id;
             if (relayNumber < 0 || relayNumber > 79)
             {
@@ -182,6 +187,7 @@ namespace UPD.DeviceDrivers
             byte stateByte = (byte)(relayState ? 0x01 : 0x00);
             byte[] canMessage = { 0x05, (byte)relayNumber, stateByte, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
             vciDevice.TransmitData(canMessage, id);
+            Thread.Sleep(100);
             var answer = GetAnswer();
             var returnedRelayNumber = answer[1];
             var status = answer[2];
@@ -190,37 +196,44 @@ namespace UPD.DeviceDrivers
                 if (returnedRelayNumber != (byte)relayNumber)
                 {
                     EmergencyBreak();
-                    throw new Exception($"МК не замкнул нужные реле: {String.Join(" ", answer)}");
+                    throw new Exception($"МК не изменил состояние нужных реле: {String.Join(" ", answer)}");
                 }
-                return status;
+                byte realRelayStatus = RequestSingleRelayStatus(blockNumber, relayNumber);
+                return realRelayStatus == requestedRelayStatus;
             }          
             throw new Exception($"МК вернул ошибочный ответ: {String.Join(" ", answer)}");
         }
 
-        private byte CloseRelay(int blockNumber, int relayNumber)
-        {
-            return ChangeRelayState(blockNumber, relayNumber, false);
-        }
-
-        private byte OpenRelay(int blockNumber, int relayNumber)
+        private bool CloseRelay(int blockNumber, int relayNumber)
         {
             return ChangeRelayState(blockNumber, relayNumber, true);
         }
 
-        public void CloseRelays(int blockNumber, int[] relayNumbers)
+        private bool OpenRelay(int blockNumber, int relayNumber)
         {
-            foreach (var relayNumber in relayNumbers)
-            {
-                CloseRelay(blockNumber, relayNumber);
-            }
+            return ChangeRelayState(blockNumber, relayNumber, false);
         }
 
-        public void OpenRelays(int blockNumber, int[] relayNumbers)
+        public bool CloseRelays(int blockNumber, int[] relayNumbers)
         {
+            var operationSucceed = true;
             foreach (var relayNumber in relayNumbers)
             {
-                OpenRelay(blockNumber, relayNumber);
+                var status = CloseRelay(blockNumber, relayNumber);
+                operationSucceed = operationSucceed & status;
             }
+            return operationSucceed;
+        }
+
+        public bool OpenRelays(int blockNumber, int[] relayNumbers)
+        {
+            var operationSucceed = true;
+            foreach (var relayNumber in relayNumbers)
+            {
+                var status = OpenRelay(blockNumber, relayNumber);
+                operationSucceed = operationSucceed & status;
+            }
+            return operationSucceed;
         }
 
         #endregion
@@ -237,6 +250,7 @@ namespace UPD.DeviceDrivers
             uint id = blockDataList[blockNumber].Id;
             byte[] canMessage = { 0x06, (byte)relayNumber, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
             vciDevice.TransmitData(canMessage, id);
+            Thread.Sleep(100);
             var answer = GetAnswer();
             var returnedRelayNumber = answer[1];
             var status = answer[2];
