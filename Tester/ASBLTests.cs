@@ -11,15 +11,6 @@ namespace Tester
     [TestClass]
     public class ASBLTests
     {
-        [TestMethod]
-        public void InitAKIP()
-        {
-            var serialPort = new SerialPort("COM5", 9600);
-            var akip = new AKIP_3407(serialPort);
-            Assert.AreEqual(3.24, akip.SetVoltage(3.24));
-        }
-
-
         /// <summary>
         /// Показывает, что массив - это ссылочный тип
         /// </summary>
@@ -68,14 +59,114 @@ namespace Tester
         }
 
         [TestMethod]
-        public void TestASBL()
+        public void TestWriteRead()
         {
-            uint m = (uint)BitConverter.ToInt32(new byte[] { 250, 0, 250, 0 }, 0);
-            var asbl = new ASBL();
-            uint meow = (uint)0x01;
-            //asbl.WriteData(Line.ADR_DIR_REG1, meow);
-            uint read = asbl.ReadData(Line.ADR_DIR_REG1);
-            uint read1 = asbl.ReadData(Line.ADR_DIR_REG1);
+            TestASBL(0, 10);
+            TestASBL(1048565, 1048575);
+        }
+
+        ASBL asbl = new ASBL();
+
+        public void TestASBL(uint start, uint end)
+        {
+            for (uint writeData = start; writeData < end + 1; writeData++)
+            {
+                asbl.WriteData(Line.ADR_DIR_REG1, writeData);
+                uint readData = asbl.ReadData(Line.ADR_DIR_REG1);
+                Assert.AreEqual(writeData, readData);
+                asbl.WriteData(Line.ADR_DIR_REG2, writeData);
+                readData = asbl.ReadData(Line.ADR_DIR_REG2);
+                Assert.AreEqual(writeData, readData);
+                asbl.WriteData(Line.ADR_DIR_REG3, writeData);
+                readData = asbl.ReadData(Line.ADR_DIR_REG3);
+                Assert.AreEqual(writeData, readData);
+                asbl.WriteData(Line.ADR_DIR_REG4, writeData);
+                readData = asbl.ReadData(Line.ADR_DIR_REG4);
+                Assert.AreEqual(writeData, readData);
+                asbl.WriteData(Line.ADR_DIR_REG5, writeData);
+                readData = asbl.ReadData(Line.ADR_DIR_REG5);
+                Assert.AreEqual(writeData, readData);
+                asbl.WriteData(Line.ADR_DIR_REG6, writeData);
+                readData = asbl.ReadData(Line.ADR_DIR_REG6);
+                Assert.AreEqual(writeData, readData);
+            }
+        }
+
+        [TestMethod]
+        public void TestWriteReadDataReg()
+        {
+            TestDataRegisters(0, 10);
+            //TestASBL(1048565, 1048575);
+        }
+
+        public void TestDataRegisters(uint start, uint end)
+        {
+            for (uint writeData = start; writeData < end + 1; writeData++)
+            {
+                asbl.WriteData(Line.ADR_DATA_REG1, writeData);
+                uint readData = asbl.ReadData(Line.ADR_DATA_REG1);
+                Assert.AreEqual(writeData, readData);
+                asbl.WriteData(Line.ADR_DATA_REG2, writeData);
+                readData = asbl.ReadData(Line.ADR_DATA_REG2);
+                Assert.AreEqual(writeData, readData);
+                asbl.WriteData(Line.ADR_DATA_REG3, writeData);
+                readData = asbl.ReadData(Line.ADR_DATA_REG3);
+                Assert.AreEqual(writeData, readData);
+                asbl.WriteData(Line.ADR_DATA_REG4, writeData);
+                readData = asbl.ReadData(Line.ADR_DATA_REG4);
+                Assert.AreEqual(writeData, readData);
+                asbl.WriteData(Line.ADR_DATA_REG5, writeData);
+                readData = asbl.ReadData(Line.ADR_DATA_REG5);
+                Assert.AreEqual(writeData, readData);
+                asbl.WriteData(Line.ADR_DATA_REG6, writeData);
+                readData = asbl.ReadData(Line.ADR_DATA_REG6);
+                Assert.AreEqual(writeData, readData);
+            }
+        }
+
+        [TestMethod]
+        public void TestClear()
+        {
+            asbl.ClearAll();
+        }
+
+        [TestMethod]
+        public void TestLines()
+        {
+            asbl.ClearAll();
+            asbl.SetLineData(81);
+        }
+
+        [TestMethod]
+        public void TestLines_1()
+        {
+            asbl.WriteData(Line.ADR_DIR_REG1, 4);
+            asbl.SetLineData(3);
+        }
+
+        [TestMethod]
+        public void TestLines_2()
+        {
+            asbl.SetLineDirection(3);
+            asbl.SetLineData(3);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(Exception))]
+        public void TestLinesWith0Direction_1()
+        {
+            asbl.ClearLineDirection(3);
+            asbl.SetLineData(3);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(Exception))]
+        public void TestLinesWith0Direction()
+        {
+            asbl.WriteData(Line.ADR_DIR_REG1, 0);
+            asbl.SetLineData(3);
+            asbl.WriteData(Line.ADR_DIR_REG1, 0x1F5);
+            asbl.SetLineData(3);
         }
 
         [TestMethod]
