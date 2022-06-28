@@ -154,27 +154,6 @@ namespace UCA.Steps
                 DeviceList = deviceList
             };
             return info;
-            /*
-            catch (System.IO.IOException ex)
-            {
-                var deviceName = "";
-                foreach (var device in deviceList)
-                {
-                    var message = ex.Message;
-                    var firstIndex = message.IndexOf('\'');
-                    message = message.Substring(firstIndex + 1);
-                    var secondIndex = message.IndexOf('\'');
-                    var actualPortName = message.Substring(0, secondIndex);
-                    var portName = device.SerialPort.PortName;
-                    if (actualPortName == portName)
-                    {
-                        deviceName = device.Name.ToString();
-                        break;
-                    }
-                }
-                throw new System.IO.IOException($"{ex.Message}: {deviceName} не подключён.");
-            }
-            */
         }
 
         private static Dictionary<string, List<Step>> GetStepsDictionary(DataSet dataSet)

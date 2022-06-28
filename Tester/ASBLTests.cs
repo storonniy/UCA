@@ -5,12 +5,40 @@ using FTD2XX_NET;
 using UPD.DeviceDrivers;
 using UCA.DeviceDrivers;
 using System.IO.Ports;
+using UPD.Device.DeviceList;
 
 namespace Tester
 {
     [TestClass]
     public class ASBLTests
     {
+
+        public ASBLTests()
+        {
+
+        }
+
+        public void TestParseLineNumbers(uint[] expected, string argument)
+        {
+            var actual = ASBL_device.GetLineNumbers(argument);
+            CollectionAssert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void ParseLineNumbersTest_OneLineWithoutSplitter()
+        {
+            TestParseLineNumbers(new uint[] { 1 }, "1");
+            TestParseLineNumbers(new uint[] { 1 }, "1 ");
+            TestParseLineNumbers(new uint[] { 1 }, "1;");
+            TestParseLineNumbers(new uint[] { 1 }, "1; ");
+            TestParseLineNumbers(new uint[] { 1, 2, 3, 4 }, "1; 2; 3; 4");
+            TestParseLineNumbers(new uint[] { 1, 2, 3, 4 }, "1; 2; 3; 4 ");
+            TestParseLineNumbers(new uint[] { 1, 2, 3, 4 }, "1; 2; 3; 4;");
+            TestParseLineNumbers(new uint[] { 1, 2, 3, 4 }, "1;2;3;4");
+            TestParseLineNumbers(new uint[] { 1, 2, 3, 4 }, "1;2;3;4;");
+        }
+
+
         /// <summary>
         /// Показывает, что массив - это ссылочный тип
         /// </summary>
@@ -65,10 +93,9 @@ namespace Tester
             TestASBL(1048565, 1048575);
         }
 
-        ASBL asbl = new ASBL();
-
         public void TestASBL(uint start, uint end)
         {
+            ASBL asbl = new ASBL();
             for (uint writeData = start; writeData < end + 1; writeData++)
             {
                 asbl.WriteData(Line.ADR_DIR_REG1, writeData);
@@ -92,15 +119,9 @@ namespace Tester
             }
         }
 
-        [TestMethod]
-        public void TestWriteReadDataReg()
-        {
-            TestDataRegisters(0, 10);
-            //TestASBL(1048565, 1048575);
-        }
-
         public void TestDataRegisters(uint start, uint end)
         {
+            ASBL asbl = new ASBL();
             for (uint writeData = start; writeData < end + 1; writeData++)
             {
                 asbl.WriteData(Line.ADR_DATA_REG1, writeData);
@@ -127,19 +148,45 @@ namespace Tester
         [TestMethod]
         public void TestClear()
         {
+            ASBL asbl = new ASBL();
             asbl.ClearAll();
         }
 
         [TestMethod]
         public void TestLines()
         {
+            ASBL asbl = new ASBL();
             asbl.ClearAll();
             asbl.SetLineData(81);
         }
 
         [TestMethod]
+        public void TestAllLines()
+        {
+            ASBL asbl = new ASBL();
+            for (uint i = 1; i < 121; i++)
+            {
+                asbl.SetLineDirection(i);
+                asbl.SetLineData(i);
+            }
+        }
+
+        [TestMethod]
+        public void TestWithDiffDirections()
+        {
+            ASBL asbl = new ASBL();
+            asbl.WriteData(Line.ADR_DIR_REG1, 0xFFFF5);
+            Assert.AreEqual((uint)0xA, asbl.ReadData(Line.ADR_DATA_REG1));
+            asbl.ClearAll();
+            asbl.ClearLineDirection(2);
+            asbl.ClearLineDirection(4);
+            Assert.AreEqual((uint)0xA, asbl.ReadData(Line.ADR_DATA_REG1));
+        }
+
+        [TestMethod]
         public void TestLines_1()
         {
+            ASBL asbl = new ASBL();
             asbl.WriteData(Line.ADR_DIR_REG1, 4);
             asbl.SetLineData(3);
         }
@@ -147,22 +194,25 @@ namespace Tester
         [TestMethod]
         public void TestLines_2()
         {
+            ASBL asbl = new ASBL();
             asbl.SetLineDirection(3);
             asbl.SetLineData(3);
         }
 
         [TestMethod]
-        [ExpectedException(typeof(Exception))]
+        [ExpectedException(typeof(LineIsSetToReceiveException))]
         public void TestLinesWith0Direction_1()
         {
+            ASBL asbl = new ASBL();
             asbl.ClearLineDirection(3);
             asbl.SetLineData(3);
         }
 
         [TestMethod]
-        [ExpectedException(typeof(Exception))]
+        [ExpectedException(typeof(LineIsSetToReceiveException))]
         public void TestLinesWith0Direction()
         {
+            ASBL asbl = new ASBL();
             asbl.WriteData(Line.ADR_DIR_REG1, 0);
             asbl.SetLineData(3);
             asbl.WriteData(Line.ADR_DIR_REG1, 0x1F5);
@@ -188,7 +238,7 @@ namespace Tester
                 var line = new Line(lineNumber, new ASBL(0));
                 Assert.AreEqual(line.DirectionRegister, expectedDirectionRegister);
                 Assert.AreEqual(line.DataRegister, expectedDataRegister);
-                Assert.AreEqual(linePosition, line.Position);
+                Assert.AreEqual(linePosition, line.bitNumber);
                 linePosition++;
             }
         }

@@ -55,6 +55,7 @@
   <ItemGroup>
     <Compile Include="ASBLTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PSHTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

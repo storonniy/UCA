@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.Common;
 using System.IO;
 using UPD.Device.DeviceList;
+using UPD.DeviceDrivers;
 
 namespace UCA.Devices
 {
@@ -114,16 +115,15 @@ namespace UCA.Devices
             {
                 return DeviceResult.ResultNotConnected($"NOT_CONNECTED: Порт {deviceData.DeviceName} закрыт");
             }
-            /*            catch (KeyNotFoundException ex)
-                        {
-                            return DeviceResult.ResultError(ex.Message);
-                        }*/
-            /*
+            catch (KeyNotFoundException ex)
+            {
+                return DeviceResult.ResultError($"Ключ не найден: {deviceData.DeviceName} {deviceData.Command} {deviceData.Argument}");
+            }
             catch (FormatException)
             {
-                return DeviceResult.ResultError($"BAD_ARGUMENT: Аргумент команды имеет неверный формат: {deviceData.ExpectedValue}");
+                return DeviceResult.ResultError($"BAD_ARGUMENT: Проверьте аргумент команды {deviceData.DeviceName} {deviceData.Command} {deviceData.Argument}");
             }
-            */
+            
         }
     }
 }

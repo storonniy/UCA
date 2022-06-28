@@ -17,31 +17,61 @@ namespace UPD.Device.DeviceList
             asbl = new ASBL();
         }
 
+        public static uint[] GetLineNumbers(string argument)
+        {
+            var lineNumbers = argument.Trim().Split(';');
+            var uintLineNumbers = new List<uint>();
+            for (int i = 0; i < lineNumbers.Length; i++)
+            {
+                if (lineNumbers[i] != "")
+                    uintLineNumbers.Add(uint.Parse(lineNumbers[i]));
+            }
+            return uintLineNumbers.ToArray();
+        }
+
         public override DeviceResult DoCommand(DeviceData deviceData)
         {
-            
-            switch (deviceData.Command)
+            try
             {
-                case DeviceCommands.SetLineDirection:
-                    var lineNumber = uint.Parse(deviceData.Argument);
-                    asbl.SetLineDirection(lineNumber);
-                    return ResultOk("");
-                case DeviceCommands.ClearLineDirection:
-                    lineNumber = uint.Parse(deviceData.Argument); asbl.ClearLineDirection(lineNumber);
-                    return ResultOk("");
-                case DeviceCommands.SetLineData:
-                    lineNumber = uint.Parse(deviceData.Argument);
-                    asbl.SetLineData(lineNumber);
-                    return ResultOk("");
-                case DeviceCommands.ClearLineData:
-                    lineNumber = uint.Parse(deviceData.Argument);
-                    asbl.ClearLineData(lineNumber);
-                    return ResultOk("");
-                case DeviceCommands.ClearAll:
-                    asbl.ClearAll();
-                    return ResultOk("");
-                default:
-                    return ResultError($"Неизвестная команда {deviceData.Command}");
+                switch (deviceData.Command)
+                {
+                    case DeviceCommands.SetLineDirection:
+                        var lineNumbers = GetLineNumbers(deviceData.Argument);
+                        asbl.SetLineDirection(lineNumbers);
+                        return ResultOk($"Линии {string.Join(", ", lineNumbers)} установлены на вход");
+                    case DeviceCommands.ClearLineDirection:
+                        lineNumbers = GetLineNumbers(deviceData.Argument); asbl.ClearLineDirection(lineNumbers);
+                        return ResultOk($"Линии {string.Join(", ", lineNumbers)} установлены на выход");
+                    case DeviceCommands.SetLineData:
+                        lineNumbers = GetLineNumbers(deviceData.Argument);
+                        asbl.SetLineData(lineNumbers);
+                        return ResultOk($"Линии {string.Join(", ", lineNumbers)} установлены в 1");
+                    case DeviceCommands.ClearLineData:
+                        lineNumbers = GetLineNumbers(deviceData.Argument);
+                        asbl.ClearLineData(lineNumbers);
+                        return ResultOk($"Линии {string.Join(", ", lineNumbers)} установлены в 0");
+                    case DeviceCommands.ClearAll:
+                        asbl.ClearAll();
+                        return ResultOk("");
+                    default:
+                        return ResultError($"Неизвестная команда {deviceData.Command}");
+                }
+            }
+            catch (FailedToSetLineException ex)
+            {
+                return DeviceResult.ResultError($"{deviceData.DeviceName}: {ex.Message}");
+            }
+            catch (LineIsSetToReceiveException ex)
+            {
+                return DeviceResult.ResultError($"{deviceData.DeviceName}: {ex.Message}");
+            }
+            catch (ASBLException ex)
+            {
+                return DeviceResult.ResultError($"{deviceData.DeviceName}: {ex.Message}");
+            }
+            catch (ArgumentOutOfRangeException ex)
+            {
+                return DeviceResult.ResultError($"{deviceData.DeviceName} : {deviceData.Command} : {ex.Message}");
             }
         }
     }

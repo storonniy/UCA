@@ -18,10 +18,19 @@ namespace UCA.DeviceDrivers
                 this.serialPort.Open();
         }
 
+        ~PSH73610()
+        {
+            if (serialPort.IsOpen)
+                serialPort.Close();
+            if (serialPort != null)
+                serialPort.Dispose();
+        }
+
         private double DoCommandAndGetResult(string command)
         {
             DoCommand(command);
-            return ParseInputData(serialPort.ReadLine());
+            var data = serialPort.ReadLine();
+            return ParseInputData(data);
         }
 
         private void DoCommand(string command)
@@ -122,11 +131,6 @@ namespace UCA.DeviceDrivers
         private double ParseInputData(string data)
         {
             return (double)Single.Parse(data.Replace(".", ","));
-        }
-
-        ~PSH73610()
-        {
-            //serialPort.Close();
         }
     }
 
