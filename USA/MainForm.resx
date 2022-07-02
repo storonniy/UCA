@@ -730,7 +730,7 @@
     <value>NoControl</value>
   </data>
   <data name="buttonStep.Location" type="System.Drawing.Point, System.Drawing">
-    <value>30, 262</value>
+    <value>28, 299</value>
   </data>
   <data name="buttonStep.Size" type="System.Drawing.Size, System.Drawing">
     <value>93, 23</value>
@@ -740,9 +740,6 @@
   </data>
   <data name="buttonStep.Text" xml:space="preserve">
     <value>Шаг</value>
-  </data>
-  <data name="buttonStep.Visible" type="System.Boolean, mscorlib">
-    <value>False</value>
   </data>
   <data name="&gt;&gt;buttonStep.Name" xml:space="preserve">
     <value>buttonStep</value>

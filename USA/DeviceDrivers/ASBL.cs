@@ -357,7 +357,7 @@ namespace UPD.DeviceDrivers
             ChangeBit(DirectionRegister, bitState);
             uint writtenData = asbl.ReadData(DirectionRegister);
             var state = bitState ? 1 : 0;
-            if ((writtenData & (1 << (int)bitNumber)) != state << (int)bitNumber)
+            if ((writtenData & (1 << (int)bitNumber)) >> (int)bitNumber != state)
                 throw new FailedToSetLineException($"Не удалось выставить линию {number} в {state}");
         }
 
@@ -371,15 +371,16 @@ namespace UPD.DeviceDrivers
             ChangeDirection(false);
         }
 
-        public void ChangeData(bool bitState)
+        public void ChangeData(bool state)
         {
-            var state = bitState ? 1 : 0;
+            var expectedBitState = state ? 1 : 0;
             if ((asbl.ReadData(DirectionRegister) & (1 << (int)bitNumber)) == 0)
-                throw new LineIsSetToReceiveException($"Попытка выставить в {state} линию {number}, которая настроена на приём");
-            ChangeBit(DataRegister, bitState);
+                throw new LineIsSetToReceiveException($"Попытка выставить в {expectedBitState} линию {number}, которая настроена на приём");
+            ChangeBit(DataRegister, state);
             var writtenData = asbl.ReadData(DataRegister);
-            if ((writtenData & (1 << (int)bitNumber)) != 1 << (int)bitNumber)
-                throw new FailedToSetLineException($"Не удалось выставить линию {number} в {state}");
+            var actualBitState = (writtenData & (1 << (int)bitNumber)) >> (int)bitNumber;
+            if (actualBitState != expectedBitState)
+                throw new FailedToSetLineException($"Не удалось выставить линию {number} в {expectedBitState}");
         }
 
         public void SetData()

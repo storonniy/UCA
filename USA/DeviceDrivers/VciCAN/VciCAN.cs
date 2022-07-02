@@ -284,9 +284,6 @@ namespace VciCAN
 
         public ICanMessage lastCanMsg { get; private set; }
 
-
-        readonly object Locker = new object();
-
         private Queue<ICanMessage> msgQueue = new Queue<ICanMessage>();
 
         public void ReceiveThreadFunc()

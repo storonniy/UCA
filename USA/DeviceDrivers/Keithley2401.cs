@@ -20,7 +20,7 @@ namespace UCA.DeviceDrivers
                 serialPort.Open();
         }
 
-        private static readonly int delay = 1000;
+        private static readonly int delay = 500;
 
         public static double ParseValue(string value)
         {
@@ -83,12 +83,51 @@ namespace UCA.DeviceDrivers
         }
 
         /// <summary>
+        /// Select source function as voltage.
+        /// </summary>
+        /// <returns> Status </returns>
+        public bool SetVoltageSourceMode()
+        {
+            SendCommand($":SOUR:FUNC:MODE VOLT");
+            SendCommand($":SOUR:FUNC:MODE?");
+            Thread.Sleep(1000);
+            return serialPort.ReadExisting().Contains("VOLT");
+        }
+
+        /// <summary>
+        /// Select source function as current
+        /// </summary>
+        /// <returns> Status </returns>
+        public bool SetCurrentSourceMode()
+        {
+            SendCommand($":SOUR:FUNC:MODE CURR");
+            SendCommand($":SOUR:FUNC:MODE?");
+            Thread.Sleep(1000);
+            return serialPort.ReadExisting().Contains("CURR");
+        }
+
+
+        /// <summary>
         /// Query voltage level
         /// </summary>
         /// <returns></returns>
         public double GetVoltage()
         {
             SendCommand(":SOUR:VOLT:LEV:AMPL?");
+            return ParseValue(serialPort.ReadExisting());
+        }
+
+        /// <summary>
+        /// Set current limit
+        /// </summary>
+        /// <returns></returns>
+        public double SetCurrentLimit(double limit)
+        {
+            var str = limit.ToString().Replace(",", ".");
+            //:SENS:CURR:RANGE
+            SendCommand($":SENS:CURR:PROT {str}");
+            SendCommand($":SENS:CURR:RANGE {str}");
+            SendCommand($":SENS:CURR:RANGE?");
             return ParseValue(serialPort.ReadExisting());
         }
 

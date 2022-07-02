@@ -42,20 +42,20 @@ namespace UCA.Devices
                         break;
                     case DeviceNames.Keithley2401_2:
                     case DeviceNames.Keithley2401_1:
-                        //newDevice = new Keithley2401_device(device.SerialPort);
+                        newDevice = new Keithley2401_device(device.SerialPort);
                         break;
                     case DeviceNames.Commutator:
                         newDevice = new Commutator_device(device.SerialPort);
                         break;
                     case DeviceNames.Simulator:
-                        //newDevice = new Simulator_device(device.SerialPort);
+                        newDevice = new Simulator_device(device.SerialPort);
                         break;
                     case DeviceNames.None:
                         newDevice = new None();
                         break;
                     // УСА_Т
                     case DeviceNames.PSH_73610:
-                        //newDevice = new PSH73610_device(device.SerialPort);
+                        newDevice = new PSH73610_device(device.SerialPort);
                         break;
                     case DeviceNames.PSH_73630:
                         newDevice = new PSH73610_device(device.SerialPort);
@@ -82,13 +82,13 @@ namespace UCA.Devices
                         newDevice = new PCI1762_device(device.Description);
                         break;
                     case DeviceNames.PST_3201:
-                        //newDevice = new PST3201_device(device.SerialPort);
+                        newDevice = new PST3201_device(device.SerialPort);
                         break;
                     case DeviceNames.AKIP_3407:
-                        //newDevice = new AKIP3407_device(device.SerialPort);
+                        newDevice = new AKIP3407_device(device.SerialPort);
                         break;
                     case DeviceNames.MK:
-                        //newDevice = new MK_device();
+                        newDevice = new MK_device();
                         break;
                     case DeviceNames.ASBL:
                         newDevice = new ASBL_device();
@@ -123,7 +123,7 @@ namespace UCA.Devices
             {
                 return DeviceResult.ResultError($"BAD_ARGUMENT: Проверьте аргумент команды {deviceData.DeviceName} {deviceData.Command} {deviceData.Argument}");
             }
-            
+
         }
     }
 }

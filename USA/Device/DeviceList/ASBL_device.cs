@@ -40,16 +40,24 @@ namespace UPD.Device.DeviceList
                         asbl.SetLineDirection(lineNumbers);
                         return ResultOk($"Линии {string.Join(", ", lineNumbers)} установлены на вход");
                     case DeviceCommands.ClearLineDirection:
-                        lineNumbers = GetLineNumbers(deviceData.Argument); asbl.ClearLineDirection(lineNumbers);
+                        lineNumbers = GetLineNumbers(deviceData.Argument); 
+                        asbl.ClearLineDirection(lineNumbers);
                         return ResultOk($"Линии {string.Join(", ", lineNumbers)} установлены на выход");
                     case DeviceCommands.SetLineData:
                         lineNumbers = GetLineNumbers(deviceData.Argument);
                         asbl.SetLineData(lineNumbers);
                         return ResultOk($"Линии {string.Join(", ", lineNumbers)} установлены в 1");
                     case DeviceCommands.ClearLineData:
-                        lineNumbers = GetLineNumbers(deviceData.Argument);
-                        asbl.ClearLineData(lineNumbers);
-                        return ResultOk($"Линии {string.Join(", ", lineNumbers)} установлены в 0");
+                        try
+                        {
+                            lineNumbers = GetLineNumbers(deviceData.Argument);
+                            asbl.ClearLineData(lineNumbers);
+                            return ResultOk($"Линии {string.Join(", ", lineNumbers)} установлены в 0");
+                        }
+                        catch (FailedToSetLineException ex)
+                        {
+                            return ResultError(ex.Message);
+                        }
                     case DeviceCommands.ClearAll:
                         asbl.ClearAll();
                         return ResultOk("");

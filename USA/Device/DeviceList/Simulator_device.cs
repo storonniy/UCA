@@ -71,16 +71,8 @@ namespace UPD.Device.DeviceList
                     }
                     return DeviceResult.ResultError($"ОШИБКА: {deviceData.DeviceName} реле {closedRelayName} замкнуто");
                 case DeviceCommands.OpenAllRelays:
-                    string[] breakableRelays1 = new string[] { "all" };
-                    Simulator.OpenRelays(breakableRelays1);
-                    // Проверим, всё ли разомкнулось:
-                    var actualClosedRelayNames2 = Simulator.GetClosedRelayNames();
-                    bool anyOfTheseRelaysClosed2 = actualClosedRelayNames2[0] == "none";
-                    if (anyOfTheseRelaysClosed2)
-                    {
-                        return DeviceResult.ResultOk($"{deviceData.DeviceName} Размыкание реле прошло успешно");
-                    }
-                    return DeviceResult.ResultError($"ОШИБКА: {deviceData.DeviceName} реле остались замкнутыми");
+                    Simulator.OpenAllRelays();
+                    return DeviceResult.ResultOk("Разомкнуты все реле");
                 case DeviceCommands.CheckClosedRelays:
                     string[] signalNames = deviceData.AdditionalArg.Replace(" ", "").Split(',');
                     // Проверим, всё ли разомкнулось:

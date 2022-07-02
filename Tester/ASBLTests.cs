@@ -18,6 +18,15 @@ namespace Tester
 
         }
 
+        [TestMethod]
+        public void Meow ()
+        {
+            uint writtenData = 12;
+            uint bitNumber = 3;
+            var actualBitState = (writtenData & (1 << (int)bitNumber)) >> (int)bitNumber;
+            Assert.AreEqual(1, actualBitState);
+        }
+
         public void TestParseLineNumbers(uint[] expected, string argument)
         {
             var actual = ASBL_device.GetLineNumbers(argument);

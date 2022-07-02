@@ -30,19 +30,19 @@ namespace UPD.Device.DeviceList
                         var blockNumber = int.Parse(deviceData.AdditionalArg) - 1;
                         var status = mk.CloseRelays(blockNumber, relayNumbers);
                         if (status)
-                            return ResultOk($"{deviceData.DeviceName} замкнуты реле {String.Join(", ", relayNumbers)}");
+                            return ResultOk($"{deviceData.DeviceName}{deviceData.AdditionalArg} замкнуты реле {String.Join(", ", relayNumbers)}");
                         else
-                            return ResultError($"ОШИБКА: {deviceData.DeviceName} не замкнуты реле {String.Join(", ", relayNumbers)}");
+                            return ResultError($"ОШИБКА: {deviceData.DeviceName}{deviceData.AdditionalArg} не замкнуты реле {String.Join(", ", relayNumbers)}");
                     }
                 case DeviceCommands.OpenRelays:
                     {
                         var relayNumbers = ParseRelayNumbers(deviceData.Argument);
                         var blockNumber = int.Parse(deviceData.AdditionalArg) - 1;
-                        var status = mk.CloseRelays(blockNumber, relayNumbers);
+                        var status = mk.OpenRelays(blockNumber, relayNumbers);
                         if (status)
-                            return ResultOk($"{deviceData.DeviceName} разомкнуты реле {String.Join(", ", relayNumbers)}");
+                            return ResultOk($"{deviceData.DeviceName}{deviceData.AdditionalArg} разомкнуты реле {String.Join(", ", relayNumbers)}");
                         else
-                            return ResultError($"ОШИБКА: {deviceData.DeviceName} не разомкнуты реле {String.Join(", ", relayNumbers)}");
+                            return ResultError($"ОШИБКА: {deviceData.DeviceName}{deviceData.AdditionalArg} не разомкнуты реле {String.Join(", ", relayNumbers)}");
                     }
                 default:
                     return ResultError($"Неизвестная команда {deviceData.Command}");
@@ -55,7 +55,7 @@ namespace UPD.Device.DeviceList
             var relayNumbers = new int[relayNames.Length];
             for (int i = 0; i < relayNumbers.Length; i++)
             {
-                relayNumbers[i] = int.Parse(relayNames[i]);
+                relayNumbers[i] = int.Parse(relayNames[i]) - 1; /// -1 добавлено
             }
             return relayNumbers;
         }

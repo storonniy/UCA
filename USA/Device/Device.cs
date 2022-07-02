@@ -112,7 +112,11 @@ namespace UCA.Devices
         SetLineData,
         ClearLineData,
         ClearAll,
-        GetCurrentAndSave
+        GetCurrentAndSave,
+        /// <summary>
+        /// Keithley режим стабилизации напряжения
+        /// </summary>
+        SetVoltageSourceMode
     }
 
     public enum DeviceNames

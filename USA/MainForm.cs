@@ -775,24 +775,32 @@ namespace UCA
             Step step = null;
             lock (queue)
             {
-                if (queue.Count != 0 && !isCheckingStarted)
+                if (queue.Count != 0 && isCheckingStarted)
                 {
                     step = queue.Dequeue();
+                    Thread.Sleep(10);
                 }
             }
             if (step != null)
             {
+                if (step.ShowStep)
+                {
+                    var node = treeviewStepNode[step];
+                    form.HighlightTreeNode(node, Color.Blue);
+                }
                 var stepResult = DoStep(step);
+                if (step.Argument == "")
+                {
+                    MessageBox.Show($"Шаг {step.Description}: Аргумент пустой: {step.Argument}");
+                }
                 if (step.ShowStep)
                 {
                     ShowStepResult(step, stepResult);
                 }
             }
-            else if (!isCheckingStarted)
+            else if (isCheckingStarted)
             {
                 isCheckingStarted = false;
-                form.CleanTreeView();
-                form.BlockControls(false);
                 var result = checkingResult ? "ОК исправен." : "ОК неисправен";
                 if (isCheckingInterrupted)
                 {
@@ -801,9 +809,13 @@ namespace UCA
                 else
                 {
                     result = $"Проверка завершена, результаты проверки записаны в файл. {result}";
-                }               
+                }
                 log.Send(result);
                 MessageBox.Show(result);
+                form.ChangeStartButtonState();
+                form.ChangeButton(form.buttonCheckingPause, "Пауза");
+                form.CleanTreeView();
+                form.BlockControls(false);
             }
             else
             {

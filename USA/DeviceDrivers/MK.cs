@@ -187,8 +187,10 @@ namespace UPD.DeviceDrivers
             byte stateByte = (byte)(relayState ? 0x01 : 0x00);
             byte[] canMessage = { 0x05, (byte)relayNumber, stateByte, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
             vciDevice.TransmitData(canMessage, id);
-            Thread.Sleep(100);
+            Thread.Sleep(150);
             var answer = GetAnswer();
+            if (answer[0] != 0xFA)
+                answer = GetAnswer();
             var returnedRelayNumber = answer[1];
             var status = answer[2];
             if (answer[0] == 0xFA)
@@ -200,7 +202,7 @@ namespace UPD.DeviceDrivers
                 }
                 byte realRelayStatus = RequestSingleRelayStatus(blockNumber, relayNumber);
                 return realRelayStatus == requestedRelayStatus;
-            }          
+            }
             throw new Exception($"МК вернул ошибочный ответ: {String.Join(" ", answer)}");
         }
 

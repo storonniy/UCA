@@ -37,10 +37,19 @@ namespace UCA.Devices
                         var current = GetCurrent();
                         return GetResult(deviceData, UnitType.Current, current);
                     }
+                case DeviceCommands.SetCurrentLimit:
+                    var currentLimit = double.Parse(deviceData.Argument.Replace(".", ","));
+                    keithley2401.SetCurrentLimit(currentLimit);
+                    return DeviceResult.ResultOk($"{deviceData.DeviceName} установлен предел по току {currentLimit}");
                 case DeviceCommands.PowerOn:
                     return IDeviceInterface.PowerOn(deviceData, keithley2401.PowerOn);
                 case DeviceCommands.PowerOff:
                     return IDeviceInterface.PowerOff(deviceData, keithley2401.PowerOff);
+                case DeviceCommands.SetVoltageSourceMode:
+                    var status = keithley2401.SetVoltageSourceMode();
+                    if (status)
+                        return DeviceResult.ResultOk($"{deviceData.DeviceName} переведен в режим стабилизации напряжения");
+                    return DeviceResult.ResultError($"{deviceData.DeviceName} не переведен в режим стабилизации напряжения");
                 default:
                     return DeviceResult.ResultError($"Неизвестная команда {deviceData.Command}");
             }

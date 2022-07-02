@@ -83,6 +83,17 @@ namespace UPD.DeviceDrivers
                 throw new Exception($"При размыкании реле {command} возникла ошибка");
         }
 
+        //*OpenRelays:All
+        public void OpenAllRelays()
+        {
+            string command = "*OpenRelays:All";
+            SendCommand(command);
+            Thread.Sleep(delay);
+            var answerFromAdapter = serialPort.ReadExisting();
+            if (answerFromAdapter != "*OpenRelays:Ok\r")
+                throw new Exception($"При размыкании реле {command} возникла ошибка");
+        }
+
         public void ConnectRelays(params string[] relays)
         {
             string command = "*ConnectRelays:" + PrepareCommandForAdapter(relays);
