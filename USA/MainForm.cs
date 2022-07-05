@@ -108,7 +108,8 @@ namespace UCA
             EventSend = this;
             this.settings = settings;
             ShowSettings();
-            InitialActions();
+            InitialActions();       
+            this.Text = stepsInfo.ProgramName;
             buttonCheckingPause.Enabled = false;
             mainThread.Start();
         }
@@ -513,7 +514,7 @@ namespace UCA
                 treeView.Nodes.Add(treeNode);
                 foreach (var step in stepDictionary[tableName])
                 {
-                    if (step.ShowStep || checkBoxDebug.Checked)
+                    if (step.ShowStep)
                     {
                         nodesCount++;
                         try
@@ -569,7 +570,6 @@ namespace UCA
             ChangeControlState(buttonCheckingPause, state);
             ChangeControlState(buttonCheckingStart, !state);
             ChangeControlState(buttonOpenDataBase, !state);
-            ChangeControlState(checkBoxDebug, !state);
             ChangeControlState(groupBoxPreferences, !state);
             ChangeControlState(groupBoxManualStep, !state);
         }
@@ -668,6 +668,7 @@ namespace UCA
         {
             isCheckingStarted = !isCheckingStarted;
             ChangeButtonPauseResume();
+            ChangeControlState(buttonStep, !isCheckingStarted);
         }
 
         private void comboBoxCheckingMode_SelectedIndexChanged(object sender, EventArgs e)
@@ -709,7 +710,7 @@ namespace UCA
 
         private void checkBoxDebug_CheckedChanged(object sender, EventArgs e)
         {
-            SelectCheckingMode();
+
         }
 
         #endregion

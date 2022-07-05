@@ -19,6 +19,7 @@ namespace UCA.Steps
         public Dictionary<string, List<Step>> StepsDictionary { get; set; }
         public int StepNumber { get; private set; }
         public List<Device> DeviceList { get; set; }
+        public string ProgramName { get; set; }
     }
 
     class Step
@@ -49,6 +50,14 @@ namespace UCA.Steps
                 WriteTimeout = 2500
             };
             return serialPort;
+        }
+
+        private static string GetProgramName(DataSet dataSet)
+        {
+            var table = dataSet.Tables["ProgramName"];
+            var programName = table.Rows[0]["ProgramName"].ToString();
+            dataSet.Tables.Remove(dataSet.Tables[table.TableName]);
+            return programName;
         }
 
         private static Dictionary<string, Dictionary<string, List<Step>>> GetModeStepDictionary(Dictionary<string, List<string>> modesDictionary, Dictionary<string, List<Step>> allStepsDictionary)
@@ -137,6 +146,7 @@ namespace UCA.Steps
 
         public static StepsInfo GetStepsInfo(DataSet dataSet)
         {
+            var programName = GetProgramName(dataSet);
             var voltageModesDictionary = GetVoltageSupplyModesDictionary(dataSet);
             var modesDictionary = GetModesDictionary(dataSet);
             var deviceList = GetDeviceList(dataSet);
@@ -151,7 +161,8 @@ namespace UCA.Steps
                 StepsDictionary = stepsDictionary,
                 EmergencyStepList = emergencyStepsDictionary["EmergencyBreaking"],
                 //DeviceHandler = new DeviceInit(deviceList),
-                DeviceList = deviceList
+                DeviceList = deviceList,
+                ProgramName = programName
             };
             return info;
         }

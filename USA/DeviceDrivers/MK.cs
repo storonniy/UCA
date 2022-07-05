@@ -344,7 +344,7 @@ namespace UPD.DeviceDrivers
         }
     }
 
-    internal class BlockDataComparer : IComparer<BlockData>
+    public class BlockDataComparer : IComparer<BlockData>
     {
         public int Compare(BlockData blockData1, BlockData blockData2)
         {
