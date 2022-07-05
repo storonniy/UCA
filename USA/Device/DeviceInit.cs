@@ -117,13 +117,12 @@ namespace UCA.Devices
             }
             catch (KeyNotFoundException ex)
             {
-                return DeviceResult.ResultError($"Ключ не найден: {deviceData.DeviceName} {deviceData.Command} {deviceData.Argument}");
+                return DeviceResult.ResultError($"{deviceData.DeviceName} : {deviceData.Command} : {ex.Message}");
             }
-            catch (FormatException)
+            catch (FormatException ex)
             {
-                return DeviceResult.ResultError($"BAD_ARGUMENT: Проверьте аргумент команды {deviceData.DeviceName} {deviceData.Command} {deviceData.Argument}");
+                return DeviceResult.ResultError($"{deviceData.DeviceName} : {deviceData.Command} : {ex.Message}");
             }
-
         }
     }
 }

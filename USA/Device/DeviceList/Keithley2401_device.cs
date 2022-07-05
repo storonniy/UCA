@@ -10,7 +10,7 @@ using static UCA.Auxiliary.UnitValuePair;
 
 namespace UCA.Devices
 {
-    class Keithley2401_device : Source
+    class Keithley2401_device : IDeviceInterface
     {
         readonly Keithley2401 keithley2401;
 
@@ -25,22 +25,9 @@ namespace UCA.Devices
             switch (deviceData.Command)
             {
                 case DeviceCommands.SetVoltage:
-                    var actualVoltage = SetVoltage(deviceData);
-                    return GetResult(deviceData, UnitType.Voltage, actualVoltage);
-                case DeviceCommands.GetVoltage:
-                    {
-                        var voltage = GetVoltage();
-                        return GetResult(deviceData, UnitType.Voltage, voltage);
-                    }
-                case DeviceCommands.GetCurrent:
-                    {
-                        var current = GetCurrent();
-                        return GetResult(deviceData, UnitType.Current, current);
-                    }
+                    return IDeviceInterface.SetVoltage(deviceData, keithley2401.SetVoltage);
                 case DeviceCommands.SetCurrentLimit:
-                    var currentLimit = double.Parse(deviceData.Argument.Replace(".", ","));
-                    keithley2401.SetCurrentLimit(currentLimit);
-                    return DeviceResult.ResultOk($"{deviceData.DeviceName} установлен предел по току {currentLimit}");
+                    return IDeviceInterface.SetCurrentLimit(deviceData, keithley2401.SetCurrentLimit);
                 case DeviceCommands.PowerOn:
                     return IDeviceInterface.PowerOn(deviceData, keithley2401.PowerOn);
                 case DeviceCommands.PowerOff:
@@ -53,44 +40,6 @@ namespace UCA.Devices
                 default:
                     return DeviceResult.ResultError($"Неизвестная команда {deviceData.Command}");
             }
-        }
-
-        public double GetCurrent()
-        {
-            return keithley2401.GetCurrent();
-        }
-
-        public double GetVoltage()
-        {
-            return keithley2401.GetVoltage();
-        }
-
-        public override void PowerOff()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void PowerOn()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override double SetCurrent(DeviceData deviceData)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override double SetCurrentLimit(DeviceData deviceData)
-        {
-            keithley2401.SetCurrentRange(0, (int)deviceData.UpperLimit);
-            throw new NotImplementedException();
-        }
-
-        public override double SetVoltage(DeviceData deviceData)
-        {
-
-            var voltage = double.Parse(deviceData.Argument.Replace(".", ","));
-            return keithley2401.SetVoltage(voltage);
         }
     }
 }

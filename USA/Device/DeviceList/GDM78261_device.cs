@@ -32,6 +32,11 @@ namespace UCA.Devices
                         }*/
                         return GetResult(deviceData, UnitType.Voltage, voltage);
                     }
+                case DeviceCommands.GetVoltageAC:
+                    {
+                        var voltage = gdm78261.MeasureVoltageAC();
+                        return GetResult(deviceData, UnitType.Voltage, voltage);
+                    }
                 case DeviceCommands.GetVoltageAndSave:
                     {
                         var voltage = GetVoltage();

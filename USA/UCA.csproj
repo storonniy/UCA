@@ -129,6 +129,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Auxiliary\ByteExtensions.cs" />
     <Compile Include="Auxiliary\UnitValuePair.cs" />
     <Compile Include="DataBase\DBReader.cs" />
     <Compile Include="DeviceDrivers\AKIP_3407.cs" />

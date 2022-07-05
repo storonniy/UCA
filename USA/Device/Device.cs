@@ -116,7 +116,10 @@ namespace UCA.Devices
         /// <summary>
         /// Keithley режим стабилизации напряжения
         /// </summary>
-        SetVoltageSourceMode
+        SetVoltageSourceMode,
+        GetVoltageAC,
+        SetMeasurementToVoltageAC,
+        GetClosedRelayNames
     }
 
     public enum DeviceNames
@@ -127,12 +130,10 @@ namespace UCA.Devices
         GDM_78261,
         Keysight_34410,
         None,
-        // УСА_Т
         PSH_73610,
         PSH_73630,
         ATH_8030,
         PCI_1762,
-        // УПД
         GDM_78341, // the same as GDM_78261
         PST_3201,
         PCI_1761_1,
@@ -146,7 +147,7 @@ namespace UCA.Devices
         AKIP_3407,
         Keithley2401_1,
         Keithley2401_2,
-        MK,/*_1, MK_2, MK_3, MK_4, MK_5*/
+        MK,
         Simulator
     }
 }

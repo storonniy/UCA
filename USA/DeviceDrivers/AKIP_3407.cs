@@ -49,8 +49,6 @@ namespace UCA.DeviceDrivers
 
         public double SetVoltage (double voltage)
         {
-            // TODO: здесь voltage *= 2
-            voltage = voltage * 2;
             var str = voltage.ToString().Replace(",", ".");
             //var command = $"SOUR2:VOLT {str}";
             DoCommand($"SOUR1:VOLT {str}");

@@ -35,6 +35,7 @@ namespace UCA
             this.buttonCheckingPause = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.buttonStep = new System.Windows.Forms.Button();
             this.textBoxOperatorName = new System.Windows.Forms.TextBox();
             this.textBoxFactoryNumber = new System.Windows.Forms.TextBox();
             this.textBoxComment = new System.Windows.Forms.TextBox();
@@ -55,19 +56,18 @@ namespace UCA
             this.button1 = new System.Windows.Forms.Button();
             this.checkBoxDebug = new System.Windows.Forms.CheckBox();
             this.checkBoxCycle = new System.Windows.Forms.CheckBox();
-            this.groupBoxDevices = new System.Windows.Forms.GroupBox();
-            this.buttonStep = new System.Windows.Forms.Button();
             this.treeOfChecking = new System.Windows.Forms.TreeView();
             this.groupBoxCheckingManagement = new System.Windows.Forms.GroupBox();
             this.buttonCheckingStop = new System.Windows.Forms.Button();
             this.buttonOpenDataBase = new System.Windows.Forms.Button();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.buttonShowRelays = new System.Windows.Forms.Button();
+            this.labelRelays = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBoxPreferences.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBoxManualStep.SuspendLayout();
-            this.groupBoxDevices.SuspendLayout();
             this.groupBoxCheckingManagement.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -98,6 +98,8 @@ namespace UCA
             // groupBox1
             // 
             resources.ApplyResources(this.groupBox1, "groupBox1");
+            this.groupBox1.Controls.Add(this.buttonShowRelays);
+            this.groupBox1.Controls.Add(this.buttonStep);
             this.groupBox1.Controls.Add(this.textBoxOperatorName);
             this.groupBox1.Controls.Add(this.textBoxFactoryNumber);
             this.groupBox1.Controls.Add(this.textBoxComment);
@@ -106,6 +108,13 @@ namespace UCA
             this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.TabStop = false;
+            // 
+            // buttonStep
+            // 
+            resources.ApplyResources(this.buttonStep, "buttonStep");
+            this.buttonStep.Name = "buttonStep";
+            this.buttonStep.UseVisualStyleBackColor = true;
+            this.buttonStep.Click += new System.EventHandler(this.buttonStep_Click);
             // 
             // textBoxOperatorName
             // 
@@ -191,8 +200,8 @@ namespace UCA
             // groupBox2
             // 
             resources.ApplyResources(this.groupBox2, "groupBox2");
+            this.groupBox2.Controls.Add(this.labelRelays);
             this.groupBox2.Controls.Add(this.groupBoxManualStep);
-            this.groupBox2.Controls.Add(this.groupBoxDevices);
             this.groupBox2.Controls.Add(this.treeOfChecking);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.TabStop = false;
@@ -243,20 +252,6 @@ namespace UCA
             this.checkBoxCycle.Name = "checkBoxCycle";
             this.checkBoxCycle.UseVisualStyleBackColor = true;
             // 
-            // groupBoxDevices
-            // 
-            resources.ApplyResources(this.groupBoxDevices, "groupBoxDevices");
-            this.groupBoxDevices.Controls.Add(this.buttonStep);
-            this.groupBoxDevices.Name = "groupBoxDevices";
-            this.groupBoxDevices.TabStop = false;
-            // 
-            // buttonStep
-            // 
-            resources.ApplyResources(this.buttonStep, "buttonStep");
-            this.buttonStep.Name = "buttonStep";
-            this.buttonStep.UseVisualStyleBackColor = true;
-            this.buttonStep.Click += new System.EventHandler(this.buttonStep_Click);
-            // 
             // treeOfChecking
             // 
             this.treeOfChecking.AllowDrop = true;
@@ -294,22 +289,33 @@ namespace UCA
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             resources.ApplyResources(this.contextMenuStrip1, "contextMenuStrip1");
             // 
+            // buttonShowRelays
+            // 
+            resources.ApplyResources(this.buttonShowRelays, "buttonShowRelays");
+            this.buttonShowRelays.Name = "buttonShowRelays";
+            this.buttonShowRelays.UseVisualStyleBackColor = true;
+            this.buttonShowRelays.Click += new System.EventHandler(this.buttonShowRelays_Click);
+            // 
+            // labelRelays
+            // 
+            resources.ApplyResources(this.labelRelays, "labelRelays");
+            this.labelRelays.Name = "labelRelays";
+            // 
             // Form1
             // 
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.panel1);
             this.Name = "Form1";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.panel1.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.groupBoxPreferences.ResumeLayout(false);
             this.groupBoxPreferences.PerformLayout();
             this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             this.groupBoxManualStep.ResumeLayout(false);
             this.groupBoxManualStep.PerformLayout();
-            this.groupBoxDevices.ResumeLayout(false);
             this.groupBoxCheckingManagement.ResumeLayout(false);
             this.ResumeLayout(false);
 
@@ -337,7 +343,6 @@ namespace UCA
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Label labelAttention;
         private System.Windows.Forms.GroupBox groupBoxManualStep;
-        private System.Windows.Forms.GroupBox groupBoxDevices;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.CheckBox checkBoxIgnoreErrors;
         private System.Windows.Forms.Button buttonStep;
@@ -347,6 +352,8 @@ namespace UCA
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.Button buttonCheckingStop;
         private System.Windows.Forms.Button buttonPowerOn;
+        private System.Windows.Forms.Button buttonShowRelays;
+        private System.Windows.Forms.Label labelRelays;
     }
 }
 

@@ -27,8 +27,10 @@ namespace UCA.DeviceDrivers
 
         public double MeasureVoltageAC()
         {
+            serialPort.WriteLine("CONF:VOLT:AC#013#010");
+            Thread.Sleep(4000);
             serialPort.WriteLine("MEAS:VOLT:AC?#013#010");
-            Thread.Sleep(2000);
+            Thread.Sleep(1000);
             return ParseValue(serialPort.ReadLine());
         }
 
@@ -39,8 +41,9 @@ namespace UCA.DeviceDrivers
         /// <returns></returns>
         public double MeasureVoltageDC()
         {
+            serialPort.WriteLine("CONF:VOLT:DC#013#010");
+            Thread.Sleep(1000);
             serialPort.WriteLine("MEAS:VOLT:DC?#013#010");
-            Thread.Sleep(2000);
             return ParseValue(serialPort.ReadLine());
         }
         /// <summary>
@@ -65,14 +68,23 @@ namespace UCA.DeviceDrivers
             Thread.Sleep(1000);
         }
         /// <summary>
-        /// Sets measurement to DC Voltage on the first display and specifies the range
+        /// Sets measurement to DC Voltage on the first display
         /// </summary>
-        /// <param name="range"></param>
-        public void SetMeasurementToVoltageDC(double range)
+        public void SetMeasurementToVoltageDC()
         {
-            serialPort.WriteLine($"CONF:VOLT:DC {range}#013#010");
+            serialPort.WriteLine($"CONF:VOLT:DC#013#010");
             Thread.Sleep(1000);
         }
+
+        /// <summary>
+        /// Sets measurement to AC Voltage on the first display
+        /// </summary>
+        public void SetMeasurementToVoltageAC()
+        {
+            serialPort.WriteLine($"CONF:VOLT:AC#013#010");
+            Thread.Sleep(1000);
+        }
+
 
 
         private enum Polarity

@@ -22,9 +22,17 @@ namespace UCA.DeviceDrivers
 
         private static readonly int delay = 500;
 
-        public static double ParseValue(string value)
+        public double ReadDouble()
         {
-            return (double)Decimal.Parse(value.Replace("\r", ""), NumberStyles.Float, CultureInfo.InvariantCulture);
+            var value = serialPort.ReadExisting().Replace("\r", "");
+            try
+            {
+                return (double)decimal.Parse(value, NumberStyles.Float, CultureInfo.InvariantCulture);
+            }
+            catch (FormatException)
+            {
+                throw new FormatException($"[{value}] не может быть преобразован в double");
+            }
         }
 
         public void SelectVoltageSource()
@@ -114,7 +122,7 @@ namespace UCA.DeviceDrivers
         public double GetVoltage()
         {
             SendCommand(":SOUR:VOLT:LEV:AMPL?");
-            return ParseValue(serialPort.ReadExisting());
+            return ReadDouble();
         }
 
         /// <summary>
@@ -127,58 +135,16 @@ namespace UCA.DeviceDrivers
             //:SENS:CURR:RANGE
             SendCommand($":SENS:CURR:PROT {str}");
             SendCommand($":SENS:CURR:RANGE {str}");
-            SendCommand($":SENS:CURR:RANGE?");
-            return ParseValue(serialPort.ReadExisting());
+            SendCommand($":SENS:CURR:PROT?");
+            return ReadDouble();
         }
-
-        /// <summary>
-        /// Select range for I-Source
-        /// </summary>
-        /// <param name="up"> Minimum, A </param>
-        /// <param name="to"> Maximum, A </param>
-        public void SetCurrentRange(double up, double to)
-        {
-            SendCommand($":SOUR:CURR:RANG {up} to {to}");
-        }
-
-        public double GetCurrentRange()
-        {
-            SendCommand($"CURR? MAX");
-            return ParseValue(serialPort.ReadLine());
-        }
-
-        /// <summary>
-        /// Select range for V-Source
-        /// </summary>
-        /// <param name="up"> Minimum, V </param>
-        /// <param name="to"> Maximum, V </param>
-        public void SetVoltageRange(double up, double to)
-        {
-            SendCommand($":SOUR:VOLT:RANG {up} to {to}");
-        }
-
-        public double GetSourceVoltage()
-        {
-            SendCommand($"VOLT?");
-            return ParseValue(serialPort.ReadLine());
-        }
-
-
-        public double GetCurrent()
-        {
-            SendCommand(":FORM:ELEM CURR");
-            SendCommand(":READ?");
-            return ParseValue(serialPort.ReadLine());
-        }
-
 
         /// <summary>
         /// Turn the output of the Keithley 2401 OFF.
         /// </summary>
-
         public void PowerOff()
         {
-            /*return*/ ChangePowerStatus(PowerState.OFF);
+            ChangePowerStatus(PowerState.OFF);
         }
 
         /// <summary>
@@ -186,9 +152,7 @@ namespace UCA.DeviceDrivers
         /// </summary>
         public void PowerOn()
         {
-            /*return*/ ChangePowerStatus(PowerState.ON);
-/*            serialPort.WriteLine(":OUTP ON#013#010");
-            Thread.Sleep(delay);*/
+            ChangePowerStatus(PowerState.ON);
         }
 
         private bool ChangePowerStatus(PowerState state)

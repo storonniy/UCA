@@ -25,6 +25,9 @@ namespace UPD.Device.DeviceList
         {
             switch (deviceData.Command)
             {
+                case DeviceCommands.GetClosedRelayNames:
+                    var relays = Simulator.GetClosedRelayNames();
+                    return DeviceResult.ResultOk($"\nSimulator: {string.Join(", ", relays)}");
                 case DeviceCommands.CloseRelays:
                     string[] closableRelays = deviceData.Argument.Replace(" ", "").Split(',');
                     Simulator.CloseRelays(closableRelays);
@@ -106,9 +109,9 @@ namespace UPD.Device.DeviceList
                     }
                     if (isSignalExist1)
                     {
-                        return DeviceResult.ResultOk($"{deviceData.DeviceName} Сигнал {signalNames1[0]} присутствует");
+                        return DeviceResult.ResultOk($"{deviceData.DeviceName} Сигналы {string.Join(", ", signalNames1)} присутствуют");
                     }
-                    return DeviceResult.ResultError($"{deviceData.DeviceName} Сигнал {signalNames1[0]} отсутствует");
+                    return DeviceResult.ResultError($"{deviceData.DeviceName} Сигналы {string.Join(", ", signalNames1)} отсутствуют");
                 default:
                     return DeviceResult.ResultError($"{deviceData.DeviceName} Неизвестная команда {deviceData.Command}");
             }

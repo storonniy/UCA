@@ -5,9 +5,6 @@ using System.Threading;
 using Ixxat.Vci4;
 using Ixxat.Vci4.Bal;
 using Ixxat.Vci4.Bal.Can;
-/*using Ixxat.Vci3;
-using Ixxat.Vci3.Bal;
-using Ixxat.Vci3.Bal.Can;*/
 
 namespace VciCAN
 {
@@ -23,11 +20,15 @@ namespace VciCAN
         public CanConNet()
         {
             SelectDevice();
-            // TODO: раскомментировать перед отладкой
             InitSocket(0);
             rxThread = new Thread(new ThreadStart(ReceiveThreadFunc));
             rxThread.Start();
+        }
 
+        ~CanConNet()
+        {
+            rxThread.Abort();
+            FinalizeApp();
         }
 
         #region Member variables
@@ -255,7 +256,6 @@ namespace VciCAN
         /// 
         public void TransmitData(byte[] message, uint ID)
         {
-
             IMessageFactory factory = VciServer.Instance().MsgFactory;
             ICanMessage canMsg = (ICanMessage)factory.CreateMsg(typeof(ICanMessage));
             canMsg.ExtendedFrameFormat = true;
@@ -263,7 +263,7 @@ namespace VciCAN
             canMsg.Identifier = ID;
             canMsg.FrameType = CanMsgFrameType.Data;
             canMsg.DataLength = 8;
-            canMsg.SelfReceptionRequest = false;  // show this message in the console window
+            canMsg.SelfReceptionRequest = false;
             for (var i = 0; i < canMsg.DataLength; i++)
             {
                 canMsg[i] = message[i];

@@ -7,7 +7,6 @@ using VciCAN;
 using Ixxat.Vci4.Bal.Can;
 using System.Collections;
 using System.Threading;
-using UPD.Auxiliary;
 
 namespace UPD.DeviceDrivers
 {
@@ -25,6 +24,34 @@ namespace UPD.DeviceDrivers
         ~MK()
         {
             vciDevice.FinalizeApp();        
+        }
+
+        public class BlockData
+        {
+            public BlockData(uint id, int factoryNumber)
+            {
+                Id = id;
+                FactoryNumber = factoryNumber;
+            }
+
+            public uint Id { get; private set; }
+            public int FactoryNumber { get; private set; }
+
+            public override bool Equals(object obj)
+            {
+                if (!(obj is BlockData))
+                    return false;
+                var blockData = (BlockData)obj;
+                return Id.Equals(blockData.Id) && FactoryNumber.Equals(blockData.FactoryNumber);
+            }
+        }
+
+        public class BlockDataComparer : IComparer<BlockData>
+        {
+            public int Compare(BlockData blockData1, BlockData blockData2)
+            {
+                return blockData1.Id.CompareTo(blockData2.Id);
+            }
         }
 
         private ICanMessage GetAnswer(byte validFirstByte)
@@ -96,23 +123,17 @@ namespace UPD.DeviceDrivers
         /// Замкнуть массив реле. В случае внутренней ошибки блока МК размыкает все реле МК.
         /// </summary>
         /// <returns> Возвращает статус операции (реле МК успешно разомкнуты/произошла ошибка) </returns>
-        /// мне лень, замыкаем/размыкаем по одному реле
-        private byte CloseRelaysArray(int blockNumber, params int[] relayNumbers)
+
+        public byte CloseRelaysArray(int blockNumber)
         {
             uint id = blockDataList[blockNumber].Id;
-            byte[] message1 = { 0x03, 0x01, 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
+            byte[] message1 = { 0x03, 0x01, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
             vciDevice.TransmitData(message1, id);
-            byte[] message2 = { 0x03, 0x02, 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
+            byte[] message2 = { 0x03, 0x02, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
             vciDevice.TransmitData(message2, id);
             var answer = GetAnswer(0xFC);
             var status = answer[2];
             return status;
-        }
-
-        private void meow (int relayNumber)
-        {
-            var byteNumber = relayNumber / 8;
-            var position = relayNumber % 8;
         }
 
         #endregion
@@ -122,72 +143,72 @@ namespace UPD.DeviceDrivers
         /// <summary>
         /// Запрос состояния всех реле.
         /// </summary>
-        /// <returns> Returns array of 10 bytes which contains relay states (each bit represents relay state) </returns>
-        public byte[] RequestAllRelayStatus(int blockNumber)
+        public int[] RequestAllRelayStatus(int blockNumber)
         {
             uint id = blockDataList[blockNumber].Id;
             byte[] canMessage = { 0x04, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
             vciDevice.TransmitData(canMessage, id);
             var answer1 = GetAnswer(0xFB);
             var answer2 = GetAnswer(0xFB);
-            var a1 = new byte[8];
-            var a2 = new byte[8];
-            for (int i = 0; i < 8; i++)
+            var list =  new List<ICanMessage>
             {
-                a1[i] = answer1[i];
-                a2[i] = answer2[i];
-            }
-            return GetRelayStatesBytes(new List<byte[]> { a1, a2 });
+                answer1,
+                answer2
+            };
+            return GetRelayNumbers(ParseRelayStatus(list));
         }
 
-        public static byte[] GetRelayStatesBytes(List<byte[]> canMessages)
+        public static byte[] ParseRelayStatus(List<ICanMessage> canMessages)
         {
             return canMessages
-                .Select(b => Tuple.Create(b[1], b))
-                .OrderBy(tuple => tuple.Item1)
+                .Select(b => Tuple.Create(b[0], b))
+                .OrderBy(tuple => tuple)
                 .Select(tuple => tuple.Item2)
                 .SelectMany(b => new byte[] { b[3], b[4], b[5], b[6], b[7] })
                 .ToArray();
         }
 
-        public static int[] GetRelayNumbers(byte[] relayStatusBytes)
+        public static int[] GetRelayNumbers(byte[] rawData)
         {
+            //var states = new bool[8 * rawData.Length];
             var states = new List<int>();
-            for (int i = 0; i < relayStatusBytes.Length; i++)
+            for (int i = 0; i < rawData.Length; i++)
             {
                 for (int position = 0; position < 8; position++)
                 {
-                    var relayNumber = 8 * i + position + 1;
-                    if (relayStatusBytes[i].BitState(position))
-                        states.Add(relayNumber);
+                    var bit = (rawData[i] & (1 << position)) >> position == 1;
+                    if (bit)
+                        states.Add(8 * i + position + 1);
                 }
             }
             return states.ToArray();
         }
 
-        /// <summary>
-        /// Requests closed relay names of all connected MK blocks
-        /// </summary>
-        /// <returns></returns>
-        public string[] GetClosedRelayNames()
+        public static int[] GetRelayNumbersReversedOrder(byte[] rawData)
+        {
+            //var states = new bool[8 * rawData.Length];
+            var states = new List<int>();
+            for (int i = 0; i < rawData.Length; i++)
+            {
+                for (int position = 0; position < 8; position++)
+                {
+                    var bit = (rawData[i] & (1 << position)) >> position == 1;
+                    if (bit)
+                        states.Add(8 * i +  7 - position + 1);
+                }
+            }
+            return states.ToArray();
+        }
+
+        public string[] GetAllRelaysStatus()
         {
             var status = new List<string>();
             for (int blockNumber = 0; blockNumber < blockDataList.Count; blockNumber++)
             {
-                status.Add(GetClosedRelayNames(blockNumber));
+                var relayNumbers = RequestAllRelayStatus(blockNumber);
+                status.Add($"MK{blockNumber + 1}: {string.Join(", ", relayNumbers)}");
             }
             return status.ToArray();
-        }
-
-        /// <summary>
-        /// Requests closed relay names of specified MK block number
-        /// </summary>
-        /// <param name="blockNumber">Block number </param>
-        /// <returns> formatted string which contains block number and actual closed relay numbers </returns>
-        public string GetClosedRelayNames(int blockNumber)
-        {
-            int[] relayNumbers = GetRelayNumbers(RequestAllRelayStatus(blockNumber));
-            return $"MK{blockNumber + 1}: {string.Join(", ", relayNumbers)}";
         }
 
         #endregion
@@ -304,7 +325,7 @@ namespace UPD.DeviceDrivers
         /// <summary>
         /// Проверка наличия оборудования.
         /// </summary>
-        private List<BlockData> WakeUp()
+        public List<BlockData> WakeUp()
         {
             uint id = 0x00;
             byte[] canMessage = { 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
@@ -322,33 +343,5 @@ namespace UPD.DeviceDrivers
         }
 
         #endregion
-    }
-
-    public class BlockData
-    {
-        public BlockData(uint id, int factoryNumber)
-        {
-            Id = id;
-            FactoryNumber = factoryNumber;
-        }
-
-        public uint Id { get; private set; }
-        public int FactoryNumber { get; private set; }
-
-        public override bool Equals(object obj)
-        {
-            if (!(obj is BlockData))
-                return false;
-            var blockData = (BlockData)obj;
-            return Id.Equals(blockData.Id) && FactoryNumber.Equals(blockData.FactoryNumber);
-        }
-    }
-
-    internal class BlockDataComparer : IComparer<BlockData>
-    {
-        public int Compare(BlockData blockData1, BlockData blockData2)
-        {
-            return blockData1.Id.CompareTo(blockData2.Id);
-        }
     }
 }

@@ -49,7 +49,9 @@ namespace UCA.DeviceDrivers
         {
             var str = voltage.ToString().Replace(",", ".");
             var command = $":chan1:volt {str};:chan1:volt?\n";
-            return DoCommandAndGetResult(command);
+            DoCommand($":chan1:volt {str}\n");
+            Thread.Sleep(500);
+            return DoCommandAndGetResult(":chan1: volt ?\n");
         }
 
         /// <summary>

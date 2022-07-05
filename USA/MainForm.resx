@@ -180,6 +180,60 @@
   <data name="groupBox1.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Left, Right</value>
   </data>
+  <data name="buttonShowRelays.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="buttonShowRelays.Location" type="System.Drawing.Point, System.Drawing">
+    <value>340, 67</value>
+  </data>
+  <data name="buttonShowRelays.Size" type="System.Drawing.Size, System.Drawing">
+    <value>93, 23</value>
+  </data>
+  <data name="buttonShowRelays.TabIndex" type="System.Int32, mscorlib">
+    <value>41</value>
+  </data>
+  <data name="buttonShowRelays.Text" xml:space="preserve">
+    <value>Показать реле</value>
+  </data>
+  <data name="&gt;&gt;buttonShowRelays.Name" xml:space="preserve">
+    <value>buttonShowRelays</value>
+  </data>
+  <data name="&gt;&gt;buttonShowRelays.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;buttonShowRelays.Parent" xml:space="preserve">
+    <value>groupBox1</value>
+  </data>
+  <data name="&gt;&gt;buttonShowRelays.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="buttonStep.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="buttonStep.Location" type="System.Drawing.Point, System.Drawing">
+    <value>340, 38</value>
+  </data>
+  <data name="buttonStep.Size" type="System.Drawing.Size, System.Drawing">
+    <value>93, 23</value>
+  </data>
+  <data name="buttonStep.TabIndex" type="System.Int32, mscorlib">
+    <value>40</value>
+  </data>
+  <data name="buttonStep.Text" xml:space="preserve">
+    <value>Шаг</value>
+  </data>
+  <data name="&gt;&gt;buttonStep.Name" xml:space="preserve">
+    <value>buttonStep</value>
+  </data>
+  <data name="&gt;&gt;buttonStep.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;buttonStep.Parent" xml:space="preserve">
+    <value>groupBox1</value>
+  </data>
+  <data name="&gt;&gt;buttonStep.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
   <data name="textBoxOperatorName.Location" type="System.Drawing.Point, System.Drawing">
     <value>176, 79</value>
   </data>
@@ -199,7 +253,7 @@
     <value>groupBox1</value>
   </data>
   <data name="&gt;&gt;textBoxOperatorName.ZOrder" xml:space="preserve">
-    <value>0</value>
+    <value>2</value>
   </data>
   <data name="textBoxFactoryNumber.Location" type="System.Drawing.Point, System.Drawing">
     <value>176, 50</value>
@@ -220,7 +274,7 @@
     <value>groupBox1</value>
   </data>
   <data name="&gt;&gt;textBoxFactoryNumber.ZOrder" xml:space="preserve">
-    <value>1</value>
+    <value>3</value>
   </data>
   <data name="textBoxComment.Location" type="System.Drawing.Point, System.Drawing">
     <value>176, 19</value>
@@ -241,7 +295,7 @@
     <value>groupBox1</value>
   </data>
   <data name="&gt;&gt;textBoxComment.ZOrder" xml:space="preserve">
-    <value>2</value>
+    <value>4</value>
   </data>
   <data name="label4.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -271,7 +325,7 @@
     <value>groupBox1</value>
   </data>
   <data name="&gt;&gt;label4.ZOrder" xml:space="preserve">
-    <value>3</value>
+    <value>5</value>
   </data>
   <data name="label2.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -301,7 +355,7 @@
     <value>groupBox1</value>
   </data>
   <data name="&gt;&gt;label2.ZOrder" xml:space="preserve">
-    <value>4</value>
+    <value>6</value>
   </data>
   <data name="label3.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -331,7 +385,7 @@
     <value>groupBox1</value>
   </data>
   <data name="&gt;&gt;label3.ZOrder" xml:space="preserve">
-    <value>5</value>
+    <value>7</value>
   </data>
   <data name="groupBox1.Location" type="System.Drawing.Point, System.Drawing">
     <value>581, 3</value>
@@ -543,6 +597,39 @@
   <data name="groupBox2.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Bottom, Left, Right</value>
   </data>
+  <data name="labelRelays.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="labelRelays.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Microsoft Sans Serif, 10pt</value>
+  </data>
+  <data name="labelRelays.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="labelRelays.Location" type="System.Drawing.Point, System.Drawing">
+    <value>848, 67</value>
+  </data>
+  <data name="labelRelays.Size" type="System.Drawing.Size, System.Drawing">
+    <value>45, 17</value>
+  </data>
+  <data name="labelRelays.TabIndex" type="System.Int32, mscorlib">
+    <value>40</value>
+  </data>
+  <data name="labelRelays.Text" xml:space="preserve">
+    <value>Реле:</value>
+  </data>
+  <data name="&gt;&gt;labelRelays.Name" xml:space="preserve">
+    <value>labelRelays</value>
+  </data>
+  <data name="&gt;&gt;labelRelays.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;labelRelays.Parent" xml:space="preserve">
+    <value>groupBox2</value>
+  </data>
+  <data name="&gt;&gt;labelRelays.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
   <data name="groupBoxManualStep.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Left, Right</value>
   </data>
@@ -721,63 +808,6 @@
     <value>groupBox2</value>
   </data>
   <data name="&gt;&gt;groupBoxManualStep.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="groupBoxDevices.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Top, Right</value>
-  </data>
-  <data name="buttonStep.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="buttonStep.Location" type="System.Drawing.Point, System.Drawing">
-    <value>28, 299</value>
-  </data>
-  <data name="buttonStep.Size" type="System.Drawing.Size, System.Drawing">
-    <value>93, 23</value>
-  </data>
-  <data name="buttonStep.TabIndex" type="System.Int32, mscorlib">
-    <value>40</value>
-  </data>
-  <data name="buttonStep.Text" xml:space="preserve">
-    <value>Шаг</value>
-  </data>
-  <data name="&gt;&gt;buttonStep.Name" xml:space="preserve">
-    <value>buttonStep</value>
-  </data>
-  <data name="&gt;&gt;buttonStep.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;buttonStep.Parent" xml:space="preserve">
-    <value>groupBoxDevices</value>
-  </data>
-  <data name="&gt;&gt;buttonStep.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="groupBoxDevices.Location" type="System.Drawing.Point, System.Drawing">
-    <value>853, 14</value>
-  </data>
-  <data name="groupBoxDevices.Size" type="System.Drawing.Size, System.Drawing">
-    <value>168, 424</value>
-  </data>
-  <data name="groupBoxDevices.TabIndex" type="System.Int32, mscorlib">
-    <value>39</value>
-  </data>
-  <data name="groupBoxDevices.Text" xml:space="preserve">
-    <value>Устройства</value>
-  </data>
-  <data name="groupBoxDevices.Visible" type="System.Boolean, mscorlib">
-    <value>False</value>
-  </data>
-  <data name="&gt;&gt;groupBoxDevices.Name" xml:space="preserve">
-    <value>groupBoxDevices</value>
-  </data>
-  <data name="&gt;&gt;groupBoxDevices.Type" xml:space="preserve">
-    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;groupBoxDevices.Parent" xml:space="preserve">
-    <value>groupBox2</value>
-  </data>
-  <data name="&gt;&gt;groupBoxDevices.ZOrder" xml:space="preserve">
     <value>1</value>
   </data>
   <data name="treeOfChecking.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">

@@ -38,9 +38,9 @@ namespace UPD.DeviceDrivers
 
         ~ASBL()
         {
-            if (deviceA.IsOpen)
+            if (deviceA != null && deviceA.IsOpen)
                 deviceA.Close();
-            if (deviceB.IsOpen)
+            if (deviceB != null && deviceB.IsOpen)
                 deviceB.Close();
         }
 

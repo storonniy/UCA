@@ -21,6 +21,9 @@ namespace UPD.Device.DeviceList
         {
             switch (deviceData.Command)
             {
+                case DeviceCommands.GetClosedRelayNames:
+                    var closedRelays = mk.GetClosedRelayNames();
+                    return DeviceResult.ResultOk(string.Join("\n", closedRelays));
                 case DeviceCommands.OpenAllRelays:
                     mk.EmergencyBreak();
                     return ResultOk($"{deviceData.DeviceName}: разомкнуты все реле");
