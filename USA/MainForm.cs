@@ -95,9 +95,6 @@ namespace UCA
                 Thread.Sleep(42);
             }
         }
-
-
-
         #endregion
 
         #region Конструктор Form1

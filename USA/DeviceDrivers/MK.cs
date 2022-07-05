@@ -317,9 +317,13 @@ namespace UPD.DeviceDrivers
                 var answer = GetAnswer(0xF7);
                 blockDataList.Add(new BlockData(answer.Identifier, 256 * answer[3] + answer[2]));
             }
-            blockDataList.Sort(new BlockDataComparer());
-            return blockDataList;         
+            //blockDataList.Sort(new BlockDataComparer());
+            return SortByID(blockDataList);         
         }
+
+        public static Func<List<BlockData>, List<BlockData>> SortByID = list => list
+                .OrderBy(blockData => blockData.Id)
+                .ToList();
 
         #endregion
     }
@@ -344,6 +348,9 @@ namespace UPD.DeviceDrivers
         }
     }
 
+    /// <summary>
+    /// Не нужно
+    /// </summary>
     public class BlockDataComparer : IComparer<BlockData>
     {
         public int Compare(BlockData blockData1, BlockData blockData2)
