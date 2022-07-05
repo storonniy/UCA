@@ -29,33 +29,6 @@ namespace TestProject
         #region MK
 
         [TestMethod]
-        public void BlockDataComparerTest()
-        {
-            var blockDataList = new List<BlockData>()
-            {
-                new BlockData(711, 7),
-                new BlockData(111, 1),
-                new BlockData(511, 5),
-                new BlockData(311, 3),
-                new BlockData(211, 2),
-                new BlockData(411, 4),
-                new BlockData(611, 6)
-            };
-            blockDataList.Sort(new BlockDataComparer());
-            var expected = new List<BlockData>()
-            {
-                new BlockData(111, 1),
-                new BlockData(211, 2),
-                new BlockData(311, 3),
-                new BlockData(411, 4),
-                new BlockData(511, 5),
-                new BlockData(611, 6),
-                new BlockData(711, 7)
-            };
-            CollectionAssert.AreEqual(expected, blockDataList);
-        }
-
-        [TestMethod]
         public void ParseRelayNumbers()
         {
             int[] expected = new int[] { 1, 2, 3, 4, 54 };

@@ -347,15 +347,4 @@ namespace UPD.DeviceDrivers
             return Id.Equals(blockData.Id) && FactoryNumber.Equals(blockData.FactoryNumber);
         }
     }
-
-    /// <summary>
-    /// Не нужно
-    /// </summary>
-    public class BlockDataComparer : IComparer<BlockData>
-    {
-        public int Compare(BlockData blockData1, BlockData blockData2)
-        {
-            return blockData1.Id.CompareTo(blockData2.Id);
-        }
-    }
 }
