@@ -121,7 +121,8 @@ namespace UCA.DeviceDrivers
 
         ~PST_3201()
         {
-            //serialPort.Close();
+            if (serialPort.IsOpen)
+                serialPort.Close();
         }
     }
 }

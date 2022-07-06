@@ -36,7 +36,7 @@ namespace UCA.Devices
                     var status = keithley2401.SetVoltageSourceMode();
                     if (status)
                         return DeviceResult.ResultOk($"{deviceData.DeviceName} переведен в режим стабилизации напряжения");
-                    return DeviceResult.ResultError($"{deviceData.DeviceName} не переведен в режим стабилизации напряжения");
+                    return DeviceResult.ResultError($"{deviceData.DeviceName} не удалось перевести в режим стабилизации напряжения");
                 default:
                     return DeviceResult.ResultError($"Неизвестная команда {deviceData.Command}");
             }

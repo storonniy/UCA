@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using FTD2XX_NET;
 using static FTD2XX_NET.FTDI;
 using System.Threading;
+using UPD.Auxiliary;
 
 namespace UPD.DeviceDrivers
 {
@@ -357,7 +358,7 @@ namespace UPD.DeviceDrivers
             ChangeBit(DirectionRegister, bitState);
             uint writtenData = asbl.ReadData(DirectionRegister);
             var state = bitState ? 1 : 0;
-            if ((writtenData & (1 << (int)bitNumber)) >> (int)bitNumber != state)
+            if (!(writtenData.BitState((int)bitNumber) ^ bitState))//((writtenData & (1 << (int)bitNumber)) >> (int)bitNumber != state)
                 throw new FailedToSetLineException($"Не удалось выставить линию {number} в {state}");
         }
 
@@ -371,16 +372,16 @@ namespace UPD.DeviceDrivers
             ChangeDirection(false);
         }
 
-        public void ChangeData(bool state)
+        public void ChangeData(bool bitState)
         {
-            var expectedBitState = state ? 1 : 0;
-            if ((asbl.ReadData(DirectionRegister) & (1 << (int)bitNumber)) == 0)
-                throw new LineIsSetToReceiveException($"Попытка выставить в {expectedBitState} линию {number}, которая настроена на приём");
-            ChangeBit(DataRegister, state);
+            var state = bitState ? 1 : 0;
+            if (!asbl.ReadData(DirectionRegister).BitState((int)bitNumber))//((asbl.ReadData(DirectionRegister) & (1 << (int)bitNumber)) == 0)
+                throw new LineIsSetToReceiveException($"Попытка выставить в {state} линию {number}, которая настроена на приём");
+            ChangeBit(DataRegister, bitState);
             var writtenData = asbl.ReadData(DataRegister);
-            var actualBitState = (writtenData & (1 << (int)bitNumber)) >> (int)bitNumber;
-            if (actualBitState != expectedBitState)
-                throw new FailedToSetLineException($"Не удалось выставить линию {number} в {expectedBitState}");
+            //var actualBitState = (writtenData & (1 << (int)bitNumber)) >> (int)bitNumber;
+            if (!(writtenData.BitState((int)bitNumber) ^ bitState)) //if (actualBitState != expectedBitState)
+                throw new FailedToSetLineException($"Не удалось выставить линию {number} в {state}");
         }
 
         public void SetData()

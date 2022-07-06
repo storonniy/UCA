@@ -25,8 +25,12 @@ namespace UPD.Device.DeviceList
                     var closedRelays = mk.GetClosedRelayNames();
                     return DeviceResult.ResultOk(string.Join("\n", closedRelays));
                 case DeviceCommands.OpenAllRelays:
-                    mk.EmergencyBreak();
-                    return ResultOk($"{deviceData.DeviceName}: разомкнуты все реле");
+                    {
+                        var status = mk.EmergencyBreak();
+                        if (status)
+                            return ResultOk($"{deviceData.DeviceName}: разомкнуты все реле");
+                        return ResultError($"{deviceData.DeviceName}: не удалось разомкнуть все реле");
+                    }
                 case DeviceCommands.CloseRelays:
                     {
                         var relayNumbers = ParseRelayNumbers(deviceData.Argument);
@@ -34,8 +38,7 @@ namespace UPD.Device.DeviceList
                         var status = mk.CloseRelays(blockNumber, relayNumbers);
                         if (status)
                             return ResultOk($"{deviceData.DeviceName}{deviceData.AdditionalArg} замкнуты реле {String.Join(", ", relayNumbers)}");
-                        else
-                            return ResultError($"ОШИБКА: {deviceData.DeviceName}{deviceData.AdditionalArg} не замкнуты реле {String.Join(", ", relayNumbers)}");
+                        return ResultError($"ОШИБКА: {deviceData.DeviceName}{deviceData.AdditionalArg} не замкнуты реле {String.Join(", ", relayNumbers)}");
                     }
                 case DeviceCommands.OpenRelays:
                     {
@@ -44,8 +47,7 @@ namespace UPD.Device.DeviceList
                         var status = mk.OpenRelays(blockNumber, relayNumbers);
                         if (status)
                             return ResultOk($"{deviceData.DeviceName}{deviceData.AdditionalArg} разомкнуты реле {String.Join(", ", relayNumbers)}");
-                        else
-                            return ResultError($"ОШИБКА: {deviceData.DeviceName}{deviceData.AdditionalArg} не разомкнуты реле {String.Join(", ", relayNumbers)}");
+                        return ResultError($"ОШИБКА: {deviceData.DeviceName}{deviceData.AdditionalArg} не разомкнуты реле {String.Join(", ", relayNumbers)}");
                     }
                 default:
                     return ResultError($"Неизвестная команда {deviceData.Command}");
@@ -58,7 +60,7 @@ namespace UPD.Device.DeviceList
             var relayNumbers = new int[relayNames.Length];
             for (int i = 0; i < relayNumbers.Length; i++)
             {
-                relayNumbers[i] = int.Parse(relayNames[i]) - 1; /// -1 добавлено
+                relayNumbers[i] = int.Parse(relayNames[i]) - 1; /// TODO: -1 добавлено
             }
             return relayNumbers;
         }

@@ -5,6 +5,7 @@ using Ixxat.Vci4.Bal;
 using Ixxat.Vci4.Bal.Can;
 using UPD.DeviceDrivers;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace MKTests
 {
@@ -78,6 +79,20 @@ namespace MKTests
                 new BlockData(711, 7)
             };
             CollectionAssert.AreEqual(expected, blockDataList);
+        }
+
+        public string[] Meow ()
+        {
+            var blockDataList = new List<string>() { "", "", "", "", "", "", "" };
+            return Enumerable.Range(0, blockDataList.Count)
+    .Select(blockNumber => blockNumber.ToString())
+    .ToArray();
+        }
+
+        [TestMethod]
+        public void GodSaveTheLinq()
+        {
+            CollectionAssert.AreEqual(new string[] { "0", "1", "2", "3", "4", "5", "6" }, Meow());
         }
     }
 }

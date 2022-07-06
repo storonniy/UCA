@@ -77,7 +77,7 @@ namespace UCA.Devices
         CheckClosedRelays,
         OpenAllRelays,
         GetSignals,
-        GetVoltage,
+        GetVoltageDC,
         GetCurrent,
         CalculateCoefficient,
         GetVoltageRipple,

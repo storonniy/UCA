@@ -13,7 +13,7 @@ namespace UPD.DeviceDrivers
 {
     public class MK
     {
-        CanConNet vciDevice;
+        readonly CanConNet vciDevice;
         readonly List<BlockData> blockDataList;
 
         public MK()
@@ -74,19 +74,20 @@ namespace UPD.DeviceDrivers
         /// Разомкнуть все реле МК
         /// </summary>
         /// <returns> </returns>
-        public byte EmergencyBreak()
+        public bool EmergencyBreak()
         {
             uint ID = 0x00;
             byte[] canMessage = { 0x02, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
             vciDevice.TransmitData(canMessage, ID);
             Thread.Sleep(30);
-            byte finalStatus = 0x00;
-            for (int i = 0; i < blockDataList.Count; i++)
+            bool status = true;
+            for (int blockNumber = 0; blockNumber < blockDataList.Count; blockNumber++)
             {
                 var answer = GetAnswer(0xFD);
-                finalStatus = answer[2];
+                var relayStates = RequestAllRelayStatus(blockNumber);
+                status &= BitConverter.ToInt32(relayStates, 0) == 0;
             }
-            return finalStatus;
+            return status;
         }
 
         #endregion
@@ -100,9 +101,9 @@ namespace UPD.DeviceDrivers
         private byte CloseRelaysArray(int blockNumber, params int[] relayNumbers)
         {
             uint id = blockDataList[blockNumber].Id;
-            byte[] message1 = { 0x03, 0x01, 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
+            byte[] message1 = { 0x03, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
             vciDevice.TransmitData(message1, id);
-            byte[] message2 = { 0x03, 0x02, 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
+            byte[] message2 = { 0x03, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
             vciDevice.TransmitData(message2, id);
             var answer = GetAnswer(0xFC);
             var status = answer[2];
@@ -122,6 +123,7 @@ namespace UPD.DeviceDrivers
         /// <summary>
         /// Запрос состояния всех реле.
         /// </summary>
+        /// <param name="blockNumber"> Номер блока </param>
         /// <returns> Returns array of 10 bytes which contains relay states (each bit represents relay state) </returns>
         public byte[] RequestAllRelayStatus(int blockNumber)
         {
@@ -171,12 +173,15 @@ namespace UPD.DeviceDrivers
         /// <returns></returns>
         public string[] GetClosedRelayNames()
         {
-            var status = new List<string>();
+            return Enumerable.Range(0, blockDataList.Count)
+                .Select(blockNumber => GetClosedRelayNames(blockNumber))
+                .ToArray();
+/*            var status = new List<string>();
             for (int blockNumber = 0; blockNumber < blockDataList.Count; blockNumber++)
             {
                 status.Add(GetClosedRelayNames(blockNumber));
             }
-            return status.ToArray();
+            return status.ToArray();*/
         }
 
         /// <summary>

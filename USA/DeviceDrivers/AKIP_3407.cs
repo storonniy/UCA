@@ -20,20 +20,16 @@ namespace UCA.DeviceDrivers
             this.serialPort.Open();
         }
 
-        #region Auxiliary methods
-        private string DoCommandAndGetResult(string command)
+        private string DoCommandAndGetAnswer(string command)
         {
             DoCommand(command);
             return serialPort.ReadExisting();
         }
 
-        #endregion
-
         private void DoCommand(string command)
         {
             var bytes = GetBytes(command);
             serialPort.Write(bytes, 0, bytes.Length);
-            //serialPort.Write(command);
             Thread.Sleep(delay);
         }
 
@@ -50,9 +46,8 @@ namespace UCA.DeviceDrivers
         public double SetVoltage (double voltage)
         {
             var str = voltage.ToString().Replace(",", ".");
-            //var command = $"SOUR2:VOLT {str}";
             DoCommand($"SOUR1:VOLT {str}");
-            var result = DoCommandAndGetResult("SOUR1:VOLT?").Replace("\n", "");
+            var result = DoCommandAndGetAnswer("SOUR1:VOLT?").Replace("\n", "");
             return double.Parse(result, CultureInfo.InvariantCulture);
         }
 
@@ -60,7 +55,7 @@ namespace UCA.DeviceDrivers
         {
             var command = $"SOUR1:FREQ {frequency}";
             DoCommand(command);
-            var result = DoCommandAndGetResult("SOUR1:FREQ?");
+            var result = DoCommandAndGetAnswer("SOUR1:FREQ?");
             return double.Parse(result, CultureInfo.InvariantCulture);
         }
 
@@ -79,7 +74,7 @@ namespace UCA.DeviceDrivers
         {
             var command = $"OUTP1 {status}";
             DoCommand(command);
-            var result = DoCommandAndGetResult(command);
+            var result = DoCommandAndGetAnswer(command);
             return result == "1";
         }
 
