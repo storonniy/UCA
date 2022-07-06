@@ -91,6 +91,11 @@ namespace UCA.Devices
             }
         }
 
+        public virtual void Die()
+        {
+
+        }
+
         #region Coefficient
         public struct InputData
         {

@@ -25,6 +25,11 @@ namespace VciCAN
             rxThread.Start();
         }
 
+        public void Die()
+        {
+            rxThread.Abort();
+        }
+
         ~CanConNet()
         {
             rxThread.Abort();
@@ -292,7 +297,6 @@ namespace VciCAN
             ICanMessage canMessage = (ICanMessage)factory.CreateMsg(typeof(ICanMessage));
             do
             {
-                // Wait 100 msec for a message reception
                 if (mRxEvent.WaitOne(100, false))
                 {
                     while (mReader.ReadMessage(out canMessage))

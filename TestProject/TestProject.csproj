@@ -47,6 +47,9 @@
     <Reference Include="FTD2XXHelper, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\FTD2XXHelper.1.2.2\lib\netstandard2.0\FTD2XXHelper.dll</HintPath>
     </Reference>
+    <Reference Include="FTD2XX_NET, Version=1.0.14.39395, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\FTD2XX_NET.1.0.14\lib\net40\FTD2XX_NET.dll</HintPath>
+    </Reference>
     <Reference Include="FTDIWrapper, Version=6.1.0.73, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Essy.FTDIWrapper.6.2.0\lib\net46\FTDIWrapper.dll</HintPath>
     </Reference>

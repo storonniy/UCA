@@ -8,6 +8,7 @@ using UCA.Logging;
 using UCA.Steps;
 using static UCA.ControlObjectSettings.ControlObjectSettings;
 using System.ComponentModel;
+using System.Linq;
 
 namespace UCA
 {
@@ -192,7 +193,6 @@ namespace UCA
                 {
                     break;
                 }
-                //else if (device.Status == DeviceStatus.ERROR)
             }
             InitDevices();
         }
@@ -748,8 +748,20 @@ namespace UCA
                 var result = $"Проверка прервана, результаты проверки записаны в файл.";
                 log.Send(result);
             }
+            Die();
             Application.Exit();
             mainThread.Abort();
+        }
+
+        private void Die()
+        {
+            if (DeviceHandler == null)
+                return;
+            DeviceHandler.Devices
+                .Values
+                .Where(dev => dev != null)
+                .ToList()
+                .ForEach(device => device.Die());
         }
 
         #endregion
@@ -811,9 +823,16 @@ namespace UCA
             {
                 Command = DeviceCommands.GetClosedRelayNames
             };
-            var relays = DeviceHandler.Devices[DeviceNames.MK].DoCommand(deviceData).Description;
-            relays += DeviceHandler.Devices[DeviceNames.Simulator].DoCommand(deviceData).Description;
-            ShowRelays(relays);
+            try
+            {
+                var relays = DeviceHandler.Devices[DeviceNames.MK].DoCommand(deviceData).Description;
+                relays += DeviceHandler.Devices[DeviceNames.Simulator].DoCommand(deviceData).Description;
+                ShowRelays(relays);
+            }
+            catch (NullReferenceException ex)
+            {
+                MessageBox.Show("Как минимум одно устройство не подключено");
+            }
         }
 
         private void ShowRelays(string relays)

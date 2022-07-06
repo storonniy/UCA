@@ -33,7 +33,7 @@
     </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>x86</PlatformTarget>
+    <PlatformTarget>x64</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -74,37 +74,21 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>bin\Automation.BDaq.dll</HintPath>
     </Reference>
-    <Reference Include="D2XXHelper, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\D2XXHelper.dll</HintPath>
+    <Reference Include="FTD2XX_NET, Version=1.0.14.39395, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\FTD2XX_NET.1.0.14\lib\net40\FTD2XX_NET.dll</HintPath>
     </Reference>
-    <Reference Include="FTD2XXHelper, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\FTD2XXHelper.dll</HintPath>
+    <Reference Include="Ixxat.Vci4">
+      <HintPath>..\packages\Ixxat.Vci4.4.0.436\lib\net40\Ixxat.Vci4.dll</HintPath>
     </Reference>
-    <Reference Include="FTD2XX_NET, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\FTD2XX_NET.dll</HintPath>
-    </Reference>
-    <Reference Include="FTDIWrapper, Version=6.1.0.73, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\FTDIWrapper.dll</HintPath>
-    </Reference>
-    <Reference Include="Ixxat.Vci4, Version=4.0.439.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\Ixxat.Vci4.dll</HintPath>
-    </Reference>
-    <Reference Include="Ixxat.Vci4.Contract, Version=4.0.439.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\Ixxat.Vci4.Contract.dll</HintPath>
+    <Reference Include="Ixxat.Vci4.Contract">
+      <HintPath>..\packages\Ixxat.Vci4.4.0.436\lib\net40\Ixxat.Vci4.Contract.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.TestPlatform.AdapterUtilities, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>bin\Microsoft.TestPlatform.AdapterUtilities.dll</HintPath>
     </Reference>
-    <Reference Include="NModbus4, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\NModbus4.dll</HintPath>
+    <Reference Include="NModbus4">
+      <HintPath>.\NModbus4.dll</HintPath>
     </Reference>
     <Reference Include="System">
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.dll</HintPath>

@@ -17,6 +17,11 @@ namespace UPD.Device.DeviceList
             mk = new MK();
         }
 
+        public override void Die()
+        {
+            mk.Die();
+        }
+
         public override DeviceResult DoCommand(DeviceData deviceData)
         {
             switch (deviceData.Command)

@@ -22,6 +22,14 @@ namespace UPD.DeviceDrivers
             blockDataList = WakeUp(); 
         }
 
+        /// <summary>
+        /// Убивает ReceiveThreadFunc, которая мешает вызвать деструктор внутри CanConNet
+        /// </summary>
+        public void Die()
+        {
+            vciDevice.Die();
+        }
+
         ~MK()
         {
             vciDevice.FinalizeApp();        
@@ -34,7 +42,7 @@ namespace UPD.DeviceDrivers
             {
                 answer = vciDevice.GetData();
                 if (answer == null)
-                    throw new Exception("Устройство не отвечает");
+                    return null;/// throw new Exception("Устройство не отвечает");
             } while (answer[0] != validFirstByte);
             return answer;
         }
@@ -110,12 +118,6 @@ namespace UPD.DeviceDrivers
             return status;
         }
 
-        private void meow (int relayNumber)
-        {
-            var byteNumber = relayNumber / 8;
-            var position = relayNumber % 8;
-        }
-
         #endregion
 
         #region 4 Request status of all relays
@@ -154,7 +156,12 @@ namespace UPD.DeviceDrivers
 
         public static int[] GetRelayNumbers(byte[] relayStatusBytes)
         {
-            var states = new List<int>();
+            return Enumerable.Range(0, relayStatusBytes.Length)
+                .SelectMany(i => Enumerable.Range(0, 8)
+                    .Where(position => relayStatusBytes[i].BitState(position))
+                    .Select(position => 8 * i + position + 1))
+                .ToArray();
+/*            var states = new List<int>();
             for (int i = 0; i < relayStatusBytes.Length; i++)
             {
                 for (int position = 0; position < 8; position++)
@@ -164,7 +171,7 @@ namespace UPD.DeviceDrivers
                         states.Add(relayNumber);
                 }
             }
-            return states.ToArray();
+            return states.ToArray();*/
         }
 
         /// <summary>
@@ -228,36 +235,26 @@ namespace UPD.DeviceDrivers
             return requestedRelayStatus == actualStatus;
         }
 
-        private bool CloseRelay(int blockNumber, int relayNumber)
-        {
-            return ChangeRelayState(blockNumber, relayNumber, true);
-        }
-
-        private bool OpenRelay(int blockNumber, int relayNumber)
-        {
-            return ChangeRelayState(blockNumber, relayNumber, false);
-        }
-
         public bool CloseRelays(int blockNumber, int[] relayNumbers)
         {
-            var operationSucceed = true;
             foreach (var relayNumber in relayNumbers)
             {
-                var status = CloseRelay(blockNumber, relayNumber);
-                operationSucceed = operationSucceed & status;
+                var status = ChangeRelayState(blockNumber, relayNumber, true);
+                if (!status)
+                    return false;
             }
-            return operationSucceed;
+            return true;
         }
 
         public bool OpenRelays(int blockNumber, int[] relayNumbers)
         {
-            var operationSucceed = true;
             foreach (var relayNumber in relayNumbers)
             {
-                var status = OpenRelay(blockNumber, relayNumber);
-                operationSucceed = operationSucceed & status;
+                var status = ChangeRelayState(blockNumber, relayNumber, false);
+                if (!status)
+                    return false;
             }
-            return operationSucceed;
+            return true;
         }
 
         #endregion
@@ -316,14 +313,18 @@ namespace UPD.DeviceDrivers
             vciDevice.TransmitData(canMessage, id);
             int numberOfBlocks = 7; // Комментарии никто не читает. Но в этой переменной отражено реальное число блоков.
             List<BlockData> blockDataList = new List<BlockData>();
-            for (int i = 0; i < numberOfBlocks; i++)
+            while (true)
             {
                 Thread.Sleep(100);
                 var answer = GetAnswer(0xF7);
+                if (answer == null)
+                    break;
                 blockDataList.Add(new BlockData(answer.Identifier, 256 * answer[3] + answer[2]));
             }
             //blockDataList.Sort(new BlockDataComparer());
-            return SortByID(blockDataList);         
+            if (blockDataList.Count == 0)
+                throw new Exception("К шине CAN не подключены устройства типа МК");
+            return SortByID(blockDataList);
         }
 
         public static Func<List<BlockData>, List<BlockData>> SortByID = list => list
