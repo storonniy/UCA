@@ -7,10 +7,10 @@ using UPD.DeviceDrivers;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace MKTests
+namespace Tester
 {
     [TestClass]
-    public class UnitTest1
+    public class MKTests
     {
         [TestMethod]
         public void GetRelayStatesBytesTest()

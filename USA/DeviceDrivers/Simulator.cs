@@ -20,7 +20,7 @@ namespace UPD.DeviceDrivers
 
         ~Simulator()
         {
-            this.serialPort.Close();
+            serialPort.Close();
         }
 
         public static string[] GetRelayNamesAsAnArray(string relayNamesString)
@@ -50,14 +50,13 @@ namespace UPD.DeviceDrivers
 
         public string PrepareCommandForAdapter(params string[] relays)
         {
-            return string.Join(",", relays);// "#010";
+            return string.Join(",", relays);;
         }
 
         public void CloseRelays(params string[] relays)
         {
             string command = "*CloseRelays:" + PrepareCommandForAdapter(relays);
             SendCommand(command);
-            Thread.Sleep(delay);
             var answerFromAdapter = serialPort.ReadExisting();
             if (answerFromAdapter != "*CloseRelays:Ok\r")
                 throw new Exception($"При замыкании реле {command} возникла ошибка");
@@ -77,18 +76,15 @@ namespace UPD.DeviceDrivers
         {
             string command = "*OpenRelays:" + PrepareCommandForAdapter(relays);
             SendCommand(command);
-            Thread.Sleep(delay);
             var answerFromAdapter = serialPort.ReadExisting();
             if (answerFromAdapter != "*OpenRelays:Ok\r")
                 throw new Exception($"При размыкании реле {command} возникла ошибка");
         }
 
-        //*OpenRelays:All
         public void OpenAllRelays()
         {
             string command = "*OpenRelays:All";
             SendCommand(command);
-            Thread.Sleep(delay);
             var answerFromAdapter = serialPort.ReadExisting();
             if (answerFromAdapter != "*OpenRelays:Ok\r")
                 throw new Exception($"При размыкании реле {command} возникла ошибка");

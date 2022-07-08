@@ -37,7 +37,14 @@ namespace UCA.Devices
                         var voltage = gdm78261.MeasureVoltageAC();
                         return GetResult("Измерено", deviceData, UnitType.Voltage, voltage);
                     }
-                case DeviceCommands.GetVoltageAndSave:
+                case DeviceCommands.GetVoltageACAndSave:
+                    {
+                        var voltage = gdm78261.MeasureVoltageAC();
+                        var key = deviceData.Argument;
+                        AddValues(key, voltage);
+                        return GetResult("Измерено", deviceData, UnitType.Voltage, voltage);
+                    }
+                case DeviceCommands.GetVoltageDCAndSave:
                     {
                         var voltage = gdm78261.MeasureVoltageDC();
                         var key = deviceData.Argument;
@@ -65,6 +72,12 @@ namespace UCA.Devices
                     var currentRange = double.Parse(deviceData.Argument, CultureInfo.InvariantCulture);
                     gdm78261.SetMeasurementToCurrentDC(currentRange);
                     return DeviceResult.ResultOk($"{deviceData.DeviceName} переведен в режим измерения тока");
+                case DeviceCommands.SetMeasurementToVoltageAC:
+                    gdm78261.SetMeasurementToVoltageAC();
+                    return DeviceResult.ResultOk($"{deviceData.DeviceName} переключён в режим измерения переменного напряжения");
+                case DeviceCommands.SetMeasurementToVoltageDC:
+                    gdm78261.SetMeasurementToVoltageDC();
+                    return DeviceResult.ResultOk($"{deviceData.DeviceName} переключён в режим измерения постоянного напряжения");
                 default:
                     return DeviceResult.ResultError($"Неизвестная команда {deviceData.Command}");
             }

@@ -51,7 +51,7 @@ namespace UCA.Devices
         public static DeviceResult ResultError(string description) => new DeviceResult()
         {
             State = DeviceStatus.ERROR,
-            Description = description
+            Description = $"ОШИБКА: {description}"
         };
         public static DeviceResult ResultNotConnected(string description) => new DeviceResult()
         {
@@ -63,7 +63,7 @@ namespace UCA.Devices
     public enum DeviceCommands
     {
         // GDM
-        GetVoltageAndSave,
+        GetVoltageACAndSave,
         // УСА
         SetCurrentLimit,
         SetPowerLimit,
@@ -96,7 +96,7 @@ namespace UCA.Devices
         //
         CalculateCoefficient_UCAT,
         SetMeasurementToCurrent, // GDM
-        SetMeasurementToVoltage,
+        SetMeasurementToVoltageDC,
         // AKIP_3407
         SetFrequency,
         // None
@@ -119,7 +119,8 @@ namespace UCA.Devices
         SetVoltageSourceMode,
         GetVoltageAC,
         SetMeasurementToVoltageAC,
-        GetClosedRelayNames
+        GetClosedRelayNames,
+        GetVoltageDCAndSave
     }
 
     public enum DeviceNames

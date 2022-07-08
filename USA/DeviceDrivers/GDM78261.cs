@@ -7,6 +7,7 @@ using System.IO.Ports;
 using System.IO;
 using System.Threading;
 using System.Globalization;
+using UPD.DeviceDrivers;
 
 namespace UCA.DeviceDrivers
 {
@@ -22,18 +23,15 @@ namespace UCA.DeviceDrivers
 
         ~GDM78261()
         {
-            this.serialPort.Close();
+            serialPort.Close();
         }
 
         public double MeasureVoltageAC()
         {
-            serialPort.WriteLine("CONF:VOLT:AC#013#010");
             Thread.Sleep(4000);
-            serialPort.WriteLine("MEAS:VOLT:AC?#013#010");
-            Thread.Sleep(1000);
-            return ParseValue(serialPort.ReadLine());
+            serialPort.SendCommand("MEAS:VOLT:AC?#013#010");
+            return serialPort.ReadDouble();
         }
-
 
         /// <summary>
         /// Returns the DC voltage measurement as N mV.
@@ -41,10 +39,9 @@ namespace UCA.DeviceDrivers
         /// <returns></returns>
         public double MeasureVoltageDC()
         {
-            serialPort.WriteLine("CONF:VOLT:DC#013#010");
             Thread.Sleep(1000);
-            serialPort.WriteLine("MEAS:VOLT:DC?#013#010");
-            return ParseValue(serialPort.ReadLine());
+            serialPort.SendCommand("MEAS:VOLT:DC?#013#010");
+            return serialPort.ReadDouble();
         }
         /// <summary>
         /// Returns the DC current measurement, mA.
@@ -53,9 +50,8 @@ namespace UCA.DeviceDrivers
         public double MeasureCurrentDC()
         {
             Thread.Sleep(2000);
-            serialPort.WriteLine("MEAS:CURR:DC?#013#010");
-            Thread.Sleep(2000);
-            return ParseValue(serialPort.ReadLine());
+            serialPort.SendCommand("MEAS:CURR:DC?#013#010");
+            return serialPort.ReadDouble();
         }
 
         /// <summary>
@@ -64,16 +60,14 @@ namespace UCA.DeviceDrivers
         /// <param name="range"></param>
         public void SetMeasurementToCurrentDC(double range)
         {
-            serialPort.WriteLine($"CONF:CURR:DC {range}#013#010");
-            Thread.Sleep(1000);
+            serialPort.SendCommand($"CONF:CURR:DC {range}#013#010");
         }
         /// <summary>
         /// Sets measurement to DC Voltage on the first display
         /// </summary>
         public void SetMeasurementToVoltageDC()
         {
-            serialPort.WriteLine($"CONF:VOLT:DC#013#010");
-            Thread.Sleep(1000);
+            serialPort.SendCommand("CONF:VOLT:DC#013#010");
         }
 
         /// <summary>
@@ -81,26 +75,7 @@ namespace UCA.DeviceDrivers
         /// </summary>
         public void SetMeasurementToVoltageAC()
         {
-            serialPort.WriteLine($"CONF:VOLT:AC#013#010");
-            Thread.Sleep(1000);
-        }
-
-
-
-        private enum Polarity
-        {
-            AC,
-            DC
-        }
-
-        public void Configure()
-        {
-
-        }
-
-        public static double ParseValue (string value)
-        {
-            return (double)Decimal.Parse(value.Replace("\r", ""), NumberStyles.Float, CultureInfo.InvariantCulture);
+            serialPort.SendCommand($"CONF:VOLT:AC#013#010");
         }
     }
 }

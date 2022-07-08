@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.IO.Ports;
 using System.Globalization;
 using System.Threading;
+using UPD.DeviceDrivers;
 
 namespace UCA.DeviceDrivers
 {
@@ -21,19 +22,6 @@ namespace UCA.DeviceDrivers
         }
 
         private static readonly int delay = 500;
-
-        public double ReadDouble()
-        {
-            var value = serialPort.ReadExisting().Replace("\r", "");
-            try
-            {
-                return (double)decimal.Parse(value, NumberStyles.Float, CultureInfo.InvariantCulture);
-            }
-            catch (FormatException)
-            {
-                throw new FormatException($"[{value}] не может быть преобразован в double");
-            }
-        }
 
         public void SelectVoltageSource()
         {
@@ -61,7 +49,7 @@ namespace UCA.DeviceDrivers
             var bytes = Encoding.ASCII.GetBytes(command);
             byte[] result = new byte[bytes.Length + 2];
             Array.Copy(bytes, result, bytes.Length);
-            result[bytes.Length] = 0x0D;
+            //result[bytes.Length] = 0x0D;
             result[bytes.Length] = 0x0A;
             return result;
         }
@@ -122,7 +110,7 @@ namespace UCA.DeviceDrivers
         public double GetVoltage()
         {
             SendCommand(":SOUR:VOLT:LEV:AMPL?");
-            return ReadDouble();
+            return serialPort.ReadDouble();
         }
 
         /// <summary>
@@ -136,7 +124,7 @@ namespace UCA.DeviceDrivers
             SendCommand($":SENS:CURR:PROT {str}");
             SendCommand($":SENS:CURR:RANGE {str}");
             SendCommand($":SENS:CURR:PROT?");
-            return ReadDouble();
+            return serialPort.ReadDouble();
         }
 
         /// <summary>

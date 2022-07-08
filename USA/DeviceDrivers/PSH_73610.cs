@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO.Ports;
 using System.Threading;
+using UPD.DeviceDrivers;
 
 namespace UCA.DeviceDrivers
 {
@@ -26,20 +27,6 @@ namespace UCA.DeviceDrivers
                 serialPort.Dispose();
         }
 
-        private double DoCommandAndGetResult(string command)
-        {
-            DoCommand(command);
-            var data = serialPort.ReadLine();
-            return ParseInputData(data);
-        }
-
-        private void DoCommand(string command)
-        {
-            serialPort.WriteLine(command);
-            Thread.Sleep(1000);
-        }
-
-
         /// <summary>
         /// Sets the output voltage (unit: V).
         /// </summary>
@@ -48,10 +35,9 @@ namespace UCA.DeviceDrivers
         public double SetVoltage(double voltage)
         {
             var str = voltage.ToString().Replace(",", ".");
-            var command = $":chan1:volt {str};:chan1:volt?\n";
-            DoCommand($":chan1:volt {str}\n");
-            Thread.Sleep(500);
-            return DoCommandAndGetResult(":chan1: volt ?\n");
+            serialPort.SendCommand($":chan1:volt {str}\n");
+            serialPort.SendCommand(":chan1: volt ?\n");
+            return serialPort.ReadDouble();
         }
 
         /// <summary>
@@ -60,8 +46,8 @@ namespace UCA.DeviceDrivers
         /// <returns></returns>
         public double GetActualOutputLoadVoltage()
         {
-            var command = $":chan1:meas:volt?\n";
-            return DoCommandAndGetResult(command);
+            serialPort.SendCommand($":chan1:meas:volt?\n");
+            return serialPort.ReadDouble();
         }
 
         /// <summary>
@@ -70,8 +56,8 @@ namespace UCA.DeviceDrivers
         /// <returns></returns>
         public double GetActualOutputLoadCurrent()
         {
-            var command = $":chan1:meas:curr?\n";
-            return DoCommandAndGetResult(command);
+            serialPort.SendCommand($":chan1:meas:curr?\n");
+            return serialPort.ReadDouble();
         }
 
 
@@ -83,8 +69,8 @@ namespace UCA.DeviceDrivers
         public double SetCurrentLimit(double current)
         {
             var str = current.ToString().Replace(",", ".");
-            var command = $":chan1:prot:curr 1;:chan1:curr {str};:chan1:curr?\n";
-            return DoCommandAndGetResult(command);
+            serialPort.SendCommand($":chan1:prot:curr 1;:chan1:curr {str};:chan1:curr?\n");
+            return serialPort.ReadDouble();
         }
 
         /// <summary>
@@ -95,8 +81,8 @@ namespace UCA.DeviceDrivers
         public double SetOverVoltageProtectionValue(double voltageProtection)
         {
             var str = voltageProtection.ToString().Replace(",", ".");
-            var command = $":chan1:prot:volt {str};:chan1:prot:volt?\n";
-            return DoCommandAndGetResult(command);
+            serialPort.SendCommand($":chan1:prot:volt {str};:chan1:prot:volt?\n");
+            return serialPort.ReadDouble();
         }
 
         /// <summary>
@@ -108,16 +94,12 @@ namespace UCA.DeviceDrivers
         public void SetCurrentProtection(bool state)
         {
             var currProtection = state ? "1" : "0";
-            var command = $":chan1:prot:curr {currProtection};:chan1:prot:curr?\n";
-            DoCommand(command);
+            serialPort.SendCommand($":chan1:prot:curr {currProtection};:chan1:prot:curr?\n");
         }
 
         private void ChangeOutputStatus(int value)
         {
-            Thread.Sleep(2000);
-            var command = $":outp:stat {value};:outp:stat?";
-            serialPort.WriteLine(command);
-            Thread.Sleep(1000);
+            serialPort.SendCommand($":outp:stat {value};:outp:stat?");
         }
 
         public void PowerOn()
@@ -128,11 +110,6 @@ namespace UCA.DeviceDrivers
         public void PowerOff()
         {
             ChangeOutputStatus(0);
-        }
-
-        private double ParseInputData(string data)
-        {
-            return (double)Single.Parse(data.Replace(".", ","));
         }
     }
 

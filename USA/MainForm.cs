@@ -829,7 +829,11 @@ namespace UCA
                 relays += DeviceHandler.Devices[DeviceNames.Simulator].DoCommand(deviceData).Description;
                 ShowRelays(relays);
             }
-            catch (NullReferenceException ex)
+            catch (NullReferenceException)
+            {
+                MessageBox.Show("Как минимум одно устройство не подключено");
+            }
+            catch (KeyNotFoundException)
             {
                 MessageBox.Show("Как минимум одно устройство не подключено");
             }

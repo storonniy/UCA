@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.IO.Ports;
 using System.Threading;
 using System.Globalization;
+using UPD.DeviceDrivers;
 
 namespace UCA.DeviceDrivers
 {
@@ -20,13 +21,7 @@ namespace UCA.DeviceDrivers
             this.serialPort.Open();
         }
 
-        private string DoCommandAndGetAnswer(string command)
-        {
-            DoCommand(command);
-            return serialPort.ReadExisting();
-        }
-
-        private void DoCommand(string command)
+        private void SendCommand(string command)
         {
             var bytes = GetBytes(command);
             serialPort.Write(bytes, 0, bytes.Length);
@@ -46,17 +41,16 @@ namespace UCA.DeviceDrivers
         public double SetVoltage (double voltage)
         {
             var str = voltage.ToString().Replace(",", ".");
-            DoCommand($"SOUR1:VOLT {str}");
-            var result = DoCommandAndGetAnswer("SOUR1:VOLT?").Replace("\n", "");
-            return double.Parse(result, CultureInfo.InvariantCulture);
+            SendCommand($"SOUR1:VOLT {str}");
+            SendCommand("SOUR1:VOLT?");
+            return serialPort.ReadDouble();
         }
 
         public double SetFrequency (string frequency)
         {
-            var command = $"SOUR1:FREQ {frequency}";
-            DoCommand(command);
-            var result = DoCommandAndGetAnswer("SOUR1:FREQ?");
-            return double.Parse(result, CultureInfo.InvariantCulture);
+            SendCommand($"SOUR1:FREQ {frequency}");
+            SendCommand("SOUR1:FREQ?");
+            return serialPort.ReadDouble();
         }
 
         #region Power Status
@@ -72,18 +66,16 @@ namespace UCA.DeviceDrivers
 
         private bool ChangePowerStatus(string status)
         {
-            var command = $"OUTP1 {status}";
-            DoCommand(command);
-            var result = DoCommandAndGetAnswer(command);
-            return result == "1";
+            SendCommand($"OUTP1 {status}");
+            return serialPort.ReadExisting() == "1";
         }
 
         #endregion
 
-
         ~AKIP_3407()
         {
-            //serialPort.Close();
+            if (serialPort.IsOpen)
+                serialPort.Close();
         }
     }
 }

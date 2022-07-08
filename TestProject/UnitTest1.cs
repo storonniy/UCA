@@ -255,7 +255,7 @@ namespace TestProject
         public void OpenAllRelays()
         {
             PCI_1762 pci1762 = new PCI_1762("PCI-1762,BID#1");
-            pci1762.Write(new int[] { 0, 7, 8, 15 });
+            pci1762.CloseRelays(new int[] { 0, 7, 8, 15 });
             Thread.Sleep(1000);
             pci1762.OpenAllRelays();
             Thread.Sleep(1000);
@@ -271,11 +271,11 @@ namespace TestProject
             pci1762.OpenAllRelays();
             Thread.Sleep(1000);
             var expected = new int[] { 0, 3, 7 };
-            pci1762.Write(expected);
+            pci1762.CloseRelays(expected);
             Thread.Sleep(1000);
             var actual = pci1762.GetClosedRelaysNumbers();
             Thread.Sleep(1000);
-            pci1762.Write(new int[] { 4, 11});
+            pci1762.CloseRelays(new int[] { 4, 11});
             Thread.Sleep(1000);
             expected = new int[] { 0, 3, 7, 4, 11 };
             actual = pci1762.GetClosedRelaysNumbers();
@@ -289,7 +289,7 @@ namespace TestProject
             pci1762.OpenAllRelays();
             Thread.Sleep(100);
             var expected = new int[] { 8, 11, 15 };
-            pci1762.Write(expected);
+            pci1762.CloseRelays(expected);
             Thread.Sleep(100);
             var actual = pci1762.GetClosedRelaysNumbers();
             CollectionAssert.AreEquivalent(expected, actual);
@@ -302,7 +302,7 @@ namespace TestProject
             pci1762.OpenAllRelays();
             Thread.Sleep(100);
             var expected = new int[] { 2, 4, 6, 9, 12, 15 };
-            pci1762.Write(expected);
+            pci1762.CloseRelays(expected);
             Thread.Sleep(100);
             var actual = pci1762.GetClosedRelaysNumbers();
             CollectionAssert.AreEquivalent(expected, actual);
@@ -315,7 +315,7 @@ namespace TestProject
             pci1762.OpenAllRelays();
             Thread.Sleep(100);
             var expected = new int[] { 2, 4, 6, 9, 12, 15 };
-            pci1762.Write(expected);
+            pci1762.CloseRelays(expected);
             Thread.Sleep(100);
             var actual = pci1762.GetClosedRelaysNumbers();
             CollectionAssert.AreEquivalent(expected, actual);

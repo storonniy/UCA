@@ -18,7 +18,7 @@ namespace UCA.Devices
         {
             var voltage = double.Parse(deviceData.Argument, CultureInfo.InvariantCulture);
             var result = setVoltage(voltage);
-            return GetResult($"{deviceData.DeviceName}: Установлено напряжение", deviceData, UnitType.Voltage, result);
+            return GetResultOfSetting($"{deviceData.DeviceName}: Установлено напряжение", UnitType.Voltage, result, voltage);
         }
 
         public static DeviceResult SetVoltage(DeviceData deviceData, Func<double, int, double> setVoltage)
@@ -26,7 +26,7 @@ namespace UCA.Devices
             var channel = int.Parse(deviceData.AdditionalArg);
             var voltage = double.Parse(deviceData.Argument, CultureInfo.InvariantCulture);
             var result = setVoltage(voltage, channel);
-            return GetResult($"{ deviceData.DeviceName}: Установлено напряжение", deviceData, UnitType.Voltage, result);
+            return GetResultOfSetting($"{ deviceData.DeviceName}: Установлено напряжение", UnitType.Voltage, result, voltage);
         }
 
         public static DeviceResult SetCurrent(DeviceData deviceData, Func<double, int, double> setCurrent)
@@ -34,14 +34,14 @@ namespace UCA.Devices
             var channel = int.Parse(deviceData.AdditionalArg);
             var current = double.Parse(deviceData.Argument, CultureInfo.InvariantCulture);
             var result = setCurrent(current, channel);
-            return GetResult($"{deviceData.DeviceName}: Установлен ток", deviceData, UnitType.Current, result);
+            return GetResultOfSetting($"{deviceData.DeviceName}: Установлен ток", UnitType.Current, result, current);
         }
 
         public static DeviceResult SetCurrentLimit(DeviceData deviceData, Func<double, double> setCurrentLimit)
         {
             var currentLimit = double.Parse(deviceData.Argument, CultureInfo.InvariantCulture);
             var result = setCurrentLimit(currentLimit);
-            return GetResult($"{deviceData.DeviceName}: Установлен предел по току", deviceData, UnitType.Current, result);
+            return GetResultOfSetting($"{deviceData.DeviceName}: Установлен предел по току", UnitType.Current, result, currentLimit);
         }
 
         public static DeviceResult SetCurrentLimit(DeviceData deviceData, Func<double, int, double> setCurrentLimit)
@@ -49,7 +49,7 @@ namespace UCA.Devices
             var channel = int.Parse(deviceData.AdditionalArg);
             var currentLimit = double.Parse(deviceData.Argument, CultureInfo.InvariantCulture);
             var result = setCurrentLimit(currentLimit, channel);
-            return GetResult($"{deviceData.DeviceName}: Установлен предел по току", deviceData, UnitType.Current, result);
+            return GetResultOfSetting($"{deviceData.DeviceName}: Установлен предел по току", UnitType.Current, result, currentLimit);
         }
 
         public static DeviceResult PowerOn(DeviceData deviceData, Action powerOn)
@@ -66,8 +66,10 @@ namespace UCA.Devices
 
         public static DeviceResult PowerOn(DeviceData deviceData, Func<bool> powerOn)
         {
-            powerOn();
-            return DeviceResult.ResultOk($"{deviceData.DeviceName}: подан входной сигнал");
+            var status = powerOn();
+            if (status)
+                return DeviceResult.ResultOk($"{deviceData.DeviceName}: подан входной сигнал");
+            return DeviceResult.ResultError($"{deviceData.DeviceName}: ошибка при подаче входного сигнала");
         }
 
         public static DeviceResult PowerOff(DeviceData deviceData, Func<bool> powerOff)
@@ -82,13 +84,16 @@ namespace UCA.Devices
         {
             var result = $"{message}: {GetValueUnitPair(value, unitType)} \tНижний предел: {GetValueUnitPair(deviceData.LowerLimit, unitType)}\t Верхний предел {GetValueUnitPair(deviceData.UpperLimit, unitType)}";
             if (value >= deviceData.LowerLimit && value <= deviceData.UpperLimit)
-            {
                 return DeviceResult.ResultOk(result);
-            }
-            else
-            {
-                return DeviceResult.ResultError($"ОШИБКА: {result}");
-            }
+            return DeviceResult.ResultError(result);
+        }
+
+        public static DeviceResult GetResultOfSetting(string message, UnitType unitType, double value, double expectedValue)
+        {
+            var result = $"{message}: {GetValueUnitPair(value, unitType)}";
+            if (Math.Abs(value - expectedValue) <= 0.1 * Math.Abs(expectedValue))
+                return DeviceResult.ResultOk(result);
+            return DeviceResult.ResultError(result);
         }
 
         public virtual void Die()

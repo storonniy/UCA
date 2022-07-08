@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.IO.Ports;
 using UCA.Devices;
 using System.Threading;
+using UPD.DeviceDrivers;
 
 namespace UCA.DeviceDrivers
 {
@@ -19,33 +20,20 @@ namespace UCA.DeviceDrivers
             if (SerialPort.GetPortNames().ToList().Contains(serialPort.PortName))
                 this.serialPort.Open();
         }
-
-        private string DoCommandAndGetResult(string command)
+        
+        private int ReadDataNR1()
         {
-            serialPort.WriteLine(command);
-            Thread.Sleep(1000);
-            return serialPort.ReadLine();
+            return int.Parse(serialPort.ReadLine());
         }
         
-        private int SendAndParseDataNR1(string command)
+        private float ReadDataNR3(string command)
         {
-            return int.Parse(DoCommandAndGetResult(command));
-        }
-
-        private double SendAndParseDataNR2(string command)
-        {
-            var answer = DoCommandAndGetResult(command).Replace(".", ",");
-            return double.Parse(answer);
+            return float.Parse(serialPort.ReadLine());
         }
         
-        private float SendAndParseDataNR3(string command)
+        private bool ReadBoolean()
         {
-            return float.Parse(DoCommandAndGetResult(command));
-        }
-        
-        private bool SendAndParseDataBoolean(string command)
-        {
-            return DoCommandAndGetResult(command) == "1";
+            return serialPort.ReadLine() == "1";
         }
 
         /// <summary>
@@ -58,18 +46,17 @@ namespace UCA.DeviceDrivers
         {
             if (1 > channel || channel > 3)
                 throw new ArgumentException("Номер канала PST_3201 может быть равен 1, 2, 3");
-            //var command = $":CHAN {channel}:VOLT {voltage};VOLT ?\n";
             var str = voltage.ToString().Replace(",", ".");
-            var command = $":CHAN{channel}:VOLT {str};VOLT?\n";
-            return SendAndParseDataNR2(command);
+            serialPort.SendCommand($":CHAN{channel}:VOLT {str};VOLT?\n");
+            return serialPort.ReadDouble();
         }
 
         public double GetOutputVoltage(int channel)
         {
             if (1 > channel || channel > 3)
                 throw new ArgumentException("Номер канала PST_3201 может быть равен 1, 2, 3");
-            var command = $":CHAN{channel}:MEAS:VOLT?\n";
-            return SendAndParseDataNR2(command);
+            serialPort.SendCommand($":CHAN{channel}:MEAS:VOLT?\n");
+            return serialPort.ReadDouble();
         }
 
         public double SetCurrent(double current, int channel)
@@ -77,16 +64,16 @@ namespace UCA.DeviceDrivers
             if (1 > channel || channel > 3)
                 throw new ArgumentException("Номер канала PST_3201 может быть равен 1, 2, 3");
             var str = current.ToString().Replace(",", ".");
-            var command = $":CHAN{channel}:CURR {str};CURR?\n";
-            return SendAndParseDataNR2(command);
+            serialPort.SendCommand($":CHAN{channel}:CURR {str};CURR?\n");
+            return serialPort.ReadDouble();
         }
 
         private bool ChangeOutputState(string outputState)
         {
             if (outputState != "0" && outputState != "1")
                 throw new Exception("Состояние может принимать значение 0 (выключено) и 1 (включено)");
-            var command = $":outp:stat {outputState}\n:outp:stat?";
-            return SendAndParseDataBoolean(command);
+            serialPort.SendCommand($":outp:stat {outputState}\n:outp:stat?");
+            return ReadBoolean();
         }
         /// <summary>
         /// Sets the Over Current Protection. Range: false (Off), true (On)
@@ -100,15 +87,8 @@ namespace UCA.DeviceDrivers
                 throw new ArgumentException("Номер канала PST_3201 может быть равен 1, 2, 3");
             var currProtection = state ? "1" : "0";
             var command = $":chan{channel}:prot:curr {currProtection};:chan1:prot:curr?\n";
-            DoCommand(command);
+            serialPort.SendCommand(command);
         }
-
-        private void DoCommand(string command)
-        {
-            serialPort.WriteLine(command);
-            Thread.Sleep(1000);
-        }
-
 
         public void PowerOn()
         {

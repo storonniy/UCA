@@ -23,7 +23,7 @@ namespace UCA.DeviceDrivers
             }
         }
 
-        public ErrorCode Write(int[] relayNumbers)
+        public ErrorCode CloseRelays(int[] relayNumbers)
         {
             ErrorCode errorCode = ErrorCode.ErrorUndefined;
             var dict = GetPortNumDictionary(relayNumbers);

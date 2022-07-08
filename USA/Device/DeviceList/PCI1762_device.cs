@@ -20,50 +20,38 @@ namespace UCA.Devices
         {
             switch (deviceData.Command)
             {
-                case DeviceCommands.Commutate:
-                    var relayNumbers = GetRelayNumbersArray(deviceData.Argument);
-                    return CloseRelay(relayNumbers);
+                case DeviceCommands.CloseRelays:
+                    {
+                        var relayNumbers = GetRelayNumbersArray(deviceData.Argument);
+                        var errorCode = pci1762.CloseRelays(relayNumbers);
+                        var resultOK = errorCode == Automation.BDaq.ErrorCode.Success;
+                        if (resultOK)
+                            return ResultOk($"Реле {string.Join(", ", relayNumbers)} замнкуты успешно");
+                        return ResultError($"При замыкании реле {string.Join(", ", relayNumbers)} произошла ошибка: {errorCode}");
+                    }
+                case DeviceCommands.OpenRelays:
+                    {
+                        var relayNumbers = GetRelayNumbersArray(deviceData.Argument);
+                        var errorCode = pci1762.OpenRelays(relayNumbers);
+                        var resultOK = errorCode == Automation.BDaq.ErrorCode.Success;
+                        if (resultOK)
+                            return ResultOk($"Реле {string.Join(", ", relayNumbers)} разомкнуты успешно");
+                        return ResultError($"При размыкании реле {string.Join(", ", relayNumbers)} произошла ошибка: {errorCode}");
+                    }
                 case DeviceCommands.ReadPCI1762Data:
                     var port = int.Parse(deviceData.Argument);
                     var signal = int.Parse(deviceData.AdditionalArg);
                     var portByte = pci1762.Read(port);
                     if (portByte == (byte)signal)
-                    {
                         return ResultOk($"Сигнал {portByte} присутствует");
-                    }
-                    else
-                    {
-                        return ResultError($"Ошибка: сигнал {portByte} отсутствует");
-                    }
-                case DeviceCommands.OpenRelays:
-                    return OpenRelays(deviceData.Argument);
+                    return ResultError($"Ошибка: сигнал {portByte} отсутствует");
                 case DeviceCommands.OpenAllRelays:
                     return OpenAllRelays();
                 default:
                     return ResultError($"Неизвестная команда {deviceData.Command}");
             }
         }
-
-        private DeviceResult OpenRelays(string argument)
-        {
-            var relayNumbers = GetRelayNumbersArray(argument);
-            var errorCode = pci1762.OpenRelays(relayNumbers);
-            var resultOK = errorCode == Automation.BDaq.ErrorCode.Success;
-            if (resultOK)
-                return ResultOk($"Реле разомкнуты успешно");
-            else
-                return ResultError($"При размыкании реле произошла ошибка: {errorCode}");
-        }
-        
-        public DeviceResult CloseRelay(int[] relayNumbers)
-        {
-            var errorCode = pci1762.Write(relayNumbers);
-            var resultOK = errorCode == Automation.BDaq.ErrorCode.Success;
-            if (resultOK)
-                return ResultOk($"Реле замнкуты успешно");
-            else
-                return ResultError($"При замыкании реле произошла ошибка: {errorCode}");
-        }
+       
 
         public DeviceResult OpenAllRelays()
         {
@@ -71,8 +59,7 @@ namespace UCA.Devices
             var resultOK = errorCode == Automation.BDaq.ErrorCode.Success;
             if (resultOK)
                 return ResultOk($"Реле разомкнуты успешно");
-            else
-                return ResultError($"При размыкании реле произошла ошибка: {errorCode}");
+            return ResultError($"При размыкании реле произошла ошибка: {errorCode}");
         }
 
 

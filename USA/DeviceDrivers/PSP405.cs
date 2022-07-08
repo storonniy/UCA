@@ -7,10 +7,7 @@ using System.IO;
 using System.IO.Ports;
 using System.Threading;
 using System.Globalization;
-
-/// <summary>
-/// January, 2021
-/// </summary>
+using UPD.DeviceDrivers;
 namespace UCA.DeviceDrivers
 {
     public class Value
@@ -63,8 +60,7 @@ namespace UCA.DeviceDrivers
         /// <returns> LockStatus (false: unlocked, true: locked) </returns>
         public Status GetStatus()
         {
-            serialPort.Write("F\r");
-            Thread.Sleep(delay);
+            serialPort.SendCommand("F\r");
             string data = serialPort.ReadExisting();
             return GeneratePowerSupplyStatusData(data);
         }
@@ -74,17 +70,15 @@ namespace UCA.DeviceDrivers
         /// </summary>
         public void StepResolutionToFineMode()
         {
-            serialPort.Write("KF " + "\r");
-            Thread.Sleep(delay);
+            serialPort.SendCommand("KF \r");
         }
 
         /// <summary>
         /// Sets the step resolution to normal (coarse) mode.
         /// </summary>
-        public static void StepResolutionToNormalMode(SerialPort serialPort)
+        public void StepResolutionToNormalMode()
         {
-            serialPort.Write("KN " + "\r");
-            Thread.Sleep(delay);
+            serialPort.SendCommand("KN \r");
         }
 
         public static Status GeneratePowerSupplyStatusData(string data)
@@ -123,17 +117,13 @@ namespace UCA.DeviceDrivers
             return status;
         }
 
-        private static readonly int delay = 500;
-
         /// <summary>
         /// Set the voltage output level of the PSP-405.
         /// </summary>
         /// <param name="voltage"> Voltage value (xx.xx). </param>
         public double SetVoltage(double voltage)
         {
-            var commandToSetVoltage = SetTheNumberOfDecimalPlaces(voltage, 2, 2);
-            serialPort.Write("SV " + commandToSetVoltage + "\r");
-            Thread.Sleep(delay);
+            serialPort.SendCommand($"SV {SetTheNumberOfDecimalPlaces(voltage, 2, 2)}\r");
             return GetOutputVoltage();
         }
 
@@ -145,9 +135,7 @@ namespace UCA.DeviceDrivers
         {
             if (voltageLimit >= 100)
                 throw new ArgumentOutOfRangeException("Voltage limit cannot be greater than or equal to 100.");
-            var commandToSetVoltageLimit = SetTheNumberOfDecimalPlaces(voltageLimit, 2, 0);
-            serialPort.Write("SU " + commandToSetVoltageLimit + "\r");
-            Thread.Sleep(delay);
+            serialPort.SendCommand($"SU {SetTheNumberOfDecimalPlaces(voltageLimit, 2, 0)}\r");
         }
 
         /// <summary>
@@ -156,7 +144,7 @@ namespace UCA.DeviceDrivers
         /// <returns></returns>
         public double GetOutputVoltage()
         {
-            serialPort.Write("V\r");
+            serialPort.SendCommand("V\r");
             return GetDoubleDataFromPowerSupply(Value.voltage);
         }
 
@@ -166,7 +154,7 @@ namespace UCA.DeviceDrivers
         /// <returns></returns>
         public int GetVoltageLimit()
         {
-            serialPort.Write("U\r");
+            serialPort.SendCommand("U\r");
             return (int)GetDoubleDataFromPowerSupply(Value.voltageLimit);
         }
 
@@ -175,9 +163,8 @@ namespace UCA.DeviceDrivers
         /// </summary>
         public void IncreaseOutputVoltage()
         {
-            StepResolutionToNormalMode(serialPort);
-            serialPort.Write("SV+ " + "\r");
-            Thread.Sleep(delay);
+            StepResolutionToNormalMode();
+            serialPort.SendCommand("SV+ \r");
         }
 
         /// <summary>
@@ -185,9 +172,8 @@ namespace UCA.DeviceDrivers
         /// </summary>
         public void DecreaseOutputVoltage()
         {
-            StepResolutionToNormalMode(serialPort);
-            serialPort.Write("SV- " + "\r");
-            Thread.Sleep(delay);
+            StepResolutionToNormalMode();
+            serialPort.SendCommand("SV- \r");
         }
 
         /// <summary>
@@ -195,9 +181,8 @@ namespace UCA.DeviceDrivers
         /// </summary>
         public void IncreaseVoltageLimit()
         {
-            StepResolutionToNormalMode(serialPort);
-            serialPort.Write("SU+ " + "\r");
-            Thread.Sleep(delay);
+            StepResolutionToNormalMode();
+            serialPort.SendCommand("SU+ \r");
         }
 
         /// <summary>
@@ -205,9 +190,8 @@ namespace UCA.DeviceDrivers
         /// </summary>
         public void DecreaseVoltageLimit()
         {
-            StepResolutionToNormalMode(serialPort);
-            serialPort.Write("SU- " + "\r");
-            Thread.Sleep(delay);
+            StepResolutionToNormalMode();
+            serialPort.SendCommand("SU- \r");
         }
 
         /// <summary>
@@ -215,8 +199,7 @@ namespace UCA.DeviceDrivers
         /// </summary>
         public void SetVoltageLimitToMax()
         {
-            serialPort.Write("SUM " + "\r");
-            Thread.Sleep(delay);
+            serialPort.SendCommand("SUM \r");
         }
 
 
@@ -228,9 +211,7 @@ namespace UCA.DeviceDrivers
         {
             if (currentLimit - 5 >= 0.00001)
                 throw new ArgumentOutOfRangeException("Current limit cannot be greater than or equal to 5 A.");
-            var commandToSetCurrentLimit = SetTheNumberOfDecimalPlaces(currentLimit, 1, 2);
-            serialPort.Write("SI " + commandToSetCurrentLimit + "\r");
-            Thread.Sleep(delay);
+            serialPort.SendCommand($"SI {SetTheNumberOfDecimalPlaces(currentLimit, 1, 2)}\r");
             return GetCurrentLimit();
         }
 
@@ -239,8 +220,7 @@ namespace UCA.DeviceDrivers
         /// </summary>
         public void SetCurrentLimitToMax()
         {
-            serialPort.Write("SIM " + "\r");
-            Thread.Sleep(delay);
+            serialPort.SendCommand("SIM \r");
         }
 
         /// <summary>
@@ -248,7 +228,7 @@ namespace UCA.DeviceDrivers
         /// </summary>
         public double GetOutputCurrent()
         {
-            serialPort.Write("A\r");
+            serialPort.SendCommand("A\r");
             return GetDoubleDataFromPowerSupply(Value.current);
         }
 
@@ -258,7 +238,7 @@ namespace UCA.DeviceDrivers
         /// <returns></returns>
         public double GetCurrentLimit()
         {
-            serialPort.Write("I\r");
+            serialPort.SendCommand("I\r");
             return GetDoubleDataFromPowerSupply(Value.currentLimit);
         }
 
@@ -267,9 +247,8 @@ namespace UCA.DeviceDrivers
         /// </summary>
         public void IncreaseCurrentLimit()
         {
-            StepResolutionToNormalMode(serialPort);
-            serialPort.Write("SI+ " + "\r");
-            Thread.Sleep(delay);
+            StepResolutionToNormalMode();
+            serialPort.SendCommand("SI+ \r");
         }
 
         /// <summary>
@@ -277,9 +256,8 @@ namespace UCA.DeviceDrivers
         /// </summary>
         public void DecreaseCurrentLimit()
         {
-            StepResolutionToNormalMode(serialPort);
-            serialPort.Write("SI- " + "\r");
-            Thread.Sleep(delay);
+            StepResolutionToNormalMode();
+            serialPort.SendCommand("SI- \r");
         }
 
         /// <summary>
@@ -290,9 +268,7 @@ namespace UCA.DeviceDrivers
         {
             if (powerLimit > 200)
                 throw new ArgumentOutOfRangeException("Power limit cannot be greater than 200.");
-            var commandToSetPowerLimit = SetTheNumberOfDecimalPlaces(powerLimit, 3, 0);
-            serialPort.Write("SP " + commandToSetPowerLimit + "\r");
-            Thread.Sleep(delay);
+            serialPort.SendCommand($"SP {SetTheNumberOfDecimalPlaces(powerLimit, 3, 0)}\r");
         }
 
         /// <summary>
@@ -300,8 +276,7 @@ namespace UCA.DeviceDrivers
         /// </summary>
         public void SetPowerLimitToMax()
         {
-            serialPort.Write("SPM " + "\r");
-            Thread.Sleep(delay);
+            serialPort.SendCommand("SPM \r");
         }
 
         /// <summary>
@@ -310,7 +285,7 @@ namespace UCA.DeviceDrivers
         /// <returns></returns>
         public double GetOutputPower()
         {
-            serialPort.Write("W\r");
+            serialPort.SendCommand("W\r");
             return GetDoubleDataFromPowerSupply(Value.power);
         }
 
@@ -320,7 +295,7 @@ namespace UCA.DeviceDrivers
         /// <returns></returns>
         public double GetPowerLimit()
         {
-            serialPort.Write("P\r");
+            serialPort.SendCommand("P\r");
             return GetDoubleDataFromPowerSupply(Value.powerLimit);
         }
 
@@ -329,8 +304,7 @@ namespace UCA.DeviceDrivers
         /// </summary>
         public void IncreasePowerLimit()
         {
-            serialPort.Write("SP+ " + "\r");
-            Thread.Sleep(delay);
+            serialPort.SendCommand("SP+ \r");
         }
 
         /// <summary>
@@ -338,8 +312,7 @@ namespace UCA.DeviceDrivers
         /// </summary>
         public void DecreasePowerLimit()
         {
-            serialPort.Write("SP- " + "\r");
-            Thread.Sleep(delay);
+            serialPort.SendCommand("SP- \r");
         }
 
         /// <summary>
@@ -348,8 +321,7 @@ namespace UCA.DeviceDrivers
 
         public void PowerOff()
         {
-            serialPort.Write("KOD\r");
-            Thread.Sleep(delay);
+            serialPort.SendCommand("KOD\r");
         }
 
         /// <summary>
@@ -357,8 +329,7 @@ namespace UCA.DeviceDrivers
         /// </summary>
         public void PowerOn()
         {
-            serialPort.Write("KOE\r");
-            Thread.Sleep(delay);
+            serialPort.SendCommand("KOE\r");
         }
 
 
@@ -367,8 +338,7 @@ namespace UCA.DeviceDrivers
         /// </summary>
         public void ToggleOnOrOff()
         {
-            serialPort.Write("KO\r");
-            Thread.Sleep(delay);
+            serialPort.SendCommand("KO\r");
         }
 
         /// <summary>
@@ -384,7 +354,6 @@ namespace UCA.DeviceDrivers
 
         public double GetDoubleDataFromPowerSupply(Value value)
         {
-            Thread.Sleep(delay);
             string data = serialPort.ReadExisting();
             if (data.Substring(0, 1) != value.Flag)
             {
@@ -413,8 +382,7 @@ namespace UCA.DeviceDrivers
         /// </summary>
         public ValuesStatus GetAllTheStatusValues()
         {
-            serialPort.Write("L\r");
-            Thread.Sleep(delay);
+            serialPort.SendCommand("L\r");
             string data = serialPort.ReadExisting();
             ValuesStatus statusPSP405 = new ValuesStatus();
             string theFirstSymbol = data.Substring(0, 1);
