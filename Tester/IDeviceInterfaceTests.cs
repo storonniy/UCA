@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UCA.DeviceDrivers;
 using UCA.Devices;
+using UPD.Device;
 using static UCA.Auxiliary.UnitValuePair;
 
 namespace Tester

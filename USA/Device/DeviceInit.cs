@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.Common;
 using System.IO;
+using UPD.Device;
 using UPD.Device.DeviceList;
 using UPD.DeviceDrivers;
 

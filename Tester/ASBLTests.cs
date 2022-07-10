@@ -69,19 +69,19 @@ namespace Tester
         [TestMethod]
         public void ExponentiateTest()
         {
-            Assert.AreEqual((uint)4, Line.getPowerOfTwo(2));
-            Assert.AreEqual((uint)8, Line.getPowerOfTwo(3));
-            Assert.AreEqual((uint)512, Line.getPowerOfTwo(9));
-            Assert.AreEqual((uint)2048, Line.getPowerOfTwo(11));
+            Assert.AreEqual((uint)4, Line.GetPowerOfTwo(2));
+            Assert.AreEqual((uint)8, Line.GetPowerOfTwo(3));
+            Assert.AreEqual((uint)512, Line.GetPowerOfTwo(9));
+            Assert.AreEqual((uint)2048, Line.GetPowerOfTwo(11));
         }
 
         [TestMethod]
         public void ClearLineTest()
         {
             uint currentData = 24965;
-            uint newData = currentData - (currentData & Line.getPowerOfTwo(2));
+            uint newData = currentData - (currentData & Line.GetPowerOfTwo(2));
             Assert.AreEqual("110000110000001", Convert.ToString(newData, 2));
-            newData = currentData - (currentData & Line.getPowerOfTwo(3));
+            newData = currentData - (currentData & Line.GetPowerOfTwo(3));
             Assert.AreEqual("110000110000101", Convert.ToString(newData, 2));
         }
 
@@ -89,9 +89,9 @@ namespace Tester
         public void SetLineTest()
         {
             uint currentData = 24965;
-            var newData = currentData | Line.getPowerOfTwo(3);
+            var newData = currentData | Line.GetPowerOfTwo(3);
             Assert.AreEqual("110000110001101", Convert.ToString(newData, 2));
-            newData = currentData | Line.getPowerOfTwo(2);
+            newData = currentData | Line.GetPowerOfTwo(2);
             Assert.AreEqual("110000110000101", Convert.ToString(newData, 2));
         }
 
@@ -104,7 +104,7 @@ namespace Tester
 
         public void TestASBL(uint start, uint end)
         {
-            ASBL asbl = new ASBL();
+            Asbl asbl = new Asbl();
             for (uint writeData = start; writeData < end + 1; writeData++)
             {
                 asbl.WriteData(Line.ADR_DIR_REG1, writeData);
@@ -130,7 +130,7 @@ namespace Tester
 
         public void TestDataRegisters(uint start, uint end)
         {
-            ASBL asbl = new ASBL();
+            Asbl asbl = new Asbl();
             for (uint writeData = start; writeData < end + 1; writeData++)
             {
                 asbl.WriteData(Line.ADR_DATA_REG1, writeData);
@@ -157,14 +157,14 @@ namespace Tester
         [TestMethod]
         public void TestClear()
         {
-            ASBL asbl = new ASBL();
+            Asbl asbl = new Asbl();
             asbl.ClearAll();
         }
 
         [TestMethod]
         public void TestLines()
         {
-            ASBL asbl = new ASBL();
+            Asbl asbl = new Asbl();
             asbl.ClearAll();
             asbl.SetLineData(81);
         }
@@ -172,7 +172,7 @@ namespace Tester
         [TestMethod]
         public void TestAllLines()
         {
-            ASBL asbl = new ASBL();
+            Asbl asbl = new Asbl();
             for (uint i = 1; i < 121; i++)
             {
                 asbl.SetLineDirection(i);
@@ -183,7 +183,7 @@ namespace Tester
         [TestMethod]
         public void TestWithDiffDirections()
         {
-            ASBL asbl = new ASBL();
+            Asbl asbl = new Asbl();
             asbl.WriteData(Line.ADR_DIR_REG1, 0xFFFF5);
             Assert.AreEqual((uint)0xA, asbl.ReadData(Line.ADR_DATA_REG1));
             asbl.ClearAll();
@@ -195,7 +195,7 @@ namespace Tester
         [TestMethod]
         public void TestLines_1()
         {
-            ASBL asbl = new ASBL();
+            Asbl asbl = new Asbl();
             asbl.WriteData(Line.ADR_DIR_REG1, 4);
             asbl.SetLineData(3);
         }
@@ -203,7 +203,7 @@ namespace Tester
         [TestMethod]
         public void TestLines_2()
         {
-            ASBL asbl = new ASBL();
+            Asbl asbl = new Asbl();
             asbl.SetLineDirection(3);
             asbl.SetLineData(3);
         }
@@ -212,7 +212,7 @@ namespace Tester
         [ExpectedException(typeof(LineIsSetToReceiveException))]
         public void TestLinesWith0Direction_1()
         {
-            ASBL asbl = new ASBL();
+            Asbl asbl = new Asbl();
             asbl.ClearLineDirection(3);
             asbl.SetLineData(3);
         }
@@ -221,7 +221,7 @@ namespace Tester
         [ExpectedException(typeof(LineIsSetToReceiveException))]
         public void TestLinesWith0Direction()
         {
-            ASBL asbl = new ASBL();
+            Asbl asbl = new Asbl();
             asbl.WriteData(Line.ADR_DIR_REG1, 0);
             asbl.SetLineData(3);
             asbl.WriteData(Line.ADR_DIR_REG1, 0x1F5);
@@ -244,10 +244,10 @@ namespace Tester
             uint linePosition = 0;
             for (uint lineNumber = firstLineNumber; lineNumber < firstLineNumber + 19; lineNumber++)
             {
-                var line = new Line(lineNumber, new ASBL(0));
+                var line = new Line(lineNumber, new Asbl());
                 Assert.AreEqual(line.DirectionRegister, expectedDirectionRegister);
                 Assert.AreEqual(line.DataRegister, expectedDataRegister);
-                Assert.AreEqual(linePosition, line.bitNumber);
+                Assert.AreEqual(linePosition, line.BitNumber);
                 linePosition++;
             }
         }

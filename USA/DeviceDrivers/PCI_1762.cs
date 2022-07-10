@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,136 +7,103 @@ using System.Threading.Tasks;
 using System.IO.Ports;
 using System.Threading;
 using Automation.BDaq;
+using UPD.Auxiliary;
+using UPD.Device;
 
 namespace UCA.DeviceDrivers
 {
     public class PCI_1762
     {
-        private InstantDoCtrl instantDoCtrl;
-        BDaqDevice device;
-        public PCI_1762 (string description)
+        private readonly InstantDoCtrl instantDoCtrl;
+        private BDaqDevice device;
+
+        public PCI_1762(string description)
         {
             instantDoCtrl = new InstantDoCtrl();
-            //instantDoCtrl.SelectedDevice = new DeviceInformation(description);
+            instantDoCtrl.SelectedDevice = new DeviceInformation(description);
             if (!instantDoCtrl.Initialized)
             {
-                
             }
         }
 
-        public ErrorCode CloseRelays(int[] relayNumbers)
+        public bool CloseRelays(int[] relayNumbers)
         {
-            ErrorCode errorCode = ErrorCode.ErrorUndefined;
-            var dict = GetPortNumDictionary(relayNumbers);
-            foreach (int portNum in dict.Keys)
-            {
-                var portByte = Read(portNum);
-                var data = GetRelaysAsByte(dict[portNum]);
-                byte res = (byte)(portByte | data);
-                errorCode = instantDoCtrl.Write(portNum, res);
-                if (errorCode != ErrorCode.Success)
-                {
-                    return errorCode;
-                }
-            }
-            return errorCode;
+            return ChangeRelayState(relayNumbers, getCloseRelayData);
         }
 
-        public ErrorCode OpenRelays(int[] relayNumbers)
+        public bool OpenRelays(int[] relayNumbers)
         {
-            var dict = GetPortNumDictionary(relayNumbers);
-            ErrorCode errorCode = ErrorCode.ErrorUndefined;
+            return ChangeRelayState(relayNumbers, getOpenRelayData);
+        }
+
+        static Func<byte, byte, byte> getOpenRelayData =
+            (currentData, newData) => (byte) (currentData - (byte) (currentData & newData));
+
+        static Func<byte, byte, byte> getCloseRelayData =
+            (currentData, newData) => (byte) (currentData | newData);
+
+        private bool ChangeRelayState(IEnumerable<int> relayNumbers, Func<byte, byte, byte> changePortData)
+        {
+            var dict = GetPortBytesDictionary(relayNumbers);
             foreach (var portNum in dict.Keys)
             {
-                var portByte = Read(portNum);
-                var data = GetRelaysAsByte(dict[portNum]);
-                byte res = (byte)(portByte & data);
-                errorCode = instantDoCtrl.Write(portNum, (byte)(portByte - res));
-                if (errorCode != ErrorCode.Success)
+                var currentData = Read(portNum);
+                var newData = dict[portNum];
+                var status = instantDoCtrl.Write(portNum, changePortData(currentData, newData));
+                if (status != ErrorCode.Success)
                 {
-                    return errorCode;
+                    return false;
                 }
             }
-            return errorCode;
+            return true;
         }
 
-        public ErrorCode OpenAllRelays()
+        public bool OpenAllRelays()
         {
-            var errorCode = instantDoCtrl.Write(0, 0x00);
-            errorCode = instantDoCtrl.Write(1, 0x00);
-            if (errorCode != ErrorCode.Success)
-            {
-                return errorCode;
-            }
-            
-            return errorCode;
+            var statusPort1 = instantDoCtrl.Write(0, 0x00);
+            var statusPort2 = instantDoCtrl.Write(1, 0x00);
+            return statusPort1 == ErrorCode.Success && statusPort2 == ErrorCode.Success;
         }
 
-        public static byte GetRelaysAsByte(List<int> relayNumbers)
+        public static byte ConvertRelayNumbersToByte(IEnumerable<int> relayNumbers)
         {
-            var hashSet = new HashSet<int>(relayNumbers);
-            byte data = 0;
-            foreach (var relayNumber in hashSet)
-            {
-                if (relayNumber < 0 || relayNumber > 7)
-                {
-                    throw new Exception($"Номер реле не может быть равен {relayNumber}.");
-                }
-                data += (byte)Math.Pow(2, relayNumber);
-            }
-            return data;
+            return (byte) relayNumbers
+                .Distinct()
+                .Where(relayNumber => relayNumber >= 0 && relayNumber <= 7)
+                .Select(relayNumber => (byte) (1 << relayNumber))
+                .Sum(x => x);
         }
 
-        public static Dictionary<int, List<int>> GetPortNumDictionary(int[] relayNumbers)
+
+        public static Dictionary<int, byte> GetPortBytesDictionary(IEnumerable<int> relayNumbers)
         {
-            var dict = new Dictionary<int, List<int>>();
-            foreach (int relayNumber in relayNumbers)
-            {
-                int portNum = relayNumber / 8;
-                int relayNum = relayNumber % 8;
-                if (dict.ContainsKey(portNum))
-                {
-                    dict[portNum].Add(relayNum);
-                }
-                else
-                {
-                    dict.Add(portNum, new List<int>() { relayNum });
-                }
-            }
-            return dict;
+            return relayNumbers
+                .Select(r => Tuple.Create(r / 8, r % 8))
+                .GroupBy(r => r.Item1)
+                .ToDictionary(group => group.Key,
+                    group => ConvertRelayNumbersToByte(group.Select(x => x.Item2).ToList()));
         }
+
 
         public byte Read(int port)
         {
-            byte data;
-            instantDoCtrl.Read(port, out data);
+            instantDoCtrl.Read(port, out var data);
             return data;
         }
 
-        public int[] GetClosedRelaysNumbers()
+        public List<int> GetClosedRelaysNumbers()
         {
-            int maxPortNumber = 2;
-            var relayNumbers = new List<int>();
-            for (int portNum = 0; portNum < maxPortNumber; portNum++)
-            {
-                var data = Read(portNum);
-                relayNumbers.AddRange(ConvertDataToRelayNumbers(data, portNum));
-            }
-            return relayNumbers.ToHashSet().ToArray();            
+            var maxPortNumber = 2;
+            return Enumerable.Range(0, maxPortNumber)
+                .SelectMany(portNum => ConvertDataToRelayNumbers(Read(portNum), portNum))
+                .ToList();
         }
 
-        public static List<int> ConvertDataToRelayNumbers(byte data, int portNum)
+        public static IEnumerable<int> ConvertDataToRelayNumbers(byte data, int portNum)
         {
-            var relayNumbers = new List<int>();
-            var binary = Convert.ToString(data, 2);
-            for (int i = 0; i < binary.Length; i++)
-            {
-                if (binary[i] == '1')
-                {
-                    relayNumbers.Add((binary.Length - 1 - i) + 8 * portNum);
-                }
-            }
-            return relayNumbers;
+            return Enumerable.Range(0, 8)
+                .Where(bitNumber => data.BitState(bitNumber))
+                .Select(bitNumber => 8 * portNum + bitNumber);
         }
     }
 }

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UCA.DeviceDrivers;
+using UPD.Device;
 using static UCA.Auxiliary.UnitValuePair;
 
 

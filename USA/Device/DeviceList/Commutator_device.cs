@@ -3,6 +3,7 @@ using System.IO;
 using System.IO.Ports;
 using System.Linq;
 using UCA.DeviceDrivers;
+using UPD.Device;
 
 namespace UCA.Devices
 {

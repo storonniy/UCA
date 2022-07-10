@@ -2,26 +2,24 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using UCA.Devices;
 using static UCA.Auxiliary.UnitValuePair;
-using static UCA.Devices.IDeviceInterface;
 
 
-namespace UCA.Devices
+namespace UPD.Device
 {
     public abstract class IDeviceInterface
     {
         public abstract DeviceResult DoCommand(DeviceData deviceData);
 
-        public static DeviceResult SetVoltage(DeviceData deviceData, Func<double, double> setVoltage)
+        protected static DeviceResult SetVoltage(DeviceData deviceData, Func<double, double> setVoltage)
         {
             var voltage = double.Parse(deviceData.Argument, CultureInfo.InvariantCulture);
             var result = setVoltage(voltage);
             return GetResultOfSetting($"{deviceData.DeviceName}: Установлено напряжение", UnitType.Voltage, result, voltage);
         }
 
-        public static DeviceResult SetVoltage(DeviceData deviceData, Func<double, int, double> setVoltage)
+        protected static DeviceResult SetVoltage(DeviceData deviceData, Func<double, int, double> setVoltage)
         {
             var channel = int.Parse(deviceData.AdditionalArg);
             var voltage = double.Parse(deviceData.Argument, CultureInfo.InvariantCulture);
@@ -29,7 +27,7 @@ namespace UCA.Devices
             return GetResultOfSetting($"{ deviceData.DeviceName}: Установлено напряжение", UnitType.Voltage, result, voltage);
         }
 
-        public static DeviceResult SetCurrent(DeviceData deviceData, Func<double, int, double> setCurrent)
+        protected static DeviceResult SetCurrent(DeviceData deviceData, Func<double, int, double> setCurrent)
         {
             var channel = int.Parse(deviceData.AdditionalArg);
             var current = double.Parse(deviceData.Argument, CultureInfo.InvariantCulture);
@@ -37,7 +35,7 @@ namespace UCA.Devices
             return GetResultOfSetting($"{deviceData.DeviceName}: Установлен ток", UnitType.Current, result, current);
         }
 
-        public static DeviceResult SetCurrentLimit(DeviceData deviceData, Func<double, double> setCurrentLimit)
+        protected static DeviceResult SetCurrentLimit(DeviceData deviceData, Func<double, double> setCurrentLimit)
         {
             var currentLimit = double.Parse(deviceData.Argument, CultureInfo.InvariantCulture);
             var result = setCurrentLimit(currentLimit);
@@ -52,35 +50,31 @@ namespace UCA.Devices
             return GetResultOfSetting($"{deviceData.DeviceName}: Установлен предел по току", UnitType.Current, result, currentLimit);
         }
 
-        public static DeviceResult PowerOn(DeviceData deviceData, Action powerOn)
+        protected static DeviceResult PowerOn(DeviceData deviceData, Action powerOn)
         {
             powerOn();
             return DeviceResult.ResultOk($"{deviceData.DeviceName}: подан входной сигнал");
         }
 
-        public static DeviceResult PowerOff(DeviceData deviceData, Action powerOff)
+        protected static DeviceResult PowerOff(DeviceData deviceData, Action powerOff)
         {
             powerOff();
             return DeviceResult.ResultOk($"{deviceData.DeviceName}: снят входной сигнал");
         }
 
-        public static DeviceResult PowerOn(DeviceData deviceData, Func<bool> powerOn)
+        protected static DeviceResult PowerOn(DeviceData deviceData, Func<bool> powerOn)
         {
             var status = powerOn();
-            if (status)
-                return DeviceResult.ResultOk($"{deviceData.DeviceName}: подан входной сигнал");
-            return DeviceResult.ResultError($"{deviceData.DeviceName}: ошибка при подаче входного сигнала");
+            return status ? DeviceResult.ResultOk($"{deviceData.DeviceName}: подан входной сигнал") : DeviceResult.ResultError($"{deviceData.DeviceName}: ошибка при подаче входного сигнала");
         }
 
-        public static DeviceResult PowerOff(DeviceData deviceData, Func<bool> powerOff)
+        protected static DeviceResult PowerOff(DeviceData deviceData, Func<bool> powerOff)
         {
             var status = powerOff();
-            if (status)
-                return DeviceResult.ResultOk($"{deviceData.DeviceName}: снят входной сигнал");
-            return DeviceResult.ResultError($"{deviceData.DeviceName}: ошибка при снятии входного сигнала");
+            return status ? DeviceResult.ResultOk($"{deviceData.DeviceName}: снят входной сигнал") : DeviceResult.ResultError($"{deviceData.DeviceName}: ошибка при снятии входного сигнала");
         }
 
-        public static DeviceResult GetResult(string message, DeviceData deviceData, UnitType unitType, double value)
+        protected static DeviceResult GetResult(string message, DeviceData deviceData, UnitType unitType, double value)
         {
             var result = $"{message}: {GetValueUnitPair(value, unitType)} \tНижний предел: {GetValueUnitPair(deviceData.LowerLimit, unitType)}\t Верхний предел {GetValueUnitPair(deviceData.UpperLimit, unitType)}";
             if (value >= deviceData.LowerLimit && value <= deviceData.UpperLimit)
@@ -91,11 +85,60 @@ namespace UCA.Devices
         public static DeviceResult GetResultOfSetting(string message, UnitType unitType, double value, double expectedValue)
         {
             var result = $"{message}: {GetValueUnitPair(value, unitType)}";
-            if (Math.Abs(value - expectedValue) <= 0.1 * Math.Abs(expectedValue))
-                return DeviceResult.ResultOk(result);
-            return DeviceResult.ResultError(result);
+            return Math.Abs(value - expectedValue) <= 0.1 * Math.Abs(expectedValue) ? DeviceResult.ResultOk(result) : DeviceResult.ResultError(result);
         }
 
+        protected static DeviceResult CloseRelays(DeviceData deviceData, Func<int[], bool> closeRelays)
+        {
+            var relayNumbers = GetRelayNumbersArray(deviceData.Argument);
+            var status = closeRelays(relayNumbers);
+            if (status)
+                return DeviceResult.ResultOk($"{deviceData.DeviceName}: Реле {string.Join(", ", relayNumbers)} замкнуты успешно");
+            return DeviceResult.ResultError($"{deviceData.DeviceName}: При замыкании реле {string.Join(", ", relayNumbers)} произошла ошибка");
+        }
+
+        protected static DeviceResult CloseRelays(DeviceData deviceData, Func<int, int[], bool> closeRelays)
+        {
+            var relayNumbers = GetRelayNumbersArray(deviceData.Argument);
+            var blockNumber = int.Parse(deviceData.AdditionalArg) - 1;
+            var status = closeRelays(blockNumber, relayNumbers);
+            if (status)
+                return DeviceResult.ResultOk($"{deviceData.DeviceName}{deviceData.AdditionalArg} замкнуты реле {String.Join(", ", relayNumbers)}");
+            return DeviceResult.ResultError($"ОШИБКА: {deviceData.DeviceName}{deviceData.AdditionalArg} не замкнуты реле {String.Join(", ", relayNumbers)}");
+        }
+        
+        protected static DeviceResult OpenRelays(DeviceData deviceData, Func<int, int[], bool> openRelays)
+        {
+            var relayNumbers = GetRelayNumbersArray(deviceData.Argument);
+            var blockNumber = int.Parse(deviceData.AdditionalArg) - 1;
+            var status = openRelays(blockNumber, relayNumbers);
+            if (status)
+                return DeviceResult.ResultOk($"{deviceData.DeviceName}{deviceData.AdditionalArg} разомкнуты реле {String.Join(", ", relayNumbers)}");
+            return DeviceResult.ResultError($"ОШИБКА: {deviceData.DeviceName}{deviceData.AdditionalArg} не разомкнуты реле {String.Join(", ", relayNumbers)}");
+        }
+        
+        protected static DeviceResult OpenRelays(DeviceData deviceData, Func<int[], bool> openRelays)
+        {
+            var relayNumbers = GetRelayNumbersArray(deviceData.Argument);
+            var status = openRelays(relayNumbers);
+            if (status)
+                return DeviceResult.ResultOk($"{deviceData.DeviceName}: Реле {string.Join(", ", relayNumbers)} разомкнуты успешно");
+            return DeviceResult.ResultError($"{deviceData.DeviceName}: При размыкании реле {string.Join(", ", relayNumbers)} произошла ошибка");
+        }
+
+        protected static DeviceResult OpenAllRelays(DeviceData deviceData, Func<bool> openAllRelays)
+        {
+            var status = openAllRelays();
+            return status ? DeviceResult.ResultOk($"{deviceData.DeviceName}: разомкнуты все реле") : DeviceResult.ResultError($"{deviceData.DeviceName}: не удалось разомкнуть все реле");
+        }
+        
+        public static int[] GetRelayNumbersArray(string relayNames)
+        {
+            return relayNames.Replace(" ", "").Split(',')
+                .Select(int.Parse)
+                .ToArray();
+        }
+        
         public virtual void Die()
         {
 
@@ -113,32 +156,27 @@ namespace UCA.Devices
             public double InputValue;
         }
 
-        private static Dictionary<InputData, List<double>> coefficientValuesDictionary = new Dictionary<InputData, List<double>>();
+        private static readonly Dictionary<InputData, List<double>> coefficientValuesDictionary = new Dictionary<InputData, List<double>>();
 
-        public static void ClearCoefficientDictionary()
-        {
-            coefficientValuesDictionary.Clear();
-        }
+        public static readonly Action ClearCoefficientDictionary = () => coefficientValuesDictionary.Clear();
 
         public static void AddCoefficientData(int channel, double expectedValue, double value)
         {
-            if (channel > 0)
+            if (channel <= 0) return;
+            var inputData = new InputData(channel, expectedValue);
+            if (!coefficientValuesDictionary.ContainsKey(inputData))
             {
-                InputData inputData = new InputData(channel, expectedValue);
-                if (!coefficientValuesDictionary.ContainsKey(inputData))
-                {
-                    coefficientValuesDictionary.Add(inputData, new List<double> { value });
-                }
-                else
-                {
-                    coefficientValuesDictionary[inputData].Add(value);
-                }
+                coefficientValuesDictionary.Add(inputData, new List<double> { value });
+            }
+            else
+            {
+                coefficientValuesDictionary[inputData].Add(value);
             }
         }
 
-        public static List<double> GetCoefficientValues(int channel, double value)
+        protected static List<double> GetCoefficientValues(int channel, double value)
         {
-            InputData inputData = new InputData(channel, value);
+            var inputData = new InputData(channel, value);
             return coefficientValuesDictionary[inputData];
         }
 
@@ -146,39 +184,32 @@ namespace UCA.Devices
 
         #region GDM78261 Saving Values
 
-        public static void AddValues(string key, double measuredValue)
-        {
-            if (valuesDictionary.ContainsKey(key))
-            {
-                valuesDictionary[key] = measuredValue;
-            }
-            else
-            {
-                valuesDictionary.Add(key, measuredValue);
-            }
-        }
+        public static readonly Action<string, double> AddValues = (key, measuredValue) =>
+            ValuesDictionary.SafeAdd(key, measuredValue);
 
-        public static double GetValue(string key)
-        {
-            return valuesDictionary[key];
-        }
+        public static readonly Func<string, double> GetValue = (key) => ValuesDictionary[key];
 
-        private static Dictionary<string, double> valuesDictionary = new Dictionary<string, double>();
+        private static readonly Dictionary<string, double> ValuesDictionary = new Dictionary<string, double>();
 
         /// <summary>
         /// Возвращает библиотеку с сохраненными парами ключ-значение (измеренное GDM)
         /// </summary>
         /// <returns></returns>
-        public static Dictionary<string, double> GetValuesDictionary()
-        {
-            return valuesDictionary;
-        }
+        public static readonly Func<Dictionary<string, double>> GetValuesDictionary = () => ValuesDictionary;
 
-        public static void ClearValuesDictionary()
-        {
-            valuesDictionary.Clear();
-        }
+        public static readonly Action ClearValuesDictionary = () => ValuesDictionary.Clear();
 
         #endregion
+    }
+
+    public static class DictionaryExtensions
+    {
+        public static void SafeAdd<Tkey, Tvalue>(this Dictionary<Tkey, Tvalue> dictionary, Tkey key, Tvalue value)
+        {
+            if (dictionary.ContainsKey(key))
+                dictionary[key] = value;
+            else
+                dictionary.Add(key, value);
+        }
     }
 }

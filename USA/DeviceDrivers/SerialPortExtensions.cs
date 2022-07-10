@@ -11,7 +11,7 @@ namespace UPD.DeviceDrivers
 {
     public static class SerialPortExtensions
     {
-        private static int delay = 1000;
+        private const int delay = 1000;
 
         public static double ReadDouble(this SerialPort serialPort)
         {

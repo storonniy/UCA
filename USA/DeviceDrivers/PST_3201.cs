@@ -12,7 +12,7 @@ namespace UCA.DeviceDrivers
 {
     class PST_3201
     {
-        private SerialPort serialPort;
+        private readonly SerialPort serialPort;
 
         public PST_3201(SerialPort serialPort)
         {
@@ -21,12 +21,12 @@ namespace UCA.DeviceDrivers
                 this.serialPort.Open();
         }
         
-        private int ReadDataNR1()
+        private int ReadDataNr1()
         {
             return int.Parse(serialPort.ReadLine());
         }
         
-        private float ReadDataNR3(string command)
+        private float ReadDataNr3(string command)
         {
             return float.Parse(serialPort.ReadLine());
         }

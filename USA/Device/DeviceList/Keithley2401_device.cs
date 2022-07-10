@@ -25,13 +25,13 @@ namespace UCA.Devices
             switch (deviceData.Command)
             {
                 case DeviceCommands.SetVoltage:
-                    return IDeviceInterface.SetVoltage(deviceData, keithley2401.SetVoltage);
+                    return SetVoltage(deviceData, keithley2401.SetVoltage);
                 case DeviceCommands.SetCurrentLimit:
-                    return IDeviceInterface.SetCurrentLimit(deviceData, keithley2401.SetCurrentLimit);
+                    return SetCurrentLimit(deviceData, keithley2401.SetCurrentLimit);
                 case DeviceCommands.PowerOn:
-                    return IDeviceInterface.PowerOn(deviceData, keithley2401.PowerOn);
+                    return PowerOn(deviceData, keithley2401.PowerOn);
                 case DeviceCommands.PowerOff:
-                    return IDeviceInterface.PowerOff(deviceData, keithley2401.PowerOff);
+                    return PowerOff(deviceData, keithley2401.PowerOff);
                 case DeviceCommands.SetVoltageSourceMode:
                     var status = keithley2401.SetVoltageSourceMode();
                     if (status)

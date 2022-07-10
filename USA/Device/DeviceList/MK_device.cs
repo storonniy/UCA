@@ -11,7 +11,7 @@ namespace UPD.Device.DeviceList
 {
     public class MK_device : IDeviceInterface
     {
-        readonly MK mk;
+        private readonly MK mk;
         public MK_device()
         {
             mk = new MK();
@@ -28,46 +28,16 @@ namespace UPD.Device.DeviceList
             {
                 case DeviceCommands.GetClosedRelayNames:
                     var closedRelays = mk.GetClosedRelayNames();
-                    return DeviceResult.ResultOk(string.Join("\n", closedRelays));
+                    return ResultOk(string.Join("\n", closedRelays));
                 case DeviceCommands.OpenAllRelays:
-                    {
-                        var status = mk.EmergencyBreak();
-                        if (status)
-                            return ResultOk($"{deviceData.DeviceName}: разомкнуты все реле");
-                        return ResultError($"{deviceData.DeviceName}: не удалось разомкнуть все реле");
-                    }
+                    return OpenAllRelays(deviceData, mk.EmergencyBreak);
                 case DeviceCommands.CloseRelays:
-                    {
-                        var relayNumbers = ParseRelayNumbers(deviceData.Argument);
-                        var blockNumber = int.Parse(deviceData.AdditionalArg) - 1;
-                        var status = mk.CloseRelays(blockNumber, relayNumbers);
-                        if (status)
-                            return ResultOk($"{deviceData.DeviceName}{deviceData.AdditionalArg} замкнуты реле {String.Join(", ", relayNumbers)}");
-                        return ResultError($"ОШИБКА: {deviceData.DeviceName}{deviceData.AdditionalArg} не замкнуты реле {String.Join(", ", relayNumbers)}");
-                    }
+                    return CloseRelays(deviceData, mk.CloseRelays);
                 case DeviceCommands.OpenRelays:
-                    {
-                        var relayNumbers = ParseRelayNumbers(deviceData.Argument);
-                        var blockNumber = int.Parse(deviceData.AdditionalArg) - 1;
-                        var status = mk.OpenRelays(blockNumber, relayNumbers);
-                        if (status)
-                            return ResultOk($"{deviceData.DeviceName}{deviceData.AdditionalArg} разомкнуты реле {String.Join(", ", relayNumbers)}");
-                        return ResultError($"ОШИБКА: {deviceData.DeviceName}{deviceData.AdditionalArg} не разомкнуты реле {String.Join(", ", relayNumbers)}");
-                    }
+                    return OpenRelays(deviceData, mk.OpenRelays);
                 default:
                     return ResultError($"Неизвестная команда {deviceData.Command}");
             }
-        }
-
-        public static int[] ParseRelayNumbers(string request)
-        {
-            var relayNames = request.Replace(" ", "").Split(',');
-            var relayNumbers = new int[relayNames.Length];
-            for (int i = 0; i < relayNumbers.Length; i++)
-            {
-                relayNumbers[i] = int.Parse(relayNames[i]) - 1; /// TODO: -1 добавлено
-            }
-            return relayNumbers;
         }
     }
 }

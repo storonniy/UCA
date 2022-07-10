@@ -9,6 +9,7 @@ using UCA.Steps;
 using static UCA.ControlObjectSettings.ControlObjectSettings;
 using System.ComponentModel;
 using System.Linq;
+using UPD.Device;
 
 namespace UCA
 {
@@ -257,7 +258,7 @@ namespace UCA
 
         private void InitialActions()
         {
-            string connectionString = "NS03.xlsx;";
+            var connectionString = "NS03.xlsx;";
             InitialActions(connectionString);
         }
 
@@ -293,14 +294,11 @@ namespace UCA
         private void EnQueueCheckingSteps(string modeName)//(Dictionary<string, List<Step>> stepsDictionary)
         {
             var stepsDictionary = (modeName.Contains("ОУ") || modeName.Contains("НУ")) ? stepsInfo.VoltageSupplyModesDictionary[modeName] : stepsInfo.ModesDictionary[modeName];
-            foreach (var tableName in stepsDictionary.Keys)
+            foreach (var step in stepsDictionary.Keys.SelectMany(tableName => stepsDictionary[tableName]))
             {
-                foreach (var step in stepsDictionary[tableName])
+                lock (queue)
                 {
-                    lock (queue)
-                    {
-                        queue.Enqueue(step);
-                    }
+                    queue.Enqueue(step);
                 }
             }
         }
@@ -316,14 +314,19 @@ namespace UCA
             log.Send(DateTime.Now.ToString());
             form.AddSubTreeNode(node, deviceResult.Description);
             var color = Color.Black;
-            if (deviceResult.State == DeviceStatus.OK)
+            switch (deviceResult.State)
             {
-                color = Color.Green;
+                case DeviceStatus.OK:
+                    color = Color.Green;
+                    break;
+                case DeviceStatus.ERROR:
+                case DeviceStatus.NOT_CONNECTED:
+                    color = Color.Red;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
-            if (deviceResult.State == DeviceStatus.ERROR || deviceResult.State == DeviceStatus.NOT_CONNECTED)
-            {
-                color = Color.Red;
-            }
+
             form.HighlightTreeNode(node, color);
         }
 
@@ -377,7 +380,7 @@ namespace UCA
 
         #region Выборочная проверка
 
-        private List<Step> GetSelectedSteps()
+        private static List<Step> GetSelectedSteps()
         {
             var stepList = new List<Step>();
             foreach (var node in treeviewNodeStep.Keys)
@@ -498,7 +501,7 @@ namespace UCA
 
         #region TreeNodes
 
-        private void FillTreeView(TreeView treeView, Dictionary<string, List<Step>> stepDictionary)
+        private static void FillTreeView(TreeView treeView, Dictionary<string, List<Step>> stepDictionary)
         {
             treeviewNodeStep.Clear();
             treeviewStepNode.Clear();
@@ -753,7 +756,7 @@ namespace UCA
             mainThread.Abort();
         }
 
-        private void Die()
+        private static void Die()
         {
             if (DeviceHandler == null)
                 return;

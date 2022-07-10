@@ -24,24 +24,17 @@ namespace UCA
 
         private List<string> GetTableNamesList()
         {
-            var tableNamesList = new List<string>();
             var dataTable = connection.GetSchema("Tables");
-            foreach (DataRow row in dataTable.Rows)
-            {
-                string tableName = (string)row[2];
-                if (!tableName.Contains("MSys") && !tableName.Contains("~"))
-                    tableNamesList.Add(tableName);
-            }
-            return tableNamesList;
+            return (from DataRow row in dataTable.Rows select (string) row[2] into tableName where !tableName.Contains("MSys") && !tableName.Contains("~") select tableName).ToList();
         }
 
         public DataSet GetDataSet()
         {
-            DataSet dataSet = new DataSet();
+            var dataSet = new DataSet();
             foreach (var tableName in GetTableNamesList())
             {
                 var selectCommandText = $"SELECT * FROM [{tableName}]";
-                OleDbDataAdapter dataAdapter = new OleDbDataAdapter(selectCommandText, connection);
+                var dataAdapter = new OleDbDataAdapter(selectCommandText, connection);
                 dataAdapter.Fill(dataSet, tableName.Replace("$", ""));
             }
             return dataSet;

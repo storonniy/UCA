@@ -25,14 +25,14 @@ namespace UCA.Devices
             switch (deviceData.Command)
             {
                 case DeviceCommands.SetVoltage:
-                    return IDeviceInterface.SetVoltage(deviceData, akip3407.SetVoltage);
+                    return SetVoltage(deviceData, akip3407.SetVoltage);
                 case DeviceCommands.SetFrequency:
                     var actualFrequency = akip3407.SetFrequency(deviceData.Argument);
                     return GetResult("Установлена частота", deviceData, UnitType.Frequency, actualFrequency);
                 case DeviceCommands.PowerOn:
-                    return IDeviceInterface.PowerOn(deviceData, akip3407.PowerOn);
+                    return PowerOn(deviceData, akip3407.PowerOn);
                 case DeviceCommands.PowerOff:
-                    return IDeviceInterface.PowerOff(deviceData, akip3407.PowerOff);
+                    return PowerOff(deviceData, akip3407.PowerOff);
                 default:
                     return DeviceResult.ResultError($"Неизвестная команда {deviceData.Command}");
             }

@@ -23,8 +23,7 @@ namespace UCA.DeviceDrivers
         {
             if (serialPort.IsOpen)
                 serialPort.Close();
-            if (serialPort != null)
-                serialPort.Dispose();
+            serialPort?.Dispose();
         }
 
         /// <summary>

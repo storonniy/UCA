@@ -11,7 +11,7 @@ namespace UCA.Devices
 {
     class GDM78261_device : IDeviceInterface
     {
-        readonly GDM78261 gdm78261;
+        private readonly GDM78261 gdm78261;
 
         public GDM78261_device(SerialPort serialPort)
         {

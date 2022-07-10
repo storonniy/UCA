@@ -89,9 +89,9 @@ namespace UCA.DeviceDrivers
                 throw new Exception("PSP-405 returned an incorrect response to the request.");
             data = data.Replace(flag, "").Replace("\n", "").Replace("\r", "");
             var arrayData = data.ToCharArray();
-            for (int i = 0; i < arrayData.Length; i++)
+            for (var i = 0; i < arrayData.Length; i++)
             {
-                bool state = (int)arrayData[i] - 48 == 1;
+                var state = (int)arrayData[i] - 48 == 1;
                 switch (i)
                 {
                     case 0:
@@ -354,12 +354,12 @@ namespace UCA.DeviceDrivers
 
         public double GetDoubleDataFromPowerSupply(Value value)
         {
-            string data = serialPort.ReadExisting();
+            var data = serialPort.ReadExisting();
             if (data.Substring(0, 1) != value.Flag)
             {
                 throw new Exception("PSP-405 returned an incorrect response.");
             }
-            string stringValue = data.Substring(value.Flag.Length, value.Length);
+            var stringValue = data.Substring(value.Flag.Length, value.Length);
             return double.Parse(stringValue, CultureInfo.InvariantCulture);
         }
 
@@ -383,27 +383,27 @@ namespace UCA.DeviceDrivers
         public ValuesStatus GetAllTheStatusValues()
         {
             serialPort.SendCommand("L\r");
-            string data = serialPort.ReadExisting();
-            ValuesStatus statusPSP405 = new ValuesStatus();
-            string theFirstSymbol = data.Substring(0, 1);
+            var data = serialPort.ReadExisting();
+            var statusPSP405 = new ValuesStatus();
+            var theFirstSymbol = data.Substring(0, 1);
             if (theFirstSymbol == "V")
             {
-                string voltage = data.Substring(1, 5);
+                var voltage = data.Substring(1, 5);
                 statusPSP405.voltage = Double.Parse(voltage, CultureInfo.InvariantCulture);
-                string current = data.Substring(7, 5);
+                var current = data.Substring(7, 5);
                 statusPSP405.current = Double.Parse(current, CultureInfo.InvariantCulture);
-                string power = data.Substring(13, 5);
+                var power = data.Substring(13, 5);
                 statusPSP405.power = Double.Parse(power, CultureInfo.InvariantCulture);
-                string powerStatus = data.Substring(data.Length - 1 - 3 - 5, 1);
+                var powerStatus = data.Substring(data.Length - 1 - 3 - 5, 1);
                 if (powerStatus == "1")
                     statusPSP405.relayStatus = true;
                 if (powerStatus == "0")
                     statusPSP405.relayStatus = false;
-                string voltageLimit = data.Substring(19, 2);
+                var voltageLimit = data.Substring(19, 2);
                 statusPSP405.voltageLimit = Double.Parse(voltageLimit, CultureInfo.InvariantCulture);
-                string currentLimit = data.Substring(22, 4);
+                var currentLimit = data.Substring(22, 4);
                 statusPSP405.currentLimit = Double.Parse(currentLimit, CultureInfo.InvariantCulture);
-                string powerLimit = data.Substring(27, 3);
+                var powerLimit = data.Substring(27, 3);
                 statusPSP405.powerLimit = Double.Parse(powerLimit, CultureInfo.InvariantCulture);
             }
             else
@@ -418,16 +418,16 @@ namespace UCA.DeviceDrivers
 
         #region Send data to the PSP-405
 
-        public static string SetTheNumberOfDecimalPlaces(double number, int significantPlaces, int decimalPlaces)
+        private static string SetTheNumberOfDecimalPlaces(double number, int significantPlaces, int decimalPlaces)
         {
-            string significantFormat = "";
-            string decimalFormat = "";
-            for (int i = 0; i < significantPlaces; i++)
+            var significantFormat = "";
+            var decimalFormat = "";
+            for (var i = 0; i < significantPlaces; i++)
                 significantFormat += '0';
-            for (int i = 0; i < decimalPlaces; i++)
+            for (var i = 0; i < decimalPlaces; i++)
                 decimalFormat += '0';
-            string stringFormat = "{0:" + significantFormat + '.' + decimalFormat + '}';
-            return String.Format(CultureInfo.InvariantCulture, stringFormat, number);
+            var stringFormat = "{0:" + significantFormat + '.' + decimalFormat + '}';
+            return string.Format(CultureInfo.InvariantCulture, stringFormat, number);
         }
 
         #endregion

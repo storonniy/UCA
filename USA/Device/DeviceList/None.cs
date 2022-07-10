@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static UCA.Auxiliary.UnitValuePair;
 using System.Threading;
+using UPD.Device;
 
 namespace UCA.Devices
 {
@@ -52,12 +53,11 @@ namespace UCA.Devices
                                 var result = $"Коэффициент равен {string.Format("{0:0.000}", actualCoefficient)} В/мкА \tНижний предел  {lowerLimit} В/мкА \tВерхний предел {upperLimit} В/мкА";
                                 if (actualCoefficient >= lowerLimit && actualCoefficient <= upperLimit)
                                     return DeviceResult.ResultOk(result);
-                                else
-                                    return DeviceResult.ResultError($"Ошибка: {result}");
+                                return DeviceResult.ResultError($"Ошибка: {result}");
                             }
                             catch (KeyNotFoundException)
                             {
-                                UnitType unitType = (deviceData.Channel > 2) ? UnitType.Current : UnitType.Voltage;
+                                var unitType = (deviceData.Channel > 2) ? UnitType.Current : UnitType.Voltage;
                                 var data = $"lowerLimit {deviceData.LowerLimit}; upperLimit {deviceData.UpperLimit}";
                                 return DeviceResult.ResultError($"{data} \n Для входного воздействия {GetValueUnitPair(value, unitType)} и канала {deviceData.Channel} не измерялись входные и выходные воздействия");
                             }
@@ -76,13 +76,13 @@ namespace UCA.Devices
                     case DeviceCommands.Divide:
                         {
                             var keys = GetKeys(deviceData.Argument);
-                            double value = Divide(GetValue(keys.Keys[0]), GetValue(keys.Keys[1]));
+                            var value = Divide(GetValue(keys.Keys[0]), GetValue(keys.Keys[1]));
                             return GetResult("Получено значение", deviceData, keys.UnitType, value);
                         }
                     case DeviceCommands.Substract:
                         {
                             var keys = GetKeys(deviceData.Argument);
-                            double value = Substract(GetValue(keys.Keys[0]), GetValue(keys.Keys[1]));
+                            var value = Substract(GetValue(keys.Keys[0]), GetValue(keys.Keys[1]));
                             return GetResult("Получено значение", deviceData, keys.UnitType, value);
                         }
                     case DeviceCommands.Save:
@@ -96,7 +96,7 @@ namespace UCA.Devices
                     case DeviceCommands.MultiplyAndSave:
                         {
                             var keys = GetKeys(deviceData.Argument);
-                            double value = Multiply(GetValue(keys.Keys[0]), GetValue(keys.Keys[1]));
+                            var value = Multiply(GetValue(keys.Keys[0]), GetValue(keys.Keys[1]));
                             var keyToSave = deviceData.AdditionalArg;
                             AddValues(keyToSave, value);
                             return GetResult("Получено значение", deviceData, keys.UnitType, value);

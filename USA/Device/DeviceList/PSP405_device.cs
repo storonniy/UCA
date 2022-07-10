@@ -25,16 +25,16 @@ namespace UCA.Devices
             switch (deviceData.Command)
             {
                 case DeviceCommands.SetVoltage:
-                    return IDeviceInterface.SetVoltage(deviceData, Psp405.SetVoltage);
+                    return SetVoltage(deviceData, Psp405.SetVoltage);
                 case DeviceCommands.SetCurrent:
                     var actualCurrent = SetCurrent(deviceData);
                     return GetResult($"{deviceData.DeviceName}: Установлен ток", deviceData, UnitType.Current, actualCurrent);
                 case DeviceCommands.PowerOn:
-                    return IDeviceInterface.PowerOn(deviceData, Psp405.PowerOn);
+                    return PowerOn(deviceData, Psp405.PowerOn);
                 case DeviceCommands.PowerOff:
-                    return IDeviceInterface.PowerOff(deviceData, Psp405.PowerOff);
+                    return PowerOff(deviceData, Psp405.PowerOff);
                 case DeviceCommands.SetCurrentLimit:
-                    return IDeviceInterface.SetCurrentLimit(deviceData, Psp405.SetCurrentLimit);
+                    return SetCurrentLimit(deviceData, Psp405.SetCurrentLimit);
                 default:
                     return ResultError($"Неизвестная команда {deviceData.Command}");
             }

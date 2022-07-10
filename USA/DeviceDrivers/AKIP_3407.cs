@@ -28,10 +28,10 @@ namespace UCA.DeviceDrivers
             Thread.Sleep(delay);
         }
 
-        private byte[] GetBytes(string command)
+        private static byte[] GetBytes(string command)
         {
             var bytes = Encoding.ASCII.GetBytes(command);
-            byte[] result = new byte[bytes.Length + 2];
+            var result = new byte[bytes.Length + 2];
             Array.Copy(bytes, result, bytes.Length);
             result[bytes.Length] = 0x0D;
             result[bytes.Length + 1] = 0x0A;

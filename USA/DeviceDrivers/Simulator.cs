@@ -23,13 +23,18 @@ namespace UPD.DeviceDrivers
             serialPort.Close();
         }
 
-        public static string[] GetRelayNamesAsAnArray(string relayNamesString)
+        private static List<int> GetRelayNamesAsAnArray(string relayNamesString)
         {
-            relayNamesString = relayNamesString.Replace(" ", "").Replace("\r", "").Replace("\n", "");
-            return relayNamesString.Split(',');
+            return relayNamesString
+                .Replace(" ", "")
+                .Replace("\r", "")
+                .Replace("\n", "")
+                .Split(',')
+                .Select(int.Parse)
+                .ToList();
         }
 
-        public static string DeleteIdentifierFromAnswer(string relayNamesString, string identifier)
+        private static string DeleteIdentifierFromAnswer(string relayNamesString, string identifier)
         {
             if (!relayNamesString.Contains(identifier))
                 throw new Exception("Simulator вернул неверный ответ на запрос.");
@@ -40,59 +45,50 @@ namespace UPD.DeviceDrivers
         ///  Запрашивает имена замкнутых реле адаптера стыковки с ААП
         /// </summary>
         /// <returns>Возвращает массив типа string[], содержащий имена замкнутых реле</returns>
-        public string[] GetClosedRelayNames()
+        public List<int> GetClosedRelayNames()
         {
             SendCommand("*GetClosedRelayNemes");
-            string closedRelayNamesString = serialPort.ReadExisting();
-            string checkedClosedRelayNamesString = DeleteIdentifierFromAnswer(closedRelayNamesString, "*ClosedRelayNames:");
+            var answer = serialPort.ReadExisting();
+            var checkedClosedRelayNamesString = DeleteIdentifierFromAnswer(answer, "*ClosedRelayNames:");
             return GetRelayNamesAsAnArray(checkedClosedRelayNamesString);
         }
-
-        public string PrepareCommandForAdapter(params string[] relays)
+        public bool CloseRelays(params int[] relays)
         {
-            return string.Join(",", relays);;
-        }
-
-        public void CloseRelays(params string[] relays)
-        {
-            string command = "*CloseRelays:" + PrepareCommandForAdapter(relays);
+            var command = "*CloseRelays:" + string.Join(",", relays);
             SendCommand(command);
             var answerFromAdapter = serialPort.ReadExisting();
-            if (answerFromAdapter != "*CloseRelays:Ok\r")
-                throw new Exception($"При замыкании реле {command} возникла ошибка");
+            return answerFromAdapter == "*CloseRelays:Ok\r";
+        }
+        
+        public bool OpenRelays(params int[] relays)
+        {
+            var command = "*OpenRelays:" +  string.Join(",", relays);
+            SendCommand(command);
+            var answerFromAdapter = serialPort.ReadExisting();
+            return answerFromAdapter == "*OpenRelays:Ok\r";
         }
 
         private byte[] GetBytes(string command)
         {
             var bytes = Encoding.ASCII.GetBytes(command);
-            byte[] result = new byte[bytes.Length + 1];
+            var result = new byte[bytes.Length + 1];
             Array.Copy(bytes, result, bytes.Length);
             result[bytes.Length] = 0x0A;
             return result;
         }
+        
 
-
-        public void OpenRelays(params string[] relays)
+        public bool OpenAllRelays()
         {
-            string command = "*OpenRelays:" + PrepareCommandForAdapter(relays);
+            var command = "*OpenRelays:All";
             SendCommand(command);
             var answerFromAdapter = serialPort.ReadExisting();
-            if (answerFromAdapter != "*OpenRelays:Ok\r")
-                throw new Exception($"При размыкании реле {command} возникла ошибка");
+            return answerFromAdapter == "*OpenRelays:Ok\r";
         }
 
-        public void OpenAllRelays()
+        public void ConnectRelays(params int[] relays)
         {
-            string command = "*OpenRelays:All";
-            SendCommand(command);
-            var answerFromAdapter = serialPort.ReadExisting();
-            if (answerFromAdapter != "*OpenRelays:Ok\r")
-                throw new Exception($"При размыкании реле {command} возникла ошибка");
-        }
-
-        public void ConnectRelays(params string[] relays)
-        {
-            string command = "*ConnectRelays:" + PrepareCommandForAdapter(relays);
+            string command = "*ConnectRelays:" + string.Join(",", relays);
             SendCommand(command);
             var answerFromAdapter = serialPort.ReadExisting();
             if (answerFromAdapter.ToLower() != "*DisconnectRelays:Ok\r".ToLower())
@@ -114,7 +110,7 @@ namespace UPD.DeviceDrivers
             return serialPort.ReadLine();
         }
 
-        public string[] GetSignals()
+        public List<int> GetSignals()
         {
             var command = "*GetID\r";
             serialPort.WriteLine(command);

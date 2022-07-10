@@ -26,13 +26,13 @@ namespace UCA.Devices
             switch (deviceData.Command)
             {
                 case DeviceCommands.SetVoltage:
-                    return IDeviceInterface.SetVoltage(deviceData, psh73610.SetVoltage);
+                    return SetVoltage(deviceData, psh73610.SetVoltage);
                 case DeviceCommands.SetCurrentLimit:
-                    return IDeviceInterface.SetCurrentLimit(deviceData, psh73610.SetCurrentLimit);
+                    return SetCurrentLimit(deviceData, psh73610.SetCurrentLimit);
                 case DeviceCommands.PowerOff:
-                    return IDeviceInterface.PowerOff(deviceData, psh73610.PowerOff);
+                    return PowerOff(deviceData, psh73610.PowerOff);
                 case DeviceCommands.PowerOn:
-                    return IDeviceInterface.PowerOn(deviceData, psh73610.PowerOn);
+                    return PowerOn(deviceData, psh73610.PowerOn);
                 default:
                     return ResultError($"Неизвестная команда {deviceData.Command}");
             }
