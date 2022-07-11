@@ -90,6 +90,12 @@ namespace UCA.DeviceDrivers
             return serialPort.ReadExisting().Contains("VOLT");
         }
 
+        public double ParseValue()
+        {
+            var value = serialPort.ReadExisting();
+            return (double)Decimal.Parse(value.Replace("\r", ""), NumberStyles.Float, CultureInfo.InvariantCulture);
+        }
+
         /// <summary>
         /// Select source function as current
         /// </summary>
@@ -110,7 +116,7 @@ namespace UCA.DeviceDrivers
         public double GetVoltage()
         {
             SendCommand(":SOUR:VOLT:LEV:AMPL?");
-            return serialPort.ReadDouble();
+            return ParseValue();
         }
 
         /// <summary>
@@ -124,7 +130,7 @@ namespace UCA.DeviceDrivers
             SendCommand($":SENS:CURR:PROT {str}");
             SendCommand($":SENS:CURR:RANGE {str}");
             SendCommand($":SENS:CURR:PROT?");
-            return serialPort.ReadDouble();
+            return ParseValue();
         }
 
         /// <summary>

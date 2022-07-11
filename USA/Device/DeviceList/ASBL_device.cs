@@ -11,10 +11,10 @@ namespace UPD.Device.DeviceList
 {
     public class ASBL_device : IDeviceInterface
     {
-        readonly Asbl asbl;
+        readonly ASBL asbl;
         public ASBL_device()
         {
-            asbl = new Asbl();
+            asbl = new ASBL();
         }
 
         public static uint[] GetLineNumbers(string argument)

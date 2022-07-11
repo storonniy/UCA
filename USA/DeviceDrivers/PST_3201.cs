@@ -48,7 +48,13 @@ namespace UCA.DeviceDrivers
                 throw new ArgumentException("Номер канала PST_3201 может быть равен 1, 2, 3");
             var str = voltage.ToString().Replace(",", ".");
             serialPort.SendCommand($":CHAN{channel}:VOLT {str};VOLT?\n");
-            return serialPort.ReadDouble();
+            return ParseValue();
+        }
+
+        private double ParseValue()
+        {
+            Thread.Sleep(1000);
+            return double.Parse(serialPort.ReadLine().Replace(".", ","));
         }
 
         public double GetOutputVoltage(int channel)
@@ -56,7 +62,7 @@ namespace UCA.DeviceDrivers
             if (1 > channel || channel > 3)
                 throw new ArgumentException("Номер канала PST_3201 может быть равен 1, 2, 3");
             serialPort.SendCommand($":CHAN{channel}:MEAS:VOLT?\n");
-            return serialPort.ReadDouble();
+            return ParseValue();
         }
 
         public double SetCurrent(double current, int channel)
@@ -65,7 +71,7 @@ namespace UCA.DeviceDrivers
                 throw new ArgumentException("Номер канала PST_3201 может быть равен 1, 2, 3");
             var str = current.ToString().Replace(",", ".");
             serialPort.SendCommand($":CHAN{channel}:CURR {str};CURR?\n");
-            return serialPort.ReadDouble();
+            return ParseValue();
         }
 
         private bool ChangeOutputState(string outputState)

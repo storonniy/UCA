@@ -25,6 +25,8 @@ namespace UPD.DeviceDrivers
 
         private static List<int> GetRelayNamesAsAnArray(string relayNamesString)
         {
+            if (relayNamesString.Contains("none"))
+                return new List<int> { -1 };
             return relayNamesString
                 .Replace(" ", "")
                 .Replace("\r", "")

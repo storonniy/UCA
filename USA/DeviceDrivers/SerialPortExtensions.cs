@@ -15,10 +15,10 @@ namespace UPD.DeviceDrivers
 
         public static double ReadDouble(this SerialPort serialPort)
         {
-            var value = serialPort.ReadExisting().Replace("\r", "").Replace("\n", "").Replace(".", ",");
+            var value = serialPort.ReadLine().Replace("\r", "").Replace("\n", "").Replace(".", ",");
             try
             {
-                return (double)decimal.Parse(value, NumberStyles.Float, CultureInfo.InvariantCulture);
+                return double.Parse(value, NumberStyles.Float, CultureInfo.InvariantCulture);
             }
             catch (FormatException)
             {

@@ -43,14 +43,19 @@ namespace UCA.DeviceDrivers
             var str = voltage.ToString().Replace(",", ".");
             SendCommand($"SOUR1:VOLT {str}");
             SendCommand("SOUR1:VOLT?");
-            return serialPort.ReadDouble();
+            return ParseValue();
         }
 
         public double SetFrequency (string frequency)
         {
             SendCommand($"SOUR1:FREQ {frequency}");
             SendCommand("SOUR1:FREQ?");
-            return serialPort.ReadDouble();
+            return ParseValue();
+        }
+
+        private double ParseValue()
+        {
+            return double.Parse(serialPort.ReadExisting().Replace("\n", ""), CultureInfo.InvariantCulture);
         }
 
         #region Power Status
@@ -61,13 +66,16 @@ namespace UCA.DeviceDrivers
 
         public bool PowerOff()
         {
-            return !ChangePowerStatus("0");
+            return ChangePowerStatus("0");
         }
 
         private bool ChangePowerStatus(string status)
         {
             SendCommand($"OUTP1 {status}");
-            return serialPort.ReadExisting() == "1";
+            return true;
+            SendCommand($"OUTP1?");
+            var answer = serialPort.ReadLine().Replace("\n", "");
+            return answer == "1";
         }
 
         #endregion

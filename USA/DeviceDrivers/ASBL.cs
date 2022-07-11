@@ -7,34 +7,44 @@ using System.Threading.Tasks;
 using FTD2XX_NET;
 using static FTD2XX_NET.FTDI;
 using System.Threading;
-using UPD.Auxiliary;
 
 namespace UPD.DeviceDrivers
 {
-    public class ASBLException: Exception
+    public class ASBLException : Exception
     {
         public ASBLException(string message) : base(message) { }
     }
 
-    public class Asbl
+    public class ASBL
     {
-        private readonly FTDI deviceA;
-        private readonly FTDI deviceB;
-        private readonly uint ftdiDeviceCount;
-        private const int ADR_HIGH_PINS_DIR = 0x0C;
-        private const int ADR_LOW_PINS_DIR = 0x6B;
+        internal FTDI deviceA;
+        internal FTDI deviceB;
+        UInt32 ftdiDeviceCount;
+        FT_DEVICE_INFO_NODE[] ftdiDeviceList;
+
+        private const int highPinsDir = 0x0C;
+        private const int lowPinsDir = 0x6B;
         private byte lowPinsState = 0x68;
         private byte highPinsState = 0x0C;
 
-        ~Asbl()
+        /// <summary>
+        /// Создать фиктивное устройство (для тестов)
+        /// </summary>
+        /// <param name="n"></param>
+        public ASBL(uint n)
         {
-            if (deviceA != null && deviceA.IsOpen)
+
+        }
+
+        ~ASBL()
+        {
+            if (deviceA.IsOpen)
                 deviceA.Close();
-            if (deviceB != null && deviceB.IsOpen)
+            if (deviceB.IsOpen)
                 deviceB.Close();
         }
 
-        public Asbl()
+        public ASBL()
         {
             deviceA = new FTDI();
             // Determine the number of FTDI devices connected to the machine
@@ -43,9 +53,8 @@ namespace UPD.DeviceDrivers
             {
                 throw new ASBLException("Failed to get number of devices (error " + ftStatus.ToString() + ")");
             }
-
             // Allocate storage for device info list
-            var ftdiDeviceList = new FT_DEVICE_INFO_NODE[ftdiDeviceCount];
+            ftdiDeviceList = new FT_DEVICE_INFO_NODE[ftdiDeviceCount];
             // Populate our device list
             ftStatus = deviceA.GetDeviceList(ftdiDeviceList);
             if (ftStatus != FT_STATUS.FT_OK)
@@ -68,13 +77,13 @@ namespace UPD.DeviceDrivers
             Check("FT_EnableJTAGController(deviceA)", () => FT_EnableJTAGController(deviceA));
             Check("deviceA.ResetDevice()", () => deviceA.ResetDevice());
             lowPinsState = 0x68;
-            FT_W_LowPins(lowPinsState, ADR_LOW_PINS_DIR);
+            FT_W_LowPins(lowPinsState, lowPinsDir);
             lowPinsState = 0x68;
-            FT_W_LowPins(lowPinsState, ADR_LOW_PINS_DIR);
+            FT_W_LowPins(lowPinsState, lowPinsDir);
             highPinsState = 0x0C;
-            FT_W_Highpins(highPinsState, ADR_HIGH_PINS_DIR);
+            FT_W_Highpins(highPinsState, highPinsDir);
             highPinsState = 0x0C;
-            FT_W_Highpins(highPinsState, ADR_HIGH_PINS_DIR);
+            FT_W_Highpins(highPinsState, highPinsDir);
             // находим в сипске устройств FTDI адаптеры с нужными серийными номерами и заполянем значение хэндла для канала B
             deviceB = new FTDI();
             Check("deviceB.OpenByIndex(1)", () => deviceB.OpenByIndex(1));
@@ -92,19 +101,19 @@ namespace UPD.DeviceDrivers
         private void AS_ResetFPGA()
         {
             Check("deviceB.ResetDevice()", () => deviceB.ResetDevice());
-            SetRstN();
+            SetRSTn();
             Thread.Sleep(1);
-            ClrRSTn();         
+            ClrRSTn();
         }
 
-        private static void Check(string errorMsg, Func<FT_STATUS> command)
+        private void Check(string errorMsg, Func<FT_STATUS> command)
         {
             var status = command();
             if (status != FT_STATUS.FT_OK)
                 throw new ASBLException($"{errorMsg} : {status}");
         }
 
-        private static FT_STATUS FT_ResetController(FTDI dev)
+        private FT_STATUS FT_ResetController(FTDI dev)
         {
             var status = dev.SetBitMode(0, 0);
             return status;
@@ -153,14 +162,14 @@ namespace UPD.DeviceDrivers
 
         public void ClearAll()
         {
-            const uint dirState = 0xFFFFF;
+            uint dirState = 0xFFFFF;
             Clear(Line.ADR_DIR_REG1, dirState);
             Clear(Line.ADR_DIR_REG2, dirState);
             Clear(Line.ADR_DIR_REG3, dirState);
             Clear(Line.ADR_DIR_REG4, dirState);
             Clear(Line.ADR_DIR_REG5, dirState);
             Clear(Line.ADR_DIR_REG6, dirState);
-            const uint dataState = 0;
+            uint dataState = 0;
             Clear(Line.ADR_DATA_REG1, dataState);
             Clear(Line.ADR_DATA_REG2, dataState);
             Clear(Line.ADR_DATA_REG3, dataState);
@@ -185,14 +194,14 @@ namespace UPD.DeviceDrivers
 
         public void WriteData(uint address, uint data)
         {
-            SetAdRn();
+            SetADRn();
             ClrR_Wn();
             uint numBytesWritten = 0;
             var addressBuffer = GetFilledBuffer(address);
             var addrStatus = deviceB.Write(addressBuffer, addressBuffer.Length, ref numBytesWritten);
             if (addrStatus != FT_STATUS.FT_OK)
                 throw new ASBLException($"АСБЛ: операция записи {address} завершилась с ошибкой");
-            ClrAdRn();
+            ClrADRn();
             var dataBuffer = GetFilledBuffer(data);
             var dataStatus = deviceB.Write(dataBuffer, dataBuffer.Length, ref numBytesWritten);
             if (dataStatus != FT_STATUS.FT_OK)
@@ -202,14 +211,14 @@ namespace UPD.DeviceDrivers
 
         public uint ReadData(uint address)
         {
-            SetAdRn();
+            SetADRn();
             SetR_Wn();
             uint numBytesWritten = 0;
             var addressBuffer = GetFilledBuffer(address);
             var addrStatus = deviceB.Write(addressBuffer, addressBuffer.Length, ref numBytesWritten);
             if (addrStatus != FT_STATUS.FT_OK)
                 throw new ASBLException($"АСБЛ: операция записи {address} завершилась с ошибкой");
-            ClrAdRn();
+            ClrADRn();
             Thread.Sleep(10);
             uint numBytesRead = 0;
             var buffer = new byte[12];
@@ -253,19 +262,19 @@ namespace UPD.DeviceDrivers
         /// <summary>
         /// SetADRn Выставляет признак адреса / Снимает признак данных
         /// </summary>
-        private void SetAdRn()
+        private void SetADRn()
         {
             highPinsState = (byte)(highPinsState & 0x0B);
-            FT_W_Highpins(highPinsState, ADR_HIGH_PINS_DIR);
+            FT_W_Highpins(highPinsState, highPinsDir);
         }
 
         /// <summary>
         /// ClrADRn Выставляет признак данных / Снимает признак адреса
         /// </summary>
-        private void ClrAdRn()
+        private void ClrADRn()
         {
             highPinsState = (byte)(highPinsState | 0x04);
-            FT_W_Highpins(highPinsState, ADR_HIGH_PINS_DIR);
+            FT_W_Highpins(highPinsState, highPinsDir);
         }
 
         /// <summary>
@@ -274,7 +283,7 @@ namespace UPD.DeviceDrivers
         private void SetR_Wn()
         {
             highPinsState = (byte)(highPinsState | 0x08);
-            FT_W_Highpins(highPinsState, ADR_HIGH_PINS_DIR);
+            FT_W_Highpins(highPinsState, highPinsDir);
         }
 
         /// <summary>
@@ -283,16 +292,16 @@ namespace UPD.DeviceDrivers
         private void ClrR_Wn()
         {
             highPinsState = (byte)(highPinsState & 0x07);
-            FT_W_Highpins(highPinsState, ADR_HIGH_PINS_DIR);
+            FT_W_Highpins(highPinsState, highPinsDir);
         }
 
         /// <summary>
         /// SetRSTn выставить сигнал сброса для ПЛИС
         /// </summary>
-        private void SetRstN()
+        private void SetRSTn()
         {
             lowPinsState = (byte)(lowPinsState & 0xDF);
-            FT_W_LowPins(lowPinsState, ADR_LOW_PINS_DIR);
+            FT_W_LowPins(lowPinsState, lowPinsDir);
         }
 
         /// <summary>
@@ -301,10 +310,10 @@ namespace UPD.DeviceDrivers
         private void ClrRSTn()
         {
             lowPinsState = (byte)(lowPinsState | 0x20);
-            FT_W_LowPins(lowPinsState, ADR_LOW_PINS_DIR);
+            FT_W_LowPins(lowPinsState, lowPinsDir);
         }
 
-        private static byte[] GetFilledBuffer(uint data)
+        private byte[] GetFilledBuffer(uint data)
         {
             var buf = BitConverter.GetBytes(data);
             return buf;
@@ -314,42 +323,42 @@ namespace UPD.DeviceDrivers
     /// <summary>
     /// Представляет линию в АСБЛ
     /// </summary>
-    public class Line 
+    public class Line
     {
-        private readonly Asbl asbl;
-        public uint Number { get; private set; }
+        readonly ASBL asbl;
+        public uint number { get; private set; }
         public uint DirectionRegister { get; private set; }
         public uint DataRegister { get; private set; }
-        public uint BitNumber { get; private set; }
+        public uint bitNumber { get; private set; }
         public bool Direction { get; private set; }
         public bool Data { get; private set; }
 
-        public Line(uint number, Asbl asbl)
+        public Line(uint number, ASBL asbl)
         {
-            this.asbl = asbl;           
+            this.asbl = asbl;
             if (number < 1 || number > 120)
                 throw new ArgumentOutOfRangeException("Номер линии должен быть от 1 до 120");
-            this.Number = number;
+            this.number = number;
             SetRegisters();
-            BitNumber = (number - 1) % 20;
+            bitNumber = (number - 1) % 20;
         }
 
-        public static readonly Func<uint, uint> GetPowerOfTwo = (degree) => (uint)(1 << (int)degree);
+        public static Func<uint, uint> getPowerOfTwo = (degree) => (uint)(1 << (int)degree);
 
         private void ChangeBit(uint register, bool bitState)
         {
-            var currentData = asbl.ReadData(register);
-            var newData = bitState ? currentData | GetPowerOfTwo(BitNumber) : currentData - (currentData & GetPowerOfTwo(BitNumber));
+            uint currentData = asbl.ReadData(register);
+            uint newData = bitState ? currentData | getPowerOfTwo(bitNumber) : currentData - (currentData & getPowerOfTwo(bitNumber));
             asbl.WriteData(register, newData);
         }
 
         private void ChangeDirection(bool bitState)
         {
             ChangeBit(DirectionRegister, bitState);
-            var writtenData = asbl.ReadData(DirectionRegister);
+            uint writtenData = asbl.ReadData(DirectionRegister);
             var state = bitState ? 1 : 0;
-            if (!(writtenData.BitState((int)BitNumber) ^ bitState))//((writtenData & (1 << (int)bitNumber)) >> (int)bitNumber != state)
-                throw new FailedToSetLineException($"Не удалось выставить линию {Number} в {state}");
+            if ((writtenData & (1 << (int)bitNumber)) >> (int)bitNumber != state)
+                throw new FailedToSetLineException($"Не удалось выставить линию {number} в {state}");
         }
 
         public void SetDirection()
@@ -362,16 +371,16 @@ namespace UPD.DeviceDrivers
             ChangeDirection(false);
         }
 
-        private void ChangeData(bool bitState)
+        public void ChangeData(bool state)
         {
-            var state = bitState ? 1 : 0;
-            if (!asbl.ReadData(DirectionRegister).BitState((int)BitNumber))//((asbl.ReadData(DirectionRegister) & (1 << (int)bitNumber)) == 0)
-                throw new LineIsSetToReceiveException($"Попытка выставить в {state} линию {Number}, которая настроена на приём");
-            ChangeBit(DataRegister, bitState);
+            var expectedBitState = state ? 1 : 0;
+            if ((asbl.ReadData(DirectionRegister) & (1 << (int)bitNumber)) == 0)
+                throw new LineIsSetToReceiveException($"Попытка выставить в {expectedBitState} линию {number}, которая настроена на приём");
+            ChangeBit(DataRegister, state);
             var writtenData = asbl.ReadData(DataRegister);
-            //var actualBitState = (writtenData & (1 << (int)bitNumber)) >> (int)bitNumber;
-            if (!(writtenData.BitState((int)BitNumber) ^ bitState)) //if (actualBitState != expectedBitState)
-                throw new FailedToSetLineException($"Не удалось выставить линию {Number} в {state}");
+            var actualBitState = (writtenData & (1 << (int)bitNumber)) >> (int)bitNumber;
+            if (actualBitState != expectedBitState)
+                throw new FailedToSetLineException($"Не удалось выставить линию {number} в {expectedBitState}");
         }
 
         public void SetData()
@@ -386,37 +395,37 @@ namespace UPD.DeviceDrivers
 
         private void SetRegisters()
         {
-            if (Number > 0 && Number < 21)
+            if (number > 0 && number < 21)
             {
                 DirectionRegister = ADR_DIR_REG1;
                 DataRegister = ADR_DATA_REG1;
                 return;
             }
-            if (Number < 41)
+            if (number < 41)
             {
                 DirectionRegister = ADR_DIR_REG2;
                 DataRegister = ADR_DATA_REG2;
                 return;
             }
-            if (Number < 61)
+            if (number < 61)
             {
                 DirectionRegister = ADR_DIR_REG3;
                 DataRegister = ADR_DATA_REG3;
                 return;
             }
-            if (Number < 81)
+            if (number < 81)
             {
                 DirectionRegister = ADR_DIR_REG4;
                 DataRegister = ADR_DATA_REG4;
                 return;
             }
-            if (Number < 101)
+            if (number < 101)
             {
                 DirectionRegister = ADR_DIR_REG5;
                 DataRegister = ADR_DATA_REG5;
                 return;
             }
-            if (Number < 121)
+            if (number < 121)
             {
                 DirectionRegister = ADR_DIR_REG6;
                 DataRegister = ADR_DATA_REG6;

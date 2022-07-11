@@ -25,6 +25,7 @@ namespace UCA
                 FactoryNumber = "Не указан",
                 OperatorName = "Не указан"
             };
+            var doub = double.Parse("09,02", CultureInfo.InvariantCulture);
             Application.Run(new Form1(settings));
         }
     }

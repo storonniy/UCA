@@ -36,7 +36,7 @@ namespace UCA.DeviceDrivers
             var str = voltage.ToString().Replace(",", ".");
             serialPort.SendCommand($":chan1:volt {str}\n");
             serialPort.SendCommand(":chan1: volt ?\n");
-            return serialPort.ReadDouble();
+            return ParseValue();
         }
 
         /// <summary>
@@ -46,7 +46,13 @@ namespace UCA.DeviceDrivers
         public double GetActualOutputLoadVoltage()
         {
             serialPort.SendCommand($":chan1:meas:volt?\n");
-            return serialPort.ReadDouble();
+            return ParseValue();
+        }
+
+        private double ParseValue()
+        {
+            var data = serialPort.ReadLine();
+            return (double)Single.Parse(data.Replace(".", ","));
         }
 
         /// <summary>
@@ -56,7 +62,7 @@ namespace UCA.DeviceDrivers
         public double GetActualOutputLoadCurrent()
         {
             serialPort.SendCommand($":chan1:meas:curr?\n");
-            return serialPort.ReadDouble();
+            return ParseValue();
         }
 
 
@@ -69,7 +75,7 @@ namespace UCA.DeviceDrivers
         {
             var str = current.ToString().Replace(",", ".");
             serialPort.SendCommand($":chan1:prot:curr 1;:chan1:curr {str};:chan1:curr?\n");
-            return serialPort.ReadDouble();
+            return ParseValue();
         }
 
         /// <summary>
@@ -81,7 +87,7 @@ namespace UCA.DeviceDrivers
         {
             var str = voltageProtection.ToString().Replace(",", ".");
             serialPort.SendCommand($":chan1:prot:volt {str};:chan1:prot:volt?\n");
-            return serialPort.ReadDouble();
+            return ParseValue();
         }
 
         /// <summary>
