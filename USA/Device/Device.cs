@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO.Ports;
 
 namespace UCA.Devices
@@ -9,13 +10,6 @@ namespace UCA.Devices
         public DeviceNames Name;
         public DeviceStatus Status;
         public string Description;
-/*        public Device(DeviceNames name, DeviceStatus status, SerialPort serialPort, string description)
-        {
-            SerialPort = serialPort;
-            Name = name;
-            Status = status;
-            Description = description;
-        }*/
     }
 
     public enum DeviceStatus
@@ -24,19 +18,7 @@ namespace UCA.Devices
         OK,
         NOT_CONNECTED
     }
-
-    public struct DeviceData
-    {
-        public DeviceNames DeviceName;
-        public DeviceCommands Command;
-        public string Argument;
-        public string AdditionalArg;
-        public double LowerLimit;
-        public double UpperLimit;
-        public int Channel;
-        public bool ShowStep;
-    }
-
+    
     public struct DeviceResult
     {
         public DeviceStatus State;

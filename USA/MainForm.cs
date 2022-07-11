@@ -17,8 +17,8 @@ namespace UCA
     {
         #region Глобальные переменные
 
-        static Dictionary<TreeNode, Step> treeviewNodeStep = new Dictionary<TreeNode, Step>();
-        static Dictionary<Step, TreeNode> treeviewStepNode = new Dictionary<Step, TreeNode>();
+        static Dictionary<TreeNode, Steps.Step> treeviewNodeStep = new Dictionary<TreeNode, Steps.Step>();
+        static Dictionary<Steps.Step, TreeNode> treeviewStepNode = new Dictionary<Steps.Step, TreeNode>();
         static Dictionary<DeviceNames, Label> deviceLabelDictionary = new Dictionary<DeviceNames, Label>();
         static StepsInfo stepsInfo;
         static DeviceInit DeviceHandler;
@@ -28,7 +28,7 @@ namespace UCA
         static Log log;
 
         Thread mainThread = new Thread(some);//stepsDictionary
-        static Queue<Step> queue = new Queue<Step>();
+        static Queue<Steps.Step> queue = new Queue<Steps.Step>();
         static Form1 EventSend;
         static bool checkingResult = true;
         static bool isCheckingStarted = false;
@@ -240,9 +240,9 @@ namespace UCA
         private void InitialActions(string pathToDataBase)
         {
             string connectionString = string.Format("Provider=Microsoft.ACE.OLEDB.12.0;Data Source={0}; Extended Properties=Excel 12.0;", pathToDataBase);//"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathToDataBase;
-            var dbReader = new DBReader(connectionString);
+            var dbReader = new DbReader(connectionString);
             var dataSet = dbReader.GetDataSet();
-            stepsInfo = Step.GetStepsInfo(dataSet);
+            stepsInfo = Steps.Step.GetStepsInfo(dataSet);
             SetVoltageSupplyModes();
             ShowCheckingModes();
             //ReplaceVoltageSupplyInStepsDictionary();
@@ -303,7 +303,7 @@ namespace UCA
             }
         }
 
-        private static void ShowStepResult(Step step, DeviceResult deviceResult)
+        private static void ShowStepResult(Steps.Step step, DeviceResult deviceResult)
         {
             var node = treeviewStepNode[step];
             form.HighlightTreeNode(node, Color.Blue);
@@ -350,7 +350,7 @@ namespace UCA
             }
         }
 
-        private static DeviceResult DoStep(Step step)
+        private static DeviceResult DoStep(Steps.Step step)
         {
             var stepParser = new StepParser(DeviceHandler, step);
             var deviceResult = stepParser.DoStep();
@@ -380,9 +380,9 @@ namespace UCA
 
         #region Выборочная проверка
 
-        private static List<Step> GetSelectedSteps()
+        private static List<Steps.Step> GetSelectedSteps()
         {
-            var stepList = new List<Step>();
+            var stepList = new List<Steps.Step>();
             foreach (var node in treeviewNodeStep.Keys)
             {
                 if (node.Checked)
@@ -394,7 +394,7 @@ namespace UCA
             return stepList;
         }
 
-        private void DoSelectedSteps(List<Step> stepList)
+        private void DoSelectedSteps(List<Steps.Step> stepList)
         {
             CreateLog();
             log.Send("Выполнение выбранных оператором шагов проверки: \r\n");
@@ -418,7 +418,7 @@ namespace UCA
             BlockControls(false);
         }
 
-        private void DoStepList(List<Step> stepList)
+        private void DoStepList(List<Steps.Step> stepList)
         {
             foreach (var step in stepList)
             {
@@ -501,7 +501,7 @@ namespace UCA
 
         #region TreeNodes
 
-        private static void FillTreeView(TreeView treeView, Dictionary<string, List<Step>> stepDictionary)
+        private static void FillTreeView(TreeView treeView, Dictionary<string, List<Steps.Step>> stepDictionary)
         {
             treeviewNodeStep.Clear();
             treeviewStepNode.Clear();
@@ -771,7 +771,7 @@ namespace UCA
 
         private void buttonStep_Click(object sender, EventArgs e)
         {
-            Step step = null;
+            Steps.Step step = null;
             lock (queue)
             {
                 if (queue.Count != 0)
@@ -822,14 +822,12 @@ namespace UCA
 
         private void buttonShowRelays_Click(object sender, EventArgs e)
         {
-            var deviceData = new DeviceData
-            {
-                Command = DeviceCommands.GetClosedRelayNames
-            };
+            var stepGetMkRelays = new Step(DeviceNames.MK, DeviceCommands.GetClosedRelayNames);
+            var stepGetSimulatorRelays = new Step(DeviceNames.MK, DeviceCommands.GetClosedRelayNames);
             try
             {
-                var relays = DeviceHandler.Devices[DeviceNames.MK].DoCommand(deviceData).Description;
-                relays += DeviceHandler.Devices[DeviceNames.Simulator].DoCommand(deviceData).Description;
+                var relays = DeviceHandler.Devices[DeviceNames.MK].DoCommand(stepGetMkRelays).Description;
+                relays += DeviceHandler.Devices[DeviceNames.Simulator].DoCommand(stepGetSimulatorRelays).Description;
                 ShowRelays(relays);
             }
             catch (NullReferenceException)

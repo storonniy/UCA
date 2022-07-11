@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using UCA.Devices;
+using UCA.Steps;
 using static UCA.Auxiliary.UnitValuePair;
 
 
@@ -10,74 +11,74 @@ namespace UPD.Device
 {
     public abstract class IDeviceInterface
     {
-        public abstract DeviceResult DoCommand(DeviceData deviceData);
+        public abstract DeviceResult DoCommand(Step step);
 
-        protected static DeviceResult SetVoltage(DeviceData deviceData, Func<double, double> setVoltage)
+        protected static DeviceResult SetVoltage(Step step, Func<double, double> setVoltage)
         {
-            var voltage = double.Parse(deviceData.Argument, CultureInfo.InvariantCulture);
+            var voltage = double.Parse(step.Argument, CultureInfo.InvariantCulture);
             var result = setVoltage(voltage);
-            return GetResultOfSetting($"{deviceData.DeviceName}: Установлено напряжение", UnitType.Voltage, result, voltage);
+            return GetResultOfSetting($"{step.DeviceName}: Установлено напряжение", UnitType.Voltage, result, voltage);
         }
 
-        protected static DeviceResult SetVoltage(DeviceData deviceData, Func<double, int, double> setVoltage)
+        protected static DeviceResult SetVoltage(Step step, Func<double, int, double> setVoltage)
         {
-            var channel = int.Parse(deviceData.AdditionalArg);
-            var voltage = double.Parse(deviceData.Argument, CultureInfo.InvariantCulture);
+            var channel = int.Parse(step.AdditionalArg);
+            var voltage = double.Parse(step.Argument, CultureInfo.InvariantCulture);
             var result = setVoltage(voltage, channel);
-            return GetResultOfSetting($"{ deviceData.DeviceName}: Установлено напряжение", UnitType.Voltage, result, voltage);
+            return GetResultOfSetting($"{ step.DeviceName}: Установлено напряжение", UnitType.Voltage, result, voltage);
         }
 
-        protected static DeviceResult SetCurrent(DeviceData deviceData, Func<double, int, double> setCurrent)
+        protected static DeviceResult SetCurrent(Step step, Func<double, int, double> setCurrent)
         {
-            var channel = int.Parse(deviceData.AdditionalArg);
-            var current = double.Parse(deviceData.Argument, CultureInfo.InvariantCulture);
+            var channel = int.Parse(step.AdditionalArg);
+            var current = double.Parse(step.Argument, CultureInfo.InvariantCulture);
             var result = setCurrent(current, channel);
-            return GetResultOfSetting($"{deviceData.DeviceName}: Установлен ток", UnitType.Current, result, current);
+            return GetResultOfSetting($"{step.DeviceName}: Установлен ток", UnitType.Current, result, current);
         }
 
-        protected static DeviceResult SetCurrentLimit(DeviceData deviceData, Func<double, double> setCurrentLimit)
+        protected static DeviceResult SetCurrentLimit(Step step, Func<double, double> setCurrentLimit)
         {
-            var currentLimit = double.Parse(deviceData.Argument, CultureInfo.InvariantCulture);
+            var currentLimit = double.Parse(step.Argument, CultureInfo.InvariantCulture);
             var result = setCurrentLimit(currentLimit);
-            return GetResultOfSetting($"{deviceData.DeviceName}: Установлен предел по току", UnitType.Current, result, currentLimit);
+            return GetResultOfSetting($"{step.DeviceName}: Установлен предел по току", UnitType.Current, result, currentLimit);
         }
 
-        public static DeviceResult SetCurrentLimit(DeviceData deviceData, Func<double, int, double> setCurrentLimit)
+        public static DeviceResult SetCurrentLimit(Step step, Func<double, int, double> setCurrentLimit)
         {
-            var channel = int.Parse(deviceData.AdditionalArg);
-            var currentLimit = double.Parse(deviceData.Argument, CultureInfo.InvariantCulture);
+            var channel = int.Parse(step.AdditionalArg);
+            var currentLimit = double.Parse(step.Argument, CultureInfo.InvariantCulture);
             var result = setCurrentLimit(currentLimit, channel);
-            return GetResultOfSetting($"{deviceData.DeviceName}: Установлен предел по току", UnitType.Current, result, currentLimit);
+            return GetResultOfSetting($"{step.DeviceName}: Установлен предел по току", UnitType.Current, result, currentLimit);
         }
 
-        protected static DeviceResult PowerOn(DeviceData deviceData, Action powerOn)
+        protected static DeviceResult PowerOn(Step step, Action powerOn)
         {
             powerOn();
-            return DeviceResult.ResultOk($"{deviceData.DeviceName}: подан входной сигнал");
+            return DeviceResult.ResultOk($"{step.DeviceName}: подан входной сигнал");
         }
 
-        protected static DeviceResult PowerOff(DeviceData deviceData, Action powerOff)
+        protected static DeviceResult PowerOff(Step step, Action powerOff)
         {
             powerOff();
-            return DeviceResult.ResultOk($"{deviceData.DeviceName}: снят входной сигнал");
+            return DeviceResult.ResultOk($"{step.DeviceName}: снят входной сигнал");
         }
 
-        protected static DeviceResult PowerOn(DeviceData deviceData, Func<bool> powerOn)
+        protected static DeviceResult PowerOn(Step step, Func<bool> powerOn)
         {
             var status = powerOn();
-            return status ? DeviceResult.ResultOk($"{deviceData.DeviceName}: подан входной сигнал") : DeviceResult.ResultError($"{deviceData.DeviceName}: ошибка при подаче входного сигнала");
+            return status ? DeviceResult.ResultOk($"{step.DeviceName}: подан входной сигнал") : DeviceResult.ResultError($"{step.DeviceName}: ошибка при подаче входного сигнала");
         }
 
-        protected static DeviceResult PowerOff(DeviceData deviceData, Func<bool> powerOff)
+        protected static DeviceResult PowerOff(Step step, Func<bool> powerOff)
         {
             var status = powerOff();
-            return status ? DeviceResult.ResultOk($"{deviceData.DeviceName}: снят входной сигнал") : DeviceResult.ResultError($"{deviceData.DeviceName}: ошибка при снятии входного сигнала");
+            return status ? DeviceResult.ResultOk($"{step.DeviceName}: снят входной сигнал") : DeviceResult.ResultError($"{step.DeviceName}: ошибка при снятии входного сигнала");
         }
 
-        protected static DeviceResult GetResult(string message, DeviceData deviceData, UnitType unitType, double value)
+        protected static DeviceResult GetResult(string message, Step step, UnitType unitType, double value)
         {
-            var result = $"{message}: {GetValueUnitPair(value, unitType)} \tНижний предел: {GetValueUnitPair(deviceData.LowerLimit, unitType)}\t Верхний предел {GetValueUnitPair(deviceData.UpperLimit, unitType)}";
-            if (value >= deviceData.LowerLimit && value <= deviceData.UpperLimit)
+            var result = $"{message}: {GetValueUnitPair(value, unitType)} \tНижний предел: {GetValueUnitPair(step.LowerLimit, unitType)}\t Верхний предел {GetValueUnitPair(step.UpperLimit, unitType)}";
+            if (value >= step.LowerLimit && value <= step.UpperLimit)
                 return DeviceResult.ResultOk(result);
             return DeviceResult.ResultError(result);
         }
@@ -88,48 +89,48 @@ namespace UPD.Device
             return Math.Abs(value - expectedValue) <= 0.1 * Math.Abs(expectedValue) ? DeviceResult.ResultOk(result) : DeviceResult.ResultError(result);
         }
 
-        protected static DeviceResult CloseRelays(DeviceData deviceData, Func<int[], bool> closeRelays)
+        protected static DeviceResult CloseRelays(Step step, Func<int[], bool> closeRelays)
         {
-            var relayNumbers = GetRelayNumbersArray(deviceData.Argument);
+            var relayNumbers = GetRelayNumbersArray(step.Argument);
             var status = closeRelays(relayNumbers);
             if (status)
-                return DeviceResult.ResultOk($"{deviceData.DeviceName}: Реле {string.Join(", ", relayNumbers)} замкнуты успешно");
-            return DeviceResult.ResultError($"{deviceData.DeviceName}: При замыкании реле {string.Join(", ", relayNumbers)} произошла ошибка");
+                return DeviceResult.ResultOk($"{step.DeviceName}: Реле {string.Join(", ", relayNumbers)} замкнуты успешно");
+            return DeviceResult.ResultError($"{step.DeviceName}: При замыкании реле {string.Join(", ", relayNumbers)} произошла ошибка");
         }
 
-        protected static DeviceResult CloseRelays(DeviceData deviceData, Func<int, int[], bool> closeRelays)
+        protected static DeviceResult CloseRelays(Step step, Func<int, int[], bool> closeRelays)
         {
-            var relayNumbers = GetRelayNumbersArray(deviceData.Argument);
-            var blockNumber = int.Parse(deviceData.AdditionalArg) - 1;
+            var relayNumbers = GetRelayNumbersArray(step.Argument);
+            var blockNumber = int.Parse(step.AdditionalArg) - 1;
             var status = closeRelays(blockNumber, relayNumbers);
             if (status)
-                return DeviceResult.ResultOk($"{deviceData.DeviceName}{deviceData.AdditionalArg} замкнуты реле {String.Join(", ", relayNumbers)}");
-            return DeviceResult.ResultError($"ОШИБКА: {deviceData.DeviceName}{deviceData.AdditionalArg} не замкнуты реле {String.Join(", ", relayNumbers)}");
+                return DeviceResult.ResultOk($"{step.DeviceName}{step.AdditionalArg} замкнуты реле {String.Join(", ", relayNumbers)}");
+            return DeviceResult.ResultError($"ОШИБКА: {step.DeviceName}{step.AdditionalArg} не замкнуты реле {String.Join(", ", relayNumbers)}");
         }
         
-        protected static DeviceResult OpenRelays(DeviceData deviceData, Func<int, int[], bool> openRelays)
+        protected static DeviceResult OpenRelays(Step step, Func<int, int[], bool> openRelays)
         {
-            var relayNumbers = GetRelayNumbersArray(deviceData.Argument);
-            var blockNumber = int.Parse(deviceData.AdditionalArg) - 1;
+            var relayNumbers = GetRelayNumbersArray(step.Argument);
+            var blockNumber = int.Parse(step.AdditionalArg) - 1;
             var status = openRelays(blockNumber, relayNumbers);
             if (status)
-                return DeviceResult.ResultOk($"{deviceData.DeviceName}{deviceData.AdditionalArg} разомкнуты реле {String.Join(", ", relayNumbers)}");
-            return DeviceResult.ResultError($"ОШИБКА: {deviceData.DeviceName}{deviceData.AdditionalArg} не разомкнуты реле {String.Join(", ", relayNumbers)}");
+                return DeviceResult.ResultOk($"{step.DeviceName}{step.AdditionalArg} разомкнуты реле {String.Join(", ", relayNumbers)}");
+            return DeviceResult.ResultError($"ОШИБКА: {step.DeviceName}{step.AdditionalArg} не разомкнуты реле {String.Join(", ", relayNumbers)}");
         }
         
-        protected static DeviceResult OpenRelays(DeviceData deviceData, Func<int[], bool> openRelays)
+        protected static DeviceResult OpenRelays(Step step, Func<int[], bool> openRelays)
         {
-            var relayNumbers = GetRelayNumbersArray(deviceData.Argument);
+            var relayNumbers = GetRelayNumbersArray(step.Argument);
             var status = openRelays(relayNumbers);
             if (status)
-                return DeviceResult.ResultOk($"{deviceData.DeviceName}: Реле {string.Join(", ", relayNumbers)} разомкнуты успешно");
-            return DeviceResult.ResultError($"{deviceData.DeviceName}: При размыкании реле {string.Join(", ", relayNumbers)} произошла ошибка");
+                return DeviceResult.ResultOk($"{step.DeviceName}: Реле {string.Join(", ", relayNumbers)} разомкнуты успешно");
+            return DeviceResult.ResultError($"{step.DeviceName}: При размыкании реле {string.Join(", ", relayNumbers)} произошла ошибка");
         }
 
-        protected static DeviceResult OpenAllRelays(DeviceData deviceData, Func<bool> openAllRelays)
+        protected static DeviceResult OpenAllRelays(Step step, Func<bool> openAllRelays)
         {
             var status = openAllRelays();
-            return status ? DeviceResult.ResultOk($"{deviceData.DeviceName}: разомкнуты все реле") : DeviceResult.ResultError($"{deviceData.DeviceName}: не удалось разомкнуть все реле");
+            return status ? DeviceResult.ResultOk($"{step.DeviceName}: разомкнуты все реле") : DeviceResult.ResultError($"{step.DeviceName}: не удалось разомкнуть все реле");
         }
         
         public static int[] GetRelayNumbersArray(string relayNames)

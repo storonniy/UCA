@@ -38,6 +38,7 @@ namespace UPD.DeviceDrivers
 
         ~ASBL()
         {
+            if (deviceA == null || deviceB == null) return;
             if (deviceA.IsOpen)
                 deviceA.Close();
             if (deviceB.IsOpen)
@@ -47,15 +48,12 @@ namespace UPD.DeviceDrivers
         public ASBL()
         {
             deviceA = new FTDI();
-            // Determine the number of FTDI devices connected to the machine
             var ftStatus = deviceA.GetNumberOfDevices(ref ftdiDeviceCount);
             if (ftStatus != FT_STATUS.FT_OK)
             {
                 throw new ASBLException("Failed to get number of devices (error " + ftStatus.ToString() + ")");
             }
-            // Allocate storage for device info list
             ftdiDeviceList = new FT_DEVICE_INFO_NODE[ftdiDeviceCount];
-            // Populate our device list
             ftStatus = deviceA.GetDeviceList(ftdiDeviceList);
             if (ftStatus != FT_STATUS.FT_OK)
                 throw new ASBLException("Failed to populate device list");

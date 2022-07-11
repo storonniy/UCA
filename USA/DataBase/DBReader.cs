@@ -8,16 +8,16 @@ using System.Data;
 
 namespace UCA
 {
-    public class DBReader
+    public class DbReader
     {
         readonly OleDbConnection connection;
-        private DBReader (OleDbConnection connection)
+        private DbReader (OleDbConnection connection)
         {
             this.connection = connection;
             this.connection.Open();
         }
 
-        public DBReader(string connectionString) : this(new OleDbConnection(connectionString))
+        public DbReader(string connectionString) : this(new OleDbConnection(connectionString))
         {
 
         }
@@ -40,7 +40,7 @@ namespace UCA
             return dataSet;
         }
 
-        ~DBReader() // деструктор
+        ~DbReader() // деструктор
         {
             //this.connection.Close();
         }

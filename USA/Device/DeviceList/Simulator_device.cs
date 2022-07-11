@@ -7,6 +7,7 @@ using System.IO.Ports;
 using UCA.DeviceDrivers;
 using UPD.DeviceDrivers;
 using UCA.Devices;
+using UCA.Steps;
 
 namespace UPD.Device.DeviceList
 {
@@ -21,21 +22,21 @@ namespace UPD.Device.DeviceList
         }
 
         /// дописать OpenAllRelays
-        public override DeviceResult DoCommand(DeviceData deviceData)
+        public override DeviceResult DoCommand(Step step)
         {
-            switch (deviceData.Command)
+            switch (step.Command)
             {
                 case DeviceCommands.GetClosedRelayNames:
                     var relays = Simulator.GetClosedRelayNames();
                     return DeviceResult.ResultOk($"\nSimulator: {string.Join(", ", relays)}");
                 case DeviceCommands.CloseRelays:
-                    return CloseRelays(deviceData, Simulator.CloseRelays);
+                    return CloseRelays(step, Simulator.CloseRelays);
                 case DeviceCommands.OpenRelays:
-                    return OpenRelays(deviceData, Simulator.OpenRelays);
+                    return OpenRelays(step, Simulator.OpenRelays);
                 case DeviceCommands.OpenAllRelays:
-                    return OpenAllRelays(deviceData, Simulator.OpenAllRelays);
+                    return OpenAllRelays(step, Simulator.OpenAllRelays);
                 default:
-                    return DeviceResult.ResultError($"{deviceData.DeviceName} Неизвестная команда {deviceData.Command}");
+                    return DeviceResult.ResultError($"{step.DeviceName} Неизвестная команда {step.Command}");
             }
         }
     }

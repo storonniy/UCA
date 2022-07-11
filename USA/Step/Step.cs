@@ -9,34 +9,72 @@ using System.IO.Ports;
 using System.Globalization;
 
 namespace UCA.Steps
-{ 
-    struct StepsInfo
+{
+    public struct StepsInfo
     {
         public Dictionary<string, Dictionary<string, List<Step>>> VoltageSupplyModesDictionary { get; set; }
         public Dictionary<string, Dictionary<string, List<Step>>> ModesDictionary { get; set; }
         public List<Step> EmergencyStepList { get; set; }
         //public DeviceInit DeviceHandler;
         public Dictionary<string, List<Step>> StepsDictionary { get; set; }
-        public int StepNumber { get; private set; }
+        public int StepNumber { get; }
         public List<Device> DeviceList { get; set; }
         public string ProgramName { get; set; }
     }
 
-    class Step
+    public class Step
     {
-        public string AdditionalArg { get; private set; }
-        public int Channel { get; private set; }
-        public string Device { get; private set; }
-        public string Command { get; private set; }
-        public string Argument { get; private set; }
-        public string Description { get; private set; }
-        public double LowerLimit { get; private set; }
-        public double UpperLimit { get; private set; }
-        public bool ShowStep { get; private set; }
+        public string AdditionalArg { get; }
+        public int Channel { get;}
+        public DeviceNames DeviceName { get; }
+        public DeviceCommands Command { get; }
+        public string Argument { get; }
+        public string Description { get; }
+        public double LowerLimit { get; }
+        public double UpperLimit { get; }
+        public bool ShowStep { get; }
+        
+        public Step(DeviceNames deviceName, DeviceCommands deviceCommand, string argument, string additionalArg,
+            string description, double lowerLimit, double upperLimit, int channel, bool showStep)
+        {
+            DeviceName = deviceName;
+            Command = deviceCommand;
+            Argument = argument;
+            AdditionalArg = additionalArg;
+            Description = description;
+            LowerLimit = lowerLimit;
+            UpperLimit = upperLimit;
+            Channel = channel;
+            ShowStep = showStep;
+        }
+        
+        public Step(DeviceNames deviceName, DeviceCommands command) : this(deviceName, command, "", "", "", 0, 0, -1, false) {}
+
+        
+        private Step (DataRow row)
+        {
+            var command = row["command"].ToString();
+            if (!Enum.TryParse(command, out DeviceCommands parsedDeviceCommand))
+                throw new FormatException($"Команда не найдена: {command}");
+            var deviceName = row["device"].ToString();
+            if (!Enum.TryParse(deviceName, out DeviceNames parsedDeviceName))
+                throw new FormatException($"Тип устройства не найден: {deviceName}");
+            DeviceName = parsedDeviceName;
+            Command = parsedDeviceCommand;
+            Argument = row["argument"].ToString();
+            Description = row["description"].ToString();
+            Channel = int.Parse(row["channel"].ToString());
+            LowerLimit = double.Parse(row["lowerLimit"].ToString(), NumberStyles.Float);
+            UpperLimit = double.Parse(row["upperLimit"].ToString(), NumberStyles.Float);
+            ShowStep = Convert.ToBoolean(row["showStep"]);
+            if (Channel > 0)
+                Description = $"Канал {Channel}: {Description}";
+            AdditionalArg = row["additionalArg"].ToString();
+        }
 
         private static SerialPort GetSerialPort(string portName, int baudrate)
         {
-            SerialPort serialPort = new SerialPort()
+            var serialPort = new SerialPort()
             {
                 PortName = portName,
                 BaudRate = baudrate,
@@ -91,21 +129,16 @@ namespace UCA.Steps
                 var device = new Device();
                 device.SerialPort = GetSerialPort(portName, baudRate);
                 device.Description = description;
-                try
-                {
-                    device.Name = (DeviceNames)Enum.Parse(typeof(DeviceNames), deviceName);
-                    deviceList.Add(device);
-                }
-                catch (ArgumentException ex)
-                {
+                if (!Enum.TryParse(deviceName, out DeviceNames dev))
                     throw new ArgumentException($"Устройство {deviceName} не найдено в списке доступных устройств {description}");
-                }
+                device.Name = dev;
+                deviceList.Add(device);
             }
             dataSet.Tables.Remove(dataSet.Tables["DeviceInformation"]);
             return deviceList;
         }
 
-        public static Dictionary<string, List<string>> GetVoltageSupplyModesDictionary(DataSet dataSet)
+        private static Dictionary<string, List<string>> GetVoltageSupplyModesDictionary(DataSet dataSet)
         {
             var modesDictionary = new Dictionary<string, List<string>>();
             var table = dataSet.Tables["VoltageSupply"];
@@ -125,7 +158,7 @@ namespace UCA.Steps
             return modesDictionary;
         }
 
-        public static Dictionary<string, List<string>> GetModesDictionary (DataSet dataSet)
+        private static Dictionary<string, List<string>> GetModesDictionary (DataSet dataSet)
         {
             var modesDictionary = new Dictionary<string, List<string>>();
             var table = dataSet.Tables["Settings"];
@@ -176,7 +209,7 @@ namespace UCA.Steps
                 var tableName = table.ToString();
                 foreach (DataRow row in table.Rows)
                 {
-                    var step = GetStep(row);
+                    var step = new Step(row);
                     stepList.Add(step);
                 }
                 dictionary.Add(tableName, stepList);
@@ -192,26 +225,6 @@ namespace UCA.Steps
             dataSetEmergency.Tables.Add(tableEmergencyBreaking);
             var dictionary = GetStepsDictionary(dataSetEmergency);
             return dictionary;
-        }
-
-        private static Step GetStep(DataRow row)
-        {
-            var step = new Step();
-            step.Device = row["device"].ToString();
-            step.Command = row["command"].ToString();
-            step.Argument = row["argument"].ToString();
-            step.Description = row["description"].ToString();
-            step.Channel = int.Parse(row["channel"].ToString());
-            var lowerLimit = row["lowerLimit"].ToString();
-            step.LowerLimit = double.Parse(lowerLimit, NumberStyles.Float);
-            var upperLimit = row["upperLimit"].ToString();
-            step.UpperLimit = double.Parse(upperLimit, NumberStyles.Float);
-            var meow = row["showStep"];
-            step.ShowStep = Convert.ToBoolean(meow);
-            if (step.Channel > 0)
-                step.Description = $"Канал {step.Channel}: {step.Description}";
-            step.AdditionalArg = row["additionalArg"].ToString();
-            return step;
         }
     }
 }

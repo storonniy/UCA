@@ -7,6 +7,7 @@ using UCA.DeviceDrivers;
 using System.IO.Ports;
 using static UCA.Devices.DeviceResult;
 using System.Globalization;
+using UCA.Steps;
 using static UCA.Auxiliary.UnitValuePair;
 using UPD.Device;
 
@@ -21,20 +22,20 @@ namespace UCA.Devices
             this.psh73610 = new PSH73610(serialPort);
         }
 
-        public override DeviceResult DoCommand(DeviceData deviceData)
+        public override DeviceResult DoCommand(Step step)
         {
-            switch (deviceData.Command)
+            switch (step.Command)
             {
                 case DeviceCommands.SetVoltage:
-                    return SetVoltage(deviceData, psh73610.SetVoltage);
+                    return SetVoltage(step, psh73610.SetVoltage);
                 case DeviceCommands.SetCurrentLimit:
-                    return SetCurrentLimit(deviceData, psh73610.SetCurrentLimit);
+                    return SetCurrentLimit(step, psh73610.SetCurrentLimit);
                 case DeviceCommands.PowerOff:
-                    return PowerOff(deviceData, psh73610.PowerOff);
+                    return PowerOff(step, psh73610.PowerOff);
                 case DeviceCommands.PowerOn:
-                    return PowerOn(deviceData, psh73610.PowerOn);
+                    return PowerOn(step, psh73610.PowerOn);
                 default:
-                    return ResultError($"Неизвестная команда {deviceData.Command}");
+                    return ResultError($"Неизвестная команда {step.Command}");
             }
         }
     }

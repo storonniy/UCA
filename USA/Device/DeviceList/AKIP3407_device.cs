@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.IO.Ports;
 using UCA.DeviceDrivers;
 using System.Globalization;
+using UCA.Steps;
 using static UCA.Auxiliary.UnitValuePair;
 using UPD.Device;
 
@@ -20,21 +21,21 @@ namespace UCA.Devices
             serialPort.NewLine = "\r";
             akip3407 = new AKIP_3407(serialPort);
         }
-        public override DeviceResult DoCommand (DeviceData deviceData)
+        public override DeviceResult DoCommand (Step step)
         {
-            switch (deviceData.Command)
+            switch (step.Command)
             {
                 case DeviceCommands.SetVoltage:
-                    return SetVoltage(deviceData, akip3407.SetVoltage);
+                    return SetVoltage(step, akip3407.SetVoltage);
                 case DeviceCommands.SetFrequency:
-                    var actualFrequency = akip3407.SetFrequency(deviceData.Argument);
-                    return GetResult("Установлена частота", deviceData, UnitType.Frequency, actualFrequency);
+                    var actualFrequency = akip3407.SetFrequency(step.Argument);
+                    return GetResult("Установлена частота", step, UnitType.Frequency, actualFrequency);
                 case DeviceCommands.PowerOn:
-                    return PowerOn(deviceData, akip3407.PowerOn);
+                    return PowerOn(step, akip3407.PowerOn);
                 case DeviceCommands.PowerOff:
-                    return PowerOff(deviceData, akip3407.PowerOff);
+                    return PowerOff(step, akip3407.PowerOff);
                 default:
-                    return DeviceResult.ResultError($"Неизвестная команда {deviceData.Command}");
+                    return DeviceResult.ResultError($"Неизвестная команда {step.Command}");
             }
         }
     }

@@ -8,6 +8,7 @@ using System.IO.Ports;
 using static UCA.Devices.DeviceResult;
 using static UCA.Auxiliary.UnitValuePair;
 using System.Globalization;
+using UCA.Steps;
 using UPD.Device;
 
 namespace UCA.Devices
@@ -22,20 +23,20 @@ namespace UCA.Devices
             pst3201 = new PST_3201(serialPort);
         }
 
-        public override DeviceResult DoCommand (DeviceData deviceData)
+        public override DeviceResult DoCommand (Step step)
         {
-            switch (deviceData.Command)
+            switch (step.Command)
             {
                 case DeviceCommands.SetVoltage:
-                    return SetVoltage(deviceData, pst3201.SetVoltage);
+                    return SetVoltage(step, pst3201.SetVoltage);
                 case DeviceCommands.SetCurrentLimit:
-                    return SetCurrent(deviceData, pst3201.SetCurrent);
+                    return SetCurrent(step, pst3201.SetCurrent);
                 case DeviceCommands.PowerOff:
-                    return PowerOff(deviceData, pst3201.PowerOff);
+                    return PowerOff(step, pst3201.PowerOff);
                 case DeviceCommands.PowerOn:
-                    return PowerOn(deviceData, pst3201.PowerOn);
+                    return PowerOn(step, pst3201.PowerOn);
                 default:
-                    return ResultError($"Неизвестная команда {deviceData.Command}");
+                    return ResultError($"Неизвестная команда {step.Command}");
             }
         }
     }

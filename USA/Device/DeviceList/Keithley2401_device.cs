@@ -4,6 +4,7 @@ using System.IO;
 using System.IO.Ports;
 using System.Threading;
 using UCA.DeviceDrivers;
+using UCA.Steps;
 using UPD.Device;
 using static UCA.Auxiliary.UnitValuePair;
 
@@ -20,25 +21,25 @@ namespace UCA.Devices
             keithley2401 = new Keithley2401(serialPort);
         }
 
-        public override DeviceResult DoCommand(DeviceData deviceData)
+        public override DeviceResult DoCommand(Step step)
         {
-            switch (deviceData.Command)
+            switch (step.Command)
             {
                 case DeviceCommands.SetVoltage:
-                    return SetVoltage(deviceData, keithley2401.SetVoltage);
+                    return SetVoltage(step, keithley2401.SetVoltage);
                 case DeviceCommands.SetCurrentLimit:
-                    return SetCurrentLimit(deviceData, keithley2401.SetCurrentLimit);
+                    return SetCurrentLimit(step, keithley2401.SetCurrentLimit);
                 case DeviceCommands.PowerOn:
-                    return PowerOn(deviceData, keithley2401.PowerOn);
+                    return PowerOn(step, keithley2401.PowerOn);
                 case DeviceCommands.PowerOff:
-                    return PowerOff(deviceData, keithley2401.PowerOff);
+                    return PowerOff(step, keithley2401.PowerOff);
                 case DeviceCommands.SetVoltageSourceMode:
                     var status = keithley2401.SetVoltageSourceMode();
                     if (status)
-                        return DeviceResult.ResultOk($"{deviceData.DeviceName} переведен в режим стабилизации напряжения");
-                    return DeviceResult.ResultError($"{deviceData.DeviceName} не удалось перевести в режим стабилизации напряжения");
+                        return DeviceResult.ResultOk($"{step.DeviceName} переведен в режим стабилизации напряжения");
+                    return DeviceResult.ResultError($"{step.DeviceName} не удалось перевести в режим стабилизации напряжения");
                 default:
-                    return DeviceResult.ResultError($"Неизвестная команда {deviceData.Command}");
+                    return DeviceResult.ResultError($"Неизвестная команда {step.Command}");
             }
         }
     }

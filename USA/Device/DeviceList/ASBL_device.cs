@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UCA.Devices;
+using UCA.Steps;
 using UPD.DeviceDrivers;
 using static UCA.Devices.DeviceResult;
 
@@ -29,28 +30,28 @@ namespace UPD.Device.DeviceList
             return uintLineNumbers.ToArray();
         }
 
-        public override DeviceResult DoCommand(DeviceData deviceData)
+        public override DeviceResult DoCommand(Step step)
         {
             try
             {
-                switch (deviceData.Command)
+                switch (step.Command)
                 {
                     case DeviceCommands.SetLineDirection:
-                        var lineNumbers = GetLineNumbers(deviceData.Argument);
+                        var lineNumbers = GetLineNumbers(step.Argument);
                         asbl.SetLineDirection(lineNumbers);
                         return ResultOk($"Линии {string.Join(", ", lineNumbers)} установлены на вход");
                     case DeviceCommands.ClearLineDirection:
-                        lineNumbers = GetLineNumbers(deviceData.Argument); 
+                        lineNumbers = GetLineNumbers(step.Argument); 
                         asbl.ClearLineDirection(lineNumbers);
                         return ResultOk($"Линии {string.Join(", ", lineNumbers)} установлены на выход");
                     case DeviceCommands.SetLineData:
-                        lineNumbers = GetLineNumbers(deviceData.Argument);
+                        lineNumbers = GetLineNumbers(step.Argument);
                         asbl.SetLineData(lineNumbers);
                         return ResultOk($"Линии {string.Join(", ", lineNumbers)} установлены в 1");
                     case DeviceCommands.ClearLineData:
                         try
                         {
-                            lineNumbers = GetLineNumbers(deviceData.Argument);
+                            lineNumbers = GetLineNumbers(step.Argument);
                             asbl.ClearLineData(lineNumbers);
                             return ResultOk($"Линии {string.Join(", ", lineNumbers)} установлены в 0");
                         }
@@ -62,24 +63,24 @@ namespace UPD.Device.DeviceList
                         asbl.ClearAll();
                         return ResultOk("");
                     default:
-                        return ResultError($"Неизвестная команда {deviceData.Command}");
+                        return ResultError($"Неизвестная команда {step.Command}");
                 }
             }
             catch (FailedToSetLineException ex)
             {
-                return DeviceResult.ResultError($"{deviceData.DeviceName}: {ex.Message}");
+                return DeviceResult.ResultError($"{step.DeviceName}: {ex.Message}");
             }
             catch (LineIsSetToReceiveException ex)
             {
-                return DeviceResult.ResultError($"{deviceData.DeviceName}: {ex.Message}");
+                return DeviceResult.ResultError($"{step.DeviceName}: {ex.Message}");
             }
             catch (ASBLException ex)
             {
-                return DeviceResult.ResultError($"{deviceData.DeviceName}: {ex.Message}");
+                return DeviceResult.ResultError($"{step.DeviceName}: {ex.Message}");
             }
             catch (ArgumentOutOfRangeException ex)
             {
-                return DeviceResult.ResultError($"{deviceData.DeviceName} : {deviceData.Command} : {ex.Message}");
+                return DeviceResult.ResultError($"{step.DeviceName} : {step.Command} : {ex.Message}");
             }
         }
     }

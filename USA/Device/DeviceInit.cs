@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.Common;
 using System.IO;
+using UCA.Steps;
 using UPD.Device;
 using UPD.Device.DeviceList;
 using UPD.DeviceDrivers;
@@ -99,30 +100,30 @@ namespace UCA.Devices
             }
         }
 
-        public DeviceResult ProcessDevice(DeviceData deviceData)
+        public DeviceResult ProcessDevice(Step step)
         {
             try
             {
-                var device = Devices[deviceData.DeviceName];
+                var device = Devices[step.DeviceName];
                 if (device == null)
-                    return DeviceResult.ResultNotConnected($"NOT_CONNECTED: Устройство {deviceData.DeviceName} не инициализировано");
-                return device.DoCommand(deviceData);
+                    return DeviceResult.ResultNotConnected($"NOT_CONNECTED: Устройство {step.DeviceName} не инициализировано");
+                return device.DoCommand(step);
             }
             catch (IOException)
             {
-               return DeviceResult.ResultNotConnected($"NOT_CONNECTED: Порт {deviceData.DeviceName} закрыт");
+               return DeviceResult.ResultNotConnected($"NOT_CONNECTED: Порт {step.DeviceName} закрыт");
             }
             catch (InvalidOperationException)
             {
-                return DeviceResult.ResultNotConnected($"NOT_CONNECTED: Порт {deviceData.DeviceName} закрыт");
+                return DeviceResult.ResultNotConnected($"NOT_CONNECTED: Порт {step.DeviceName} закрыт");
             }
             catch (KeyNotFoundException ex)
             {
-                return DeviceResult.ResultError($"{deviceData.DeviceName} : {deviceData.Command} : {ex.Message}");
+                return DeviceResult.ResultError($"{step.DeviceName} : {step.Command} : {ex.Message}");
             }
             catch (FormatException ex)
             {
-                return DeviceResult.ResultError($"{deviceData.DeviceName} : {deviceData.Command} : {ex.Message}");
+                return DeviceResult.ResultError($"{step.DeviceName} : {step.Command} : {ex.Message}");
             }
         }
     }

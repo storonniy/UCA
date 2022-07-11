@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UCA.Devices;
+using UCA.Steps;
 using UPD.DeviceDrivers;
 using static UCA.Devices.DeviceResult;
 
@@ -22,21 +23,21 @@ namespace UPD.Device.DeviceList
             mk.Die();
         }
 
-        public override DeviceResult DoCommand(DeviceData deviceData)
+        public override DeviceResult DoCommand(Step step)
         {
-            switch (deviceData.Command)
+            switch (step.Command)
             {
                 case DeviceCommands.GetClosedRelayNames:
                     var closedRelays = mk.GetClosedRelayNames();
                     return ResultOk(string.Join("\n", closedRelays));
                 case DeviceCommands.OpenAllRelays:
-                    return OpenAllRelays(deviceData, mk.EmergencyBreak);
+                    return OpenAllRelays(step, mk.EmergencyBreak);
                 case DeviceCommands.CloseRelays:
-                    return CloseRelays(deviceData, mk.CloseRelays);
+                    return CloseRelays(step, mk.CloseRelays);
                 case DeviceCommands.OpenRelays:
-                    return OpenRelays(deviceData, mk.OpenRelays);
+                    return OpenRelays(step, mk.OpenRelays);
                 default:
-                    return ResultError($"Неизвестная команда {deviceData.Command}");
+                    return ResultError($"Неизвестная команда {step.Command}");
             }
         }
     }

@@ -3,6 +3,7 @@ using System.IO;
 using System.IO.Ports;
 using System.Linq;
 using UCA.DeviceDrivers;
+using UCA.Steps;
 using UPD.Device;
 
 namespace UCA.Devices
@@ -17,12 +18,12 @@ namespace UCA.Devices
         }
 
         /// дописать OpenAllRelays
-        public override DeviceResult DoCommand(DeviceData deviceData)
+        public override DeviceResult DoCommand(Step step)
         {
-            switch (deviceData.Command)
+            switch (step.Command)
             {
                 case DeviceCommands.CloseRelays:
-                    string[] closableRelays = deviceData.Argument.Replace(" ", "").Split(',');
+                    string[] closableRelays = step.Argument.Replace(" ", "").Split(',');
                     Commutator.CloseRelays(closableRelays);
                     // Проверим, всё ли замкнулось:
                     var actualClosedRelayNames = Commutator.GetClosedRelayNames();
@@ -46,7 +47,7 @@ namespace UCA.Devices
                         return DeviceResult.ResultError($"ОШИБКА: реле {relayName} не замкнуто");
                     }
                 case DeviceCommands.OpenRelays:
-                    string[] breakableRelays = deviceData.Argument.Replace(" ", "").Split(',');
+                    string[] breakableRelays = step.Argument.Replace(" ", "").Split(',');
                     Commutator.OpenRelays(breakableRelays);
                     // Проверим, всё ли разомкнулось:
                     var actualClosedRelayNames1 = Commutator.GetClosedRelayNames();
@@ -78,7 +79,7 @@ namespace UCA.Devices
                     }
                     return DeviceResult.ResultError("ОШИБКА: реле остались замкнутыми");
                 case DeviceCommands.CheckClosedRelays:
-                    string[] signalNames = deviceData.AdditionalArg.Replace(" ", "").Split(',');
+                    string[] signalNames = step.AdditionalArg.Replace(" ", "").Split(',');
                     // Проверим, всё ли разомкнулось:
                     var actualClosedRelayNames3 = Commutator.GetClosedRelayNames();
                     bool isSignalExist = false;
@@ -96,7 +97,7 @@ namespace UCA.Devices
                     }
                     return DeviceResult.ResultError($"Сигнал {signalNames[0]} отсутствует");
                 case DeviceCommands.GetSignals:
-                    string[] signalNames1 = deviceData.AdditionalArg.Replace(" ", "").Split(',');
+                    string[] signalNames1 = step.AdditionalArg.Replace(" ", "").Split(',');
                     // Проверим, всё ли разомкнулось:
                     var actualSignals = Commutator.GetSignals();
                     bool isSignalExist1 = false;
@@ -114,7 +115,7 @@ namespace UCA.Devices
                     }
                     return DeviceResult.ResultError($"Сигнал {signalNames1[0]} отсутствует");
                 default:
-                    return DeviceResult.ResultError($"Неизвестная команда {deviceData.Command}");
+                    return DeviceResult.ResultError($"Неизвестная команда {step.Command}");
             }
         }
     }

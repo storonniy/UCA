@@ -24,8 +24,8 @@ namespace UCA
         #region Код, автоматически созданный конструктором форм Windows
 
         /// <summary>
-        /// Требуемый метод для поддержки конструктора — не изменяйте 
-        /// содержимое этого метода с помощью редактора кода.
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent()
         {
@@ -35,8 +35,6 @@ namespace UCA
             this.buttonCheckingPause = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.buttonShowRelays = new System.Windows.Forms.Button();
-            this.buttonStep = new System.Windows.Forms.Button();
             this.textBoxOperatorName = new System.Windows.Forms.TextBox();
             this.textBoxFactoryNumber = new System.Windows.Forms.TextBox();
             this.textBoxComment = new System.Windows.Forms.TextBox();
@@ -51,6 +49,8 @@ namespace UCA
             this.label6 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.buttonStep = new System.Windows.Forms.Button();
+            this.buttonShowRelays = new System.Windows.Forms.Button();
             this.labelRelays = new System.Windows.Forms.Label();
             this.groupBoxManualStep = new System.Windows.Forms.GroupBox();
             this.checkBoxIgnoreErrors = new System.Windows.Forms.CheckBox();
@@ -105,20 +105,6 @@ namespace UCA
             this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.TabStop = false;
-            // 
-            // buttonShowRelays
-            // 
-            resources.ApplyResources(this.buttonShowRelays, "buttonShowRelays");
-            this.buttonShowRelays.Name = "buttonShowRelays";
-            this.buttonShowRelays.UseVisualStyleBackColor = true;
-            this.buttonShowRelays.Click += new System.EventHandler(this.buttonShowRelays_Click);
-            // 
-            // buttonStep
-            // 
-            resources.ApplyResources(this.buttonStep, "buttonStep");
-            this.buttonStep.Name = "buttonStep";
-            this.buttonStep.UseVisualStyleBackColor = true;
-            this.buttonStep.Click += new System.EventHandler(this.buttonStep_Click);
             // 
             // textBoxOperatorName
             // 
@@ -211,6 +197,20 @@ namespace UCA
             this.groupBox2.Controls.Add(this.treeOfChecking);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.TabStop = false;
+            // 
+            // buttonStep
+            // 
+            resources.ApplyResources(this.buttonStep, "buttonStep");
+            this.buttonStep.Name = "buttonStep";
+            this.buttonStep.UseVisualStyleBackColor = true;
+            this.buttonStep.Click += new System.EventHandler(this.buttonStep_Click);
+            // 
+            // buttonShowRelays
+            // 
+            resources.ApplyResources(this.buttonShowRelays, "buttonShowRelays");
+            this.buttonShowRelays.Name = "buttonShowRelays";
+            this.buttonShowRelays.UseVisualStyleBackColor = true;
+            this.buttonShowRelays.Click += new System.EventHandler(this.buttonShowRelays_Click);
             // 
             // labelRelays
             // 
@@ -308,7 +308,6 @@ namespace UCA
             this.groupBoxManualStep.PerformLayout();
             this.groupBoxCheckingManagement.ResumeLayout(false);
             this.ResumeLayout(false);
-
         }
 
         #endregion

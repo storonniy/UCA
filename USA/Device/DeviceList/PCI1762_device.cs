@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UCA.DeviceDrivers;
+using UCA.Steps;
 using UPD.Device;
 using static UCA.Devices.DeviceResult;
 
@@ -17,27 +18,27 @@ namespace UCA.Devices
             pci1762 = new PCI_1762(description);
         }
 
-        public override DeviceResult DoCommand(DeviceData deviceData)
+        public override DeviceResult DoCommand(Step step)
         {
-            switch (deviceData.Command)
+            switch (step.Command)
             {
                 case DeviceCommands.CloseRelays:
-                    return CloseRelays(deviceData, pci1762.CloseRelays);
+                    return CloseRelays(step, pci1762.CloseRelays);
                 case DeviceCommands.OpenRelays:
-                    return OpenRelays(deviceData, pci1762.OpenRelays);
+                    return OpenRelays(step, pci1762.OpenRelays);
                 case DeviceCommands.ReadPCI1762Data:
-                    var port = int.Parse(deviceData.Argument);
-                    var signal = int.Parse(deviceData.AdditionalArg);
+                    var port = int.Parse(step.Argument);
+                    var signal = int.Parse(step.AdditionalArg);
                     var portByte = pci1762.Read(port);
                     if (portByte == (byte)signal)
                         return ResultOk($"Сигнал {portByte} присутствует");
                     return ResultError($"Ошибка: сигнал {portByte} отсутствует");
                 case DeviceCommands.OpenAllRelays:
-                    return OpenAllRelays(deviceData, pci1762.OpenAllRelays);
+                    return OpenAllRelays(step, pci1762.OpenAllRelays);
                 case DeviceCommands.GetClosedRelayNames:
-                    return ResultOk($"{deviceData.DeviceName}: {string.Join(", ", pci1762.GetClosedRelaysNumbers())}");
+                    return ResultOk($"{step.DeviceName}: {string.Join(", ", pci1762.GetClosedRelaysNumbers())}");
                 default:
-                    return ResultError($"Неизвестная команда {deviceData.Command}");
+                    return ResultError($"Неизвестная команда {step.Command}");
             }
         }
         
