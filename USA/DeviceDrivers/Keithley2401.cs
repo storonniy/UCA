@@ -90,7 +90,7 @@ namespace UCA.DeviceDrivers
             return serialPort.ReadExisting().Contains("VOLT");
         }
 
-        public double ParseValue()
+        private double ParseValue()
         {
             var value = serialPort.ReadExisting();
             return (double)Decimal.Parse(value.Replace("\r", ""), NumberStyles.Float, CultureInfo.InvariantCulture);

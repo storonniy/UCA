@@ -15,15 +15,17 @@ namespace UPD.DeviceDrivers
 
         public static double ReadDouble(this SerialPort serialPort)
         {
-            var value = serialPort.ReadLine().Replace("\r", "").Replace("\n", "").Replace(".", ",");
-            try
+            var value = serialPort.ReadLine().Replace("\r", "").Replace("\n", "");
+            var result = double.NaN;
+            value = value.Trim();
+            if (!double.TryParse(value, NumberStyles.Any, CultureInfo.GetCultureInfo("ru-RU"), out result))
             {
-                return double.Parse(value, NumberStyles.Float, CultureInfo.InvariantCulture);
+                if (!double.TryParse(value, NumberStyles.Any, CultureInfo.GetCultureInfo("en-US"), out result))
+                {
+                    throw new FormatException();
+                }
             }
-            catch (FormatException)
-            {
-                throw new FormatException($"[{value}] не может быть преобразован в double");
-            }
+            return result;
         }
 
         public static void SendCommand(this SerialPort serialPort, string command)
@@ -31,7 +33,5 @@ namespace UPD.DeviceDrivers
             serialPort.WriteLine(command);
             Thread.Sleep(delay);
         }
-
-
     }
 }
