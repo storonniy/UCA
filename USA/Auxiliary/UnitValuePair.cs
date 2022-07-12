@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace UCA.Auxiliary
+namespace Checker.Auxiliary
 {
     public class UnitValuePair
     {

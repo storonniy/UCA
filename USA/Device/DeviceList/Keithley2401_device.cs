@@ -3,13 +3,14 @@ using System.Globalization;
 using System.IO;
 using System.IO.Ports;
 using System.Threading;
-using UCA.DeviceDrivers;
-using UCA.Steps;
-using UPD.Device;
-using static UCA.Auxiliary.UnitValuePair;
+using Checker.DeviceDrivers;
+using Checker.Steps;
+using Checker.Device;
+using Checker.DeviceInterface;
+using static Checker.Auxiliary.UnitValuePair;
 
 
-namespace UCA.Devices
+namespace Checker.Devices
 {
     class Keithley2401_device : IDeviceInterface
     {

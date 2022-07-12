@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace UPD.DeviceDrivers
+namespace Checker.Auxiliary
 {
     public static class SerialPortExtensions
     {
@@ -16,11 +16,15 @@ namespace UPD.DeviceDrivers
         public static double ReadDouble(this SerialPort serialPort)
         {
             var value = serialPort.ReadLine().Replace("\r", "").Replace("\n", "");
-            var result = double.NaN;
             value = value.Trim();
-            if (!double.TryParse(value, NumberStyles.Any, CultureInfo.GetCultureInfo("ru-RU"), out result))
+            return ParseDouble(value);
+        }
+
+        public static double ParseDouble(string data)
+        {
+            if (!double.TryParse(data, NumberStyles.Any, CultureInfo.GetCultureInfo("ru-RU"), out var result))
             {
-                if (!double.TryParse(value, NumberStyles.Any, CultureInfo.GetCultureInfo("en-US"), out result))
+                if (!double.TryParse(data, NumberStyles.Any, CultureInfo.GetCultureInfo("en-US"), out result))
                 {
                     throw new FormatException();
                 }

@@ -4,17 +4,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using UPD.DeviceDrivers;
-using UCA.DeviceDrivers;
+using Checker.DeviceDrivers;
 using System.IO.Ports;
-using UPD.Device.DeviceList;
+using Checker.Device.DeviceList;
 
 namespace Tester
 {
     [TestClass]
     public class PSHTests
     {
-        PSH73610 psh3610 = new PSH73610(new SerialPort("COM24", 9600));
+        Psh73610 psh3610 = new Psh73610(new SerialPort("COM24", 9600));
 
         [TestMethod]
         public void SetVoltageTest()

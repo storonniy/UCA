@@ -7,11 +7,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using UCA.ControlObjectSettings;
-using static UCA.ControlObjectSettings.ControlObjectSettings;
+using Checker.Settings;
+using static Checker.Settings.ControlObjectSettings;
 
 
-namespace UCA
+namespace Checker
 {
     public partial class SettingsForm : Form
     {
@@ -24,7 +24,7 @@ namespace UCA
         {
             if (CheckFactoryNumberField())
             {
-                var settings = new Settings()
+                var settings = new ControlObjectSettings.Settings()
                 {
                     Comment = textBoxComment.Text,
                     FactoryNumber = textBoxFactoryNumber.Text,

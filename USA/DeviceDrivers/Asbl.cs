@@ -7,15 +7,16 @@ using System.Threading.Tasks;
 using FTD2XX_NET;
 using static FTD2XX_NET.FTDI;
 using System.Threading;
+using Checker.Auxiliary;
 
-namespace UPD.DeviceDrivers
+namespace Checker.DeviceDrivers
 {
-    public class ASBLException : Exception
+    public class AsblException : Exception
     {
-        public ASBLException(string message) : base(message) { }
+        public AsblException(string message) : base(message) { }
     }
 
-    public class ASBL
+    public class Asbl
     {
         internal FTDI deviceA;
         internal FTDI deviceB;
@@ -31,12 +32,12 @@ namespace UPD.DeviceDrivers
         /// Создать фиктивное устройство (для тестов)
         /// </summary>
         /// <param name="n"></param>
-        public ASBL(uint n)
+        public Asbl(uint n)
         {
 
         }
 
-        ~ASBL()
+        ~Asbl()
         {
             if (deviceA == null || deviceB == null) return;
             if (deviceA.IsOpen)
@@ -45,18 +46,18 @@ namespace UPD.DeviceDrivers
                 deviceB.Close();
         }
 
-        public ASBL()
+        public Asbl()
         {
             deviceA = new FTDI();
             var ftStatus = deviceA.GetNumberOfDevices(ref ftdiDeviceCount);
             if (ftStatus != FT_STATUS.FT_OK)
             {
-                throw new ASBLException("Failed to get number of devices (error " + ftStatus.ToString() + ")");
+                throw new AsblException("Failed to get number of devices (error " + ftStatus.ToString() + ")");
             }
             ftdiDeviceList = new FT_DEVICE_INFO_NODE[ftdiDeviceCount];
             ftStatus = deviceA.GetDeviceList(ftdiDeviceList);
             if (ftStatus != FT_STATUS.FT_OK)
-                throw new ASBLException("Failed to populate device list");
+                throw new AsblException("Failed to populate device list");
             Check("deviceA.OpenByIndex(0)", () => deviceA.OpenByIndex(0));
             Check("SetDataCharacteristics", () => deviceA.SetDataCharacteristics(FT_DATA_BITS.FT_BITS_8, FT_STOP_BITS.FT_STOP_BITS_1, FT_PARITY.FT_PARITY_NONE));
             Check("SetFlowControl", () => deviceA.SetFlowControl(FT_FLOW_CONTROL.FT_FLOW_RTS_CTS, 0x11, 0x13));
@@ -66,7 +67,7 @@ namespace UPD.DeviceDrivers
             uint numBytesWritten = 0;
             Check("deviceA.Write(new byte[] { 0x00 }, 1, ref numBytesWritten);", () => deviceA.Write(new byte[] { 0x00 }, 1, ref numBytesWritten));
             if (numBytesWritten != 1)
-                throw new ASBLException($"Записано {numBytesWritten} вместо 1");
+                throw new AsblException($"Записано {numBytesWritten} вместо 1");
             Check("ResetDevice()", () => deviceA.ResetDevice());
             Check("SetLatency", () => deviceA.SetLatency(16));
             // Сброс контроллера MPSSE в канале А м/с FTDI*****************
@@ -108,7 +109,7 @@ namespace UPD.DeviceDrivers
         {
             var status = command();
             if (status != FT_STATUS.FT_OK)
-                throw new ASBLException($"{errorMsg} : {status}");
+                throw new AsblException($"{errorMsg} : {status}");
         }
 
         private FT_STATUS FT_ResetController(FTDI dev)
@@ -198,12 +199,12 @@ namespace UPD.DeviceDrivers
             var addressBuffer = GetFilledBuffer(address);
             var addrStatus = deviceB.Write(addressBuffer, addressBuffer.Length, ref numBytesWritten);
             if (addrStatus != FT_STATUS.FT_OK)
-                throw new ASBLException($"АСБЛ: операция записи {address} завершилась с ошибкой");
+                throw new AsblException($"АСБЛ: операция записи {address} завершилась с ошибкой");
             ClrADRn();
             var dataBuffer = GetFilledBuffer(data);
             var dataStatus = deviceB.Write(dataBuffer, dataBuffer.Length, ref numBytesWritten);
             if (dataStatus != FT_STATUS.FT_OK)
-                throw new ASBLException($"АСБЛ: операция записи {data} завершилась с ошибкой");
+                throw new AsblException($"АСБЛ: операция записи {data} завершилась с ошибкой");
             SetR_Wn();
         }
 
@@ -215,14 +216,14 @@ namespace UPD.DeviceDrivers
             var addressBuffer = GetFilledBuffer(address);
             var addrStatus = deviceB.Write(addressBuffer, addressBuffer.Length, ref numBytesWritten);
             if (addrStatus != FT_STATUS.FT_OK)
-                throw new ASBLException($"АСБЛ: операция записи {address} завершилась с ошибкой");
+                throw new AsblException($"АСБЛ: операция записи {address} завершилась с ошибкой");
             ClrADRn();
             Thread.Sleep(10);
             uint numBytesRead = 0;
             var buffer = new byte[12];
             var readStatus = deviceB.Read(buffer, (uint)buffer.Length, ref numBytesRead);
             if (readStatus != FT_STATUS.FT_OK)
-                throw new ASBLException($"АСБЛ: операция чтения завершилась с ошибкой");
+                throw new AsblException($"АСБЛ: операция чтения завершилась с ошибкой");
             uint data = 0;
             for (int i = 0; i < buffer.Length; i++)
             {
@@ -252,9 +253,9 @@ namespace UPD.DeviceDrivers
             if (numBytesWritten != 3)
                 status = deviceA.Write(buffer, buffer.Length, ref numBytesWritten);
             if (numBytesWritten != 3)
-                throw new ASBLException($"Записано {numBytesWritten} вместо 3");
+                throw new AsblException($"Записано {numBytesWritten} вместо 3");
             if (status != FT_STATUS.FT_OK)
-                throw new ASBLException(status.ToString());
+                throw new AsblException(status.ToString());
         }
 
         /// <summary>
@@ -323,7 +324,7 @@ namespace UPD.DeviceDrivers
     /// </summary>
     public class Line
     {
-        readonly ASBL asbl;
+        readonly Asbl asbl;
         public uint number { get; private set; }
         public uint DirectionRegister { get; private set; }
         public uint DataRegister { get; private set; }
@@ -331,7 +332,7 @@ namespace UPD.DeviceDrivers
         public bool Direction { get; private set; }
         public bool Data { get; private set; }
 
-        public Line(uint number, ASBL asbl)
+        public Line(uint number, Asbl asbl)
         {
             this.asbl = asbl;
             if (number < 1 || number > 120)
@@ -341,12 +342,12 @@ namespace UPD.DeviceDrivers
             bitNumber = (number - 1) % 20;
         }
 
-        public static Func<uint, uint> getPowerOfTwo = (degree) => (uint)(1 << (int)degree);
+        public static readonly Func<uint, uint> GetPowerOfTwo = (degree) => (uint)(1 << (int)degree);
 
         private void ChangeBit(uint register, bool bitState)
         {
             uint currentData = asbl.ReadData(register);
-            uint newData = bitState ? currentData | getPowerOfTwo(bitNumber) : currentData - (currentData & getPowerOfTwo(bitNumber));
+            uint newData = bitState ? currentData | GetPowerOfTwo(bitNumber) : currentData - (currentData & GetPowerOfTwo(bitNumber));
             asbl.WriteData(register, newData);
         }
 
@@ -355,7 +356,7 @@ namespace UPD.DeviceDrivers
             ChangeBit(DirectionRegister, bitState);
             uint writtenData = asbl.ReadData(DirectionRegister);
             var state = bitState ? 1 : 0;
-            if ((writtenData & (1 << (int)bitNumber)) >> (int)bitNumber != state)
+            if (writtenData.BitState((int)bitNumber) != bitState)//((writtenData & (1 << (int)bitNumber)) >> (int)bitNumber != state)
                 throw new FailedToSetLineException($"Не удалось выставить линию {number} в {state}");
         }
 
@@ -369,15 +370,15 @@ namespace UPD.DeviceDrivers
             ChangeDirection(false);
         }
 
-        public void ChangeData(bool state)
+        public void ChangeData(bool bitState)
         {
-            var expectedBitState = state ? 1 : 0;
+            var expectedBitState = bitState ? 1 : 0;
             if ((asbl.ReadData(DirectionRegister) & (1 << (int)bitNumber)) == 0)
                 throw new LineIsSetToReceiveException($"Попытка выставить в {expectedBitState} линию {number}, которая настроена на приём");
-            ChangeBit(DataRegister, state);
+            ChangeBit(DataRegister, bitState);
             var writtenData = asbl.ReadData(DataRegister);
             var actualBitState = (writtenData & (1 << (int)bitNumber)) >> (int)bitNumber;
-            if (actualBitState != expectedBitState)
+            if (writtenData.BitState((int)bitNumber) != bitState) //(actualBitState != expectedBitState)
                 throw new FailedToSetLineException($"Не удалось выставить линию {number} в {expectedBitState}");
         }
 

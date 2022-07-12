@@ -3,19 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using UCA.Devices;
-using UCA.Steps;
-using UPD.DeviceDrivers;
-using static UCA.Devices.DeviceResult;
+using Checker.DeviceDrivers;
+using Checker.DeviceInterface;
+using Checker.Devices;
+using Checker.Steps;
+using static Checker.Devices.DeviceResult;
 
-namespace UPD.Device.DeviceList
+namespace Checker.Device.DeviceList
 {
     public class ASBL_device : IDeviceInterface
     {
-        readonly ASBL asbl;
+        readonly Asbl asbl;
         public ASBL_device()
         {
-            asbl = new ASBL();
+            asbl = new Asbl();
         }
 
         public static uint[] GetLineNumbers(string argument)
@@ -74,7 +75,7 @@ namespace UPD.Device.DeviceList
             {
                 return DeviceResult.ResultError($"{step.DeviceName}: {ex.Message}");
             }
-            catch (ASBLException ex)
+            catch (AsblException ex)
             {
                 return DeviceResult.ResultError($"{step.DeviceName}: {ex.Message}");
             }

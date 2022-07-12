@@ -7,9 +7,9 @@ using VciCAN;
 using Ixxat.Vci4.Bal.Can;
 using System.Collections;
 using System.Threading;
-using UPD.Auxiliary;
+using Checker.Auxiliary;
 
-namespace UPD.DeviceDrivers
+namespace Checker.DeviceDrivers
 {
     public class MK
     {

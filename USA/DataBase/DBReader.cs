@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 using System.Data.OleDb;
 using System.Data;
 
-namespace UCA
+namespace Checker.DataBase
 {
     public class DbReader
     {
-        readonly OleDbConnection connection;
+        private readonly OleDbConnection connection;
         private DbReader (OleDbConnection connection)
         {
             this.connection = connection;

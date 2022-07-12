@@ -7,17 +7,17 @@ using System.Threading.Tasks;
 using System.IO.Ports;
 using System.Threading;
 using Automation.BDaq;
-using UPD.Auxiliary;
-using UPD.Device;
+using Checker.Auxiliary;
+using Checker.Device;
 
-namespace UCA.DeviceDrivers
+namespace Checker.DeviceDrivers
 {
-    public class PCI_1762
+    public class Pci1762
     {
         private readonly InstantDoCtrl instantDoCtrl;
         private BDaqDevice device;
 
-        public PCI_1762(string description)
+        public Pci1762(string description)
         {
             instantDoCtrl = new InstantDoCtrl();
             instantDoCtrl.SelectedDevice = new DeviceInformation(description);
@@ -28,18 +28,18 @@ namespace UCA.DeviceDrivers
 
         public bool CloseRelays(int[] relayNumbers)
         {
-            return ChangeRelayState(relayNumbers, getCloseRelayData);
+            return ChangeRelayState(relayNumbers, GetCloseRelayData);
         }
 
         public bool OpenRelays(int[] relayNumbers)
         {
-            return ChangeRelayState(relayNumbers, getOpenRelayData);
+            return ChangeRelayState(relayNumbers, GetOpenRelayData);
         }
 
-        static Func<byte, byte, byte> getOpenRelayData =
+        private static readonly Func<byte, byte, byte> GetOpenRelayData =
             (currentData, newData) => (byte) (currentData - (byte) (currentData & newData));
 
-        static Func<byte, byte, byte> getCloseRelayData =
+        private static readonly Func<byte, byte, byte> GetCloseRelayData =
             (currentData, newData) => (byte) (currentData | newData);
 
         private bool ChangeRelayState(IEnumerable<int> relayNumbers, Func<byte, byte, byte> changePortData)
@@ -99,11 +99,12 @@ namespace UCA.DeviceDrivers
                 .ToList();
         }
 
-        public static IEnumerable<int> ConvertDataToRelayNumbers(byte data, int portNum)
+        public static List<int> ConvertDataToRelayNumbers(byte data, int portNum)
         {
             return Enumerable.Range(0, 8)
                 .Where(bitNumber => data.BitState(bitNumber))
-                .Select(bitNumber => 8 * portNum + bitNumber);
+                .Select(bitNumber => 8 * portNum + bitNumber)
+                .ToList();
         }
     }
 }

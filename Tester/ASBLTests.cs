@@ -2,10 +2,9 @@
 using System;
 using System.Threading;
 using FTD2XX_NET;
-using UPD.DeviceDrivers;
-using UCA.DeviceDrivers;
+using Checker.DeviceDrivers;
 using System.IO.Ports;
-using UPD.Device.DeviceList;
+using Checker.Device.DeviceList;
 
 namespace Tester
 {
@@ -247,7 +246,7 @@ namespace Tester
                 var line = new Line(lineNumber, new Asbl());
                 Assert.AreEqual(line.DirectionRegister, expectedDirectionRegister);
                 Assert.AreEqual(line.DataRegister, expectedDataRegister);
-                Assert.AreEqual(linePosition, line.BitNumber);
+                Assert.AreEqual(linePosition, line.bitNumber);
                 linePosition++;
             }
         }

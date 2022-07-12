@@ -3,20 +3,22 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.IO.Ports;
-using UCA.DeviceDrivers;
-using UCA.Steps;
-using UPD.Device;
-using static UCA.Auxiliary.UnitValuePair;
+using Checker.Auxiliary;
+using Checker.DeviceDrivers;
+using Checker.Steps;
+using Checker.Device;
+using Checker.DeviceInterface;
+using static Checker.Auxiliary.UnitValuePair;
 
-namespace UCA.Devices
+namespace Checker.Devices
 {
     class GDM78261_device : IDeviceInterface
     {
-        private readonly GDM78261 gdm78261;
+        private readonly Gdm78261 gdm78261;
 
         public GDM78261_device(SerialPort serialPort)
         {
-            gdm78261 = new GDM78261(serialPort);
+            gdm78261 = new Gdm78261(serialPort);
         }
 
         public override DeviceResult DoCommand(Step step)
@@ -31,33 +33,33 @@ namespace UCA.Devices
                             //var key = double.Parse(deviceData.Argument, NumberStyles.Float);
                             //AddCoefficientData(deviceData.Channel, key, voltage);
                         }*/
-                        return GetResult("Измерено", step, UnitType.Voltage, voltage);
+                        return GetResult("Измерено", step, UnitValuePair.UnitType.Voltage, voltage);
                     }
                 case DeviceCommands.GetVoltageAC:
                     {
                         var voltage = gdm78261.MeasureVoltageAC();
-                        return GetResult("Измерено", step, UnitType.Voltage, voltage);
+                        return GetResult("Измерено", step, UnitValuePair.UnitType.Voltage, voltage);
                     }
                 case DeviceCommands.GetVoltageACAndSave:
                     {
                         var voltage = gdm78261.MeasureVoltageAC();
                         var key = step.Argument;
                         AddValues(key, voltage);
-                        return GetResult("Измерено", step, UnitType.Voltage, voltage);
+                        return GetResult("Измерено", step, UnitValuePair.UnitType.Voltage, voltage);
                     }
                 case DeviceCommands.GetVoltageDCAndSave:
                     {
                         var voltage = gdm78261.MeasureVoltageDC();
                         var key = step.Argument;
                         AddValues(key, voltage);
-                        return GetResult("Измерено", step, UnitType.Voltage, voltage);
+                        return GetResult("Измерено", step, UnitValuePair.UnitType.Voltage, voltage);
                     }
                 case DeviceCommands.GetCurrentAndSave:
                     {
                         var current = gdm78261.MeasureCurrentDC();
                         var key = step.Argument;
                         AddValues(key, current);
-                        return GetResult("Измерено", step, UnitType.Current, current);
+                        return GetResult("Измерено", step, UnitValuePair.UnitType.Current, current);
                     }
                 case DeviceCommands.GetCurrent:
                     {
@@ -67,7 +69,7 @@ namespace UCA.Devices
                             var keyCurrent = double.Parse(deviceData.Argument, NumberStyles.Float);
                             AddCoefficientData(deviceData.Channel, keyCurrent, current);
                         }*/
-                        return GetResult("Измерено", step, UnitType.Current, current);
+                        return GetResult("Измерено", step, UnitValuePair.UnitType.Current, current);
                     }
                 case DeviceCommands.SetMeasurementToCurrent:
                     var currentRange = double.Parse(step.Argument, CultureInfo.InvariantCulture);

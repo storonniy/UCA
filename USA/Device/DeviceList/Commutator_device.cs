@@ -2,11 +2,12 @@
 using System.IO;
 using System.IO.Ports;
 using System.Linq;
-using UCA.DeviceDrivers;
-using UCA.Steps;
-using UPD.Device;
+using Checker.DeviceDrivers;
+using Checker.Steps;
+using Checker.Device;
+using Checker.DeviceInterface;
 
-namespace UCA.Devices
+namespace Checker.Devices
 {
     class Commutator_device : IDeviceInterface
     {

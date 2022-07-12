@@ -7,7 +7,7 @@ using System.IO;
 using System.IO.Ports;
 using System.Threading;
 
-namespace UCA.DeviceDrivers
+namespace Checker.DeviceDrivers
 {
     public class Commutator
     {

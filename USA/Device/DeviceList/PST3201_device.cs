@@ -3,24 +3,25 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using UCA.DeviceDrivers;
 using System.IO.Ports;
-using static UCA.Devices.DeviceResult;
-using static UCA.Auxiliary.UnitValuePair;
+using static Checker.Devices.DeviceResult;
+using static Checker.Auxiliary.UnitValuePair;
 using System.Globalization;
-using UCA.Steps;
-using UPD.Device;
+using Checker.DeviceDrivers;
+using Checker.Steps;
+using Checker.Device;
+using Checker.DeviceInterface;
 
-namespace UCA.Devices
+namespace Checker.Devices
 {
     public class PST3201_device : IDeviceInterface
     {
-        PST_3201 pst3201;
+        Pst3201 pst3201;
 
 
         public PST3201_device (SerialPort serialPort)
         {
-            pst3201 = new PST_3201(serialPort);
+            pst3201 = new Pst3201(serialPort);
         }
 
         public override DeviceResult DoCommand (Step step)

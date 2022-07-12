@@ -1,7 +1,7 @@
 ﻿using System.IO.Ports;
 using System.Threading;
 
-namespace UCA
+namespace Checker
 {
     public static class PureSerialReader
     {

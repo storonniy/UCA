@@ -4,12 +4,14 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static UCA.Auxiliary.UnitValuePair;
+using static Checker.Auxiliary.UnitValuePair;
 using System.Threading;
-using UCA.Steps;
-using UPD.Device;
+using Checker.Auxiliary;
+using Checker.Steps;
+using Checker.Device;
+using Checker.DeviceInterface;
 
-namespace UCA.Devices
+namespace Checker.Devices
 {
     public class None : IDeviceInterface
     {
@@ -58,7 +60,7 @@ namespace UCA.Devices
                             }
                             catch (KeyNotFoundException)
                             {
-                                var unitType = (step.Channel > 2) ? UnitType.Current : UnitType.Voltage;
+                                var unitType = (step.Channel > 2) ? UnitValuePair.UnitType.Current : UnitValuePair.UnitType.Voltage;
                                 var data = $"lowerLimit {step.LowerLimit}; upperLimit {step.UpperLimit}";
                                 return DeviceResult.ResultError($"{data} \n Для входного воздействия {GetValueUnitPair(value, unitType)} и канала {step.Channel} не измерялись входные и выходные воздействия");
                             }
@@ -127,15 +129,15 @@ namespace UCA.Devices
             return arg1 - arg2;
         }
 
-        public static ValueKeys GetKeys(string rawArgument)
+        public static UnitValuePair.ValueKeys GetKeys(string rawArgument)
         {
             rawArgument = rawArgument.Replace(" ", "").Replace("\r", "");
             int unitIndex = rawArgument.IndexOf(';');
             string unitName = rawArgument.Substring(unitIndex + 1);
-            UnitType unitType = GetUnitType(unitName);
+            UnitValuePair.UnitType unitType = GetUnitType(unitName);
             var keyString = rawArgument.Remove(unitIndex);
             string[] keys = keyString.Split(',');
-            return new ValueKeys(unitType, keys);
+            return new UnitValuePair.ValueKeys(unitType, keys);
         }
 
         private DeviceResult GetCoefficient_UCAT(Step step)

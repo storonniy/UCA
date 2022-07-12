@@ -7,21 +7,22 @@ using System.IO.Ports;
 using System.IO;
 using System.Threading;
 using System.Globalization;
-using UPD.DeviceDrivers;
+using Checker.Auxiliary;
+using Checker.DeviceDrivers;
 
-namespace UCA.DeviceDrivers
+namespace Checker.DeviceDrivers
 {
-    public class GDM78261
+    public class Gdm78261
     {
         readonly SerialPort serialPort;
-        public GDM78261 (SerialPort serialPort)
+        public Gdm78261 (SerialPort serialPort)
         {
             this.serialPort = serialPort;
             if (SerialPort.GetPortNames().ToList().Contains(serialPort.PortName))
                 this.serialPort.Open();
         }
 
-        ~GDM78261()
+        ~Gdm78261()
         {
             serialPort.Close();
         }

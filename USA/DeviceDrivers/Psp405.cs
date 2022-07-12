@@ -7,8 +7,9 @@ using System.IO;
 using System.IO.Ports;
 using System.Threading;
 using System.Globalization;
-using UPD.DeviceDrivers;
-namespace UCA.DeviceDrivers
+using Checker.Auxiliary;
+using Checker.DeviceDrivers;
+namespace Checker.DeviceDrivers
 {
     public class Value
     {
@@ -23,17 +24,17 @@ namespace UCA.DeviceDrivers
         public static readonly Value powerLimit = new Value() { Flag = "P", Length = 3 };
     };
 
-    public class PSP405 
+    public class Psp405 
     {
         readonly SerialPort serialPort;
-        public PSP405 (SerialPort serialPort)
+        public Psp405 (SerialPort serialPort)
         {
 
             this.serialPort = serialPort;
            // this.serialPort.Open();
         }
 
-        ~PSP405()
+        ~Psp405()
         {
             serialPort.Close();
         }

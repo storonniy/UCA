@@ -1,14 +1,14 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using UCA.Devices;
-using UCA.DeviceDrivers;
+using Checker.Devices;
+using Checker.DeviceDrivers;
 using System.Collections.Generic;
 using System.Threading;
-using UPD.Device;
-using static UCA.Auxiliary.UnitValuePair;
-using UPD.DeviceDrivers;
-using UPD.Device.DeviceList;
-using static UPD.DeviceDrivers.MK;
+using Checker.Device;
+using static Checker.Auxiliary.UnitValuePair;
+using Checker.Device.DeviceList;
+using Checker.DeviceInterface;
+using static Checker.DeviceDrivers.MK;
 
 namespace TestProject
 {
@@ -32,16 +32,16 @@ namespace TestProject
         [TestMethod]
         public void ParseRelayNumbers()
         {
-            int[] expected = new int[] { 1, 2, 3, 4, 54 };
-            var actual = MK_device.ParseRelayNumbers("1, 2, 3, 4, 54");
+            var expected = new [] { 1, 2, 3, 4, 54 };
+            var actual = IDeviceInterface.GetRelayNumbersArray("1, 2, 3, 4, 54");
             CollectionAssert.AreEqual(expected, actual);
         }
 
         [TestMethod]
         public void ParseRelayNumbers_oneRelay()
         {
-            int[] expected = new int[] { 1 };
-            var actual = MK_device.ParseRelayNumbers("1 ");
+            var expected = new [] { 1 };
+            var actual = IDeviceInterface.GetRelayNumbersArray("1 ");
             CollectionAssert.AreEqual(expected, actual);
         }
 
@@ -156,14 +156,6 @@ namespace TestProject
             var expected = new ValueKeys(UnitType.Frequency, new string[] { "1" });
             Assert.ReferenceEquals(expected, actual);
         }
-
-        /*        [TestMethod]
-                public void Divide()
-                {
-                    var actual = None.Divide(4.5, 1.5);
-                    var expected = 3.0;
-                    Assert.AreEqual(expected, actual);
-                }*/
 
         #endregion
 

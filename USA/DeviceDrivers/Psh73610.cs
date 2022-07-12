@@ -5,21 +5,22 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO.Ports;
 using System.Threading;
-using UPD.DeviceDrivers;
+using Checker.Auxiliary;
+using Checker.DeviceDrivers;
 
-namespace UCA.DeviceDrivers
+namespace Checker.DeviceDrivers
 {
-    public class PSH73610
+    public class Psh73610
     {
         readonly SerialPort serialPort;
-        public PSH73610(SerialPort serialPort)
+        public Psh73610(SerialPort serialPort)
         {
             this.serialPort = serialPort;
             if (SerialPort.GetPortNames().ToList().Contains(serialPort.PortName))
                 this.serialPort.Open();
         }
 
-        ~PSH73610()
+        ~Psh73610()
         {
             if (serialPort.IsOpen)
                 serialPort.Close();
@@ -36,7 +37,7 @@ namespace UCA.DeviceDrivers
             var str = voltage.ToString().Replace(",", ".");
             serialPort.SendCommand($":chan1:volt {str}\n");
             serialPort.SendCommand(":chan1: volt ?\n");
-            return ParseValue();
+            return serialPort.ReadDouble();
         }
 
         /// <summary>
@@ -46,7 +47,7 @@ namespace UCA.DeviceDrivers
         public double GetActualOutputLoadVoltage()
         {
             serialPort.SendCommand($":chan1:meas:volt?\n");
-            return ParseValue();
+            return serialPort.ReadDouble();
         }
 
         private double ParseValue()
@@ -62,7 +63,7 @@ namespace UCA.DeviceDrivers
         public double GetActualOutputLoadCurrent()
         {
             serialPort.SendCommand($":chan1:meas:curr?\n");
-            return ParseValue();
+            return serialPort.ReadDouble();
         }
 
 
@@ -75,7 +76,7 @@ namespace UCA.DeviceDrivers
         {
             var str = current.ToString().Replace(",", ".");
             serialPort.SendCommand($":chan1:prot:curr 1;:chan1:curr {str};:chan1:curr?\n");
-            return ParseValue();
+            return serialPort.ReadDouble();
         }
 
         /// <summary>
@@ -87,7 +88,7 @@ namespace UCA.DeviceDrivers
         {
             var str = voltageProtection.ToString().Replace(",", ".");
             serialPort.SendCommand($":chan1:prot:volt {str};:chan1:prot:volt?\n");
-            return ParseValue();
+            return serialPort.ReadDouble();
         }
 
         /// <summary>

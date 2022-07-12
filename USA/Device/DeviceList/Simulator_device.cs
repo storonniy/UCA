@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO.Ports;
-using UCA.DeviceDrivers;
-using UPD.DeviceDrivers;
-using UCA.Devices;
-using UCA.Steps;
+using Checker.DeviceDrivers;
+using Checker.DeviceInterface;
+using Checker.Devices;
+using Checker.Steps;
 
-namespace UPD.Device.DeviceList
+namespace Checker.Device.DeviceList
 {
     class Simulator_device : IDeviceInterface
     {

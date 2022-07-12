@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Threading;
-using UCA.DeviceDrivers;
-using UCA.Devices;
+using Checker.DeviceDrivers;
+using Checker.Devices;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Tester
 {
@@ -17,7 +19,7 @@ namespace Tester
 
         private void GetRelaysAsByteTest(IEnumerable<int> relayNumbers, byte expected)
         {
-            var actual = PCI_1762.ConvertRelayNumbersToByte(relayNumbers);
+            var actual = Pci1762.ConvertRelayNumbersToByte(relayNumbers);
             Assert.AreEqual(expected, actual);
         }
         
@@ -41,28 +43,28 @@ namespace Tester
         [TestMethod]
         public void CheckOnePort ()
         {
-            var expectedDict = new Dictionary<int, List<int>>();
-            expectedDict.Add(0, new List<int>() { 1, 3, 5, 7 });
-            var actualDict = PCI_1762.GetPortBytesDictionary(new int[] { 1, 3, 5, 7 });
+            var expectedDict = new Dictionary<int, byte>();
+            expectedDict.Add(0, 170);
+            var actualDict = Pci1762.GetPortBytesDictionary(new [] { 1, 3, 5, 7 });
             CheckDictionary(expectedDict, actualDict);
         }
 
         [TestMethod]
         public void CheckTwoPorts()
         {
-            var expectedDict = new Dictionary<int, List<int>>();
-            expectedDict.Add(0, new List<int>() { 1, 3, 7 });
-            expectedDict.Add(1, new List<int>() { 0, 7, 2 });
-            var actualDict = PCI_1762.GetPortBytesDictionary(new int[] { 8, 1, 3, 7, 15, 10});
+            var expectedDict = new Dictionary<int, byte>();
+            expectedDict.Add(0, 138);
+            expectedDict.Add(1, 133);
+            var actualDict = Pci1762.GetPortBytesDictionary(new int[] { 8, 1, 3, 7, 15, 10});
             CheckDictionary(expectedDict, actualDict);
         }
 
-        private void CheckDictionary(Dictionary<int, List<int>> expectedDict, Dictionary<int, List<int>> actualDict)
+        private void CheckDictionary(Dictionary<int, byte> expectedDict, Dictionary<int, byte> actualDict)
         {
             CollectionAssert.AreEquivalent(expectedDict.Keys, actualDict.Keys);
             foreach (var key in expectedDict.Keys)
             {
-                CollectionAssert.AreEquivalent(expectedDict[key], actualDict[key]);
+                Assert.AreEqual(expectedDict[key], actualDict[key]);
             }
         }
 
@@ -70,17 +72,17 @@ namespace Tester
         [TestMethod]
         public void GetRelaysAsByte()
         {
-            int expected = 135;
-            int actual = PCI_1762.ConvertRelayNumbersToByte(new List<int>() { 0, 1, 2, 7 });
+            var expected = 135;
+            var actual = Pci1762.ConvertRelayNumbersToByte(new List<int>() { 0, 1, 2, 7 });
             Assert.AreEqual(expected, actual);
             expected = 172;
-            actual = PCI_1762.ConvertRelayNumbersToByte(new List<int>() { 2, 5, 3, 7 });
+            actual = Pci1762.ConvertRelayNumbersToByte(new List<int>() { 2, 5, 3, 7 });
             Assert.AreEqual(expected, actual);
             expected = 30;
-            actual = PCI_1762.ConvertRelayNumbersToByte(new List<int>() { 1, 2, 3, 4 });
+            actual = Pci1762.ConvertRelayNumbersToByte(new List<int>() { 1, 2, 3, 4 });
             Assert.AreEqual(expected, actual);
             expected = 62;
-            actual = PCI_1762.ConvertRelayNumbersToByte(new List<int>() { 1, 2, 3, 4, 5 });
+            actual = Pci1762.ConvertRelayNumbersToByte(new List<int>() { 1, 2, 3, 4, 5 });
             Assert.AreEqual(expected, actual);
         }  
         
@@ -88,7 +90,7 @@ namespace Tester
         public void CheckDataWithRepeatingNumbers()
         {
             int expected = 44;
-            int actual = PCI_1762.ConvertRelayNumbersToByte(new List<int>() { 2, 3, 5, 5 });
+            int actual = Pci1762.ConvertRelayNumbersToByte(new List<int>() { 2, 3, 5, 5 });
             Assert.AreEqual(expected, actual);
         }
 
@@ -96,14 +98,14 @@ namespace Tester
         public void GetDataAsRelayNumbers()
         {
             var expected = new List<int>() { 1, 3, 7 };
-            var actual = PCI_1762.ConvertDataToRelayNumbers(138, 0);
+            var actual = Pci1762.ConvertDataToRelayNumbers(138, 0);
             CollectionAssert.AreEquivalent(expected, actual);
         }
 
         [TestMethod]
         public void OpenAllRelays()
         {
-            PCI_1762 pci1762 = new PCI_1762("PCI-1762,BID#1");
+            Pci1762 pci1762 = new Pci1762("PCI-1762,BID#1");
             pci1762.CloseRelays(new int[] { 0, 7, 8, 15 });
             Thread.Sleep(1000);
             pci1762.OpenAllRelays();
@@ -116,7 +118,7 @@ namespace Tester
         [TestMethod]
         public void CloseRelaysPort0()
         {
-            PCI_1762 pci1762 = new PCI_1762("PCI-1762,BID#1");
+            Pci1762 pci1762 = new Pci1762("PCI-1762,BID#1");
             pci1762.OpenAllRelays();
             Thread.Sleep(1000);
             var expected = new int[] { 0, 3, 7 };
@@ -134,7 +136,7 @@ namespace Tester
         [TestMethod]
         public void CloseRelaysPort1()
         {
-            PCI_1762 pci1762 = new PCI_1762("PCI-1762,BID#1");
+            Pci1762 pci1762 = new Pci1762("PCI-1762,BID#1");
             pci1762.OpenAllRelays();
             Thread.Sleep(100);
             var expected = new int[] { 8, 11, 15 };
@@ -147,7 +149,7 @@ namespace Tester
         [TestMethod]
         public void CloseRelaysPort1Port2()
         {
-            PCI_1762 pci1762 = new PCI_1762("PCI-1762,BID#1");
+            Pci1762 pci1762 = new Pci1762("PCI-1762,BID#1");
             pci1762.OpenAllRelays();
             Thread.Sleep(100);
             var expected = new int[] { 2, 4, 6, 9, 12, 15 };
@@ -160,7 +162,7 @@ namespace Tester
         [TestMethod]
         public void OpenRelaysPort1Port2()
         {
-            PCI_1762 pci1762 = new PCI_1762("PCI-1762,BID#1");
+            var pci1762 = new Pci1762("PCI-1762,BID#1");
             pci1762.OpenAllRelays();
             Thread.Sleep(100);
             var expected = new int[] { 2, 4, 6, 9, 12, 15 };

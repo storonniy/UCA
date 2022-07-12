@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Data;
-using UCA.Devices;
 using System.IO.Ports;
 using System.Globalization;
+using Checker.Devices;
 
-namespace UCA.Steps
+namespace Checker.Steps
 {
     public struct StepsInfo
     {
@@ -18,7 +18,7 @@ namespace UCA.Steps
         //public DeviceInit DeviceHandler;
         public Dictionary<string, List<Step>> StepsDictionary { get; set; }
         public int StepNumber { get; }
-        public List<Device> DeviceList { get; set; }
+        public List<Devices.Device> DeviceList { get; set; }
         public string ProgramName { get; set; }
     }
 
@@ -50,7 +50,6 @@ namespace UCA.Steps
         
         public Step(DeviceNames deviceName, DeviceCommands command) : this(deviceName, command, "", "", "", 0, 0, -1, false) {}
 
-        
         private Step (DataRow row)
         {
             var command = row["command"].ToString();
@@ -72,12 +71,12 @@ namespace UCA.Steps
             AdditionalArg = row["additionalArg"].ToString();
         }
 
-        private static SerialPort GetSerialPort(string portName, int baudrate)
+        private static SerialPort GetSerialPort(string portName, int baudRate)
         {
             var serialPort = new SerialPort()
             {
                 PortName = portName,
-                BaudRate = baudrate,
+                BaudRate = baudRate,
                 DataBits = 8,
                 Parity = Parity.None,
                 StopBits = StopBits.One,
@@ -98,7 +97,7 @@ namespace UCA.Steps
             return programName;
         }
 
-        private static Dictionary<string, Dictionary<string, List<Step>>> GetModeStepDictionary(Dictionary<string, List<string>> modesDictionary, Dictionary<string, List<Step>> allStepsDictionary)
+        private static Dictionary<string, Dictionary<string, List<Step>>> GetModeStepDictionary(Dictionary<string, List<string>> modesDictionary, IReadOnlyDictionary<string, List<Step>> allStepsDictionary)
         {
             var modeStepDictionary = new Dictionary<string, Dictionary<string, List<Step>>>();
             foreach (var modeName in modesDictionary.Keys)
@@ -117,16 +116,16 @@ namespace UCA.Steps
             return modeStepDictionary;
         }
 
-        private static List<Device> GetDeviceList(DataSet dataSet)
+        private static List<Devices.Device> GetDeviceList(DataSet dataSet)
         {
-            var deviceList = new List<Device>();
+            var deviceList = new List<Devices.Device>();
             foreach (DataRow row in dataSet.Tables["DeviceInformation"].Rows)
             {
                 var deviceName = row["device"].ToString();
                 var portName = row["portName"].ToString();
                 var baudRate = int.Parse(row["baudRate"].ToString());
                 var description = row["description"].ToString();
-                var device = new Device();
+                var device = new Devices.Device();
                 device.SerialPort = GetSerialPort(portName, baudRate);
                 device.Description = description;
                 if (!Enum.TryParse(deviceName, out DeviceNames dev))

@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using UCA;
+using Checker;
 using System.IO;
 using System.IO.Ports;
-using UCA.Devices;
+using Checker.Devices;
 
-namespace UCA.Steps
+namespace Checker.Steps
 {
     class StepParser
     {

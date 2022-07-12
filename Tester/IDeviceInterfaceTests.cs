@@ -4,10 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using UCA.DeviceDrivers;
-using UCA.Devices;
-using UPD.Device;
-using static UCA.Auxiliary.UnitValuePair;
+using Checker.DeviceDrivers;
+using Checker.Devices;
+using Checker.Device;
+using Checker.DeviceInterface;
+using static Checker.Auxiliary.UnitValuePair;
 
 namespace Tester
 {

@@ -4,21 +4,23 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using UCA.DeviceDrivers;
-using UCA.Steps;
-using UPD.Device;
-using static UCA.Auxiliary.UnitValuePair;
+using Checker.Auxiliary;
+using Checker.DeviceDrivers;
+using Checker.Steps;
+using Checker.Device;
+using Checker.DeviceInterface;
+using static Checker.Auxiliary.UnitValuePair;
 
 
-namespace UCA.Devices
+namespace Checker.Devices
 {
     class ATH8030_device : IDeviceInterface
     {
-        readonly ATH_8030 ath8030;  
+        readonly Ath8030 ath8030;  
 
         public ATH8030_device (string portName)
         {
-            ath8030 = new ATH_8030(portName);
+            ath8030 = new Ath8030(portName);
         }
 
         public override DeviceResult DoCommand(Step step)
@@ -41,14 +43,14 @@ namespace UCA.Devices
                 case DeviceCommands.SetCurrent:
                     var current = float.Parse(step.Argument);
                     var fData = BitConverter.GetBytes(current);
-                    var resultCurrent = $"Уcтановлено значение тока {GetValueUnitPair(current, UnitType.Current)} \t Нижний предел: {GetValueUnitPair(lowerLimit, UnitType.Current)}\t Верхний предел {GetValueUnitPair(upperLimit, UnitType.Current)}";
+                    var resultCurrent = $"Уcтановлено значение тока {GetValueUnitPair(current, UnitValuePair.UnitType.Current)} \t Нижний предел: {GetValueUnitPair(lowerLimit, UnitValuePair.UnitType.Current)}\t Верхний предел {GetValueUnitPair(upperLimit, UnitValuePair.UnitType.Current)}";
                     if (ath8030.SetCurrent(current))
                         return DeviceResult.ResultOk(resultCurrent);
                     else
-                        return DeviceResult.ResultError($"Ошибка: не удалось установить сигнал {GetValueUnitPair(current, UnitType.Current)}");
+                        return DeviceResult.ResultError($"Ошибка: не удалось установить сигнал {GetValueUnitPair(current, UnitValuePair.UnitType.Current)}");
                 case DeviceCommands.SetMaxCurrent:
                     var maxCurrent = float.Parse(step.Argument);
-                    var resultMaxCurrent = $"Уcтановлено максимальное значение тока {GetValueUnitPair(maxCurrent, UnitType.Current)} \t Нижний предел: {GetValueUnitPair(lowerLimit, UnitType.Current)}\t Верхний предел {GetValueUnitPair(upperLimit, UnitType.Current)}";
+                    var resultMaxCurrent = $"Уcтановлено максимальное значение тока {GetValueUnitPair(maxCurrent, UnitValuePair.UnitType.Current)} \t Нижний предел: {GetValueUnitPair(lowerLimit, UnitValuePair.UnitType.Current)}\t Верхний предел {GetValueUnitPair(upperLimit, UnitValuePair.UnitType.Current)}";
                     if (ath8030.SetMaxCurrent(maxCurrent))
                         return DeviceResult.ResultOk(resultMaxCurrent);
                     else
@@ -65,14 +67,14 @@ namespace UCA.Devices
 
                 case DeviceCommands.GetCurrent:
                     var actualCurrent = ath8030.GetConstantCurrent();
-                    return GetResult("Измерено значение тока", step, UnitType.Current, actualCurrent);
+                    return GetResult("Измерено значение тока", step, UnitValuePair.UnitType.Current, actualCurrent);
 
                 case DeviceCommands.GetLoadCurrent:                  
                     var actualLoadCurrent = ath8030.GetLoadCurrent();
-                    return GetResult("Измерено значение тока", step, UnitType.Current, actualLoadCurrent);
+                    return GetResult("Измерено значение тока", step, UnitValuePair.UnitType.Current, actualLoadCurrent);
                 case DeviceCommands.GetMaxCurrent:
                     var maxCurrent1 = ath8030.GetMaxCurrent();
-                    return GetResult("Измерен ток", step, UnitType.Current, maxCurrent1);
+                    return GetResult("Измерен ток", step, UnitValuePair.UnitType.Current, maxCurrent1);
                 default:
                     return DeviceResult.ResultError($"Неизвестная команда {step.Command}");
             }

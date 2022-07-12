@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace UPD.Properties {
+namespace Checker.Properties {
     using System;
     
     

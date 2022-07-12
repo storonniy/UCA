@@ -5,7 +5,7 @@ using System.IO.Ports;
 using System.Threading;
 using System.Text;
 
-namespace UPD.DeviceDrivers
+namespace Checker.DeviceDrivers
 {
     class Simulator
     {

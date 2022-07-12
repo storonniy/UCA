@@ -3,7 +3,7 @@ using System;
 using Ixxat.Vci4;
 using Ixxat.Vci4.Bal;
 using Ixxat.Vci4.Bal.Can;
-using UPD.DeviceDrivers;
+using Checker.DeviceDrivers;
 using System.Collections.Generic;
 using System.Linq;
 

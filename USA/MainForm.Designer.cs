@@ -1,5 +1,5 @@
 ﻿
-namespace UCA
+namespace Checker
 {
     partial class Form1
     {

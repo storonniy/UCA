@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO.Ports;
 
-namespace UCA.Devices
+namespace Checker.Devices
 {
     public struct Device
     {

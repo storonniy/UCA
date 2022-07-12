@@ -3,15 +3,18 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Threading;
-using UCA.Devices;
-using UCA.Logging;
-using UCA.Steps;
-using static UCA.ControlObjectSettings.ControlObjectSettings;
+using static Checker.Settings.ControlObjectSettings;
 using System.ComponentModel;
 using System.Linq;
-using UPD.Device;
+using Checker.DataBase;
+using Checker.Devices;
+using Checker.Logging;
+using Checker.Steps;
+using Checker.Device;
+using Checker.DeviceInterface;
+using Checker.Settings;
 
-namespace UCA
+namespace Checker
 {
     public partial class Form1 : Form
     {
@@ -22,7 +25,7 @@ namespace UCA
         static Dictionary<DeviceNames, Label> deviceLabelDictionary = new Dictionary<DeviceNames, Label>();
         static StepsInfo stepsInfo;
         static DeviceInit DeviceHandler;
-        Settings settings = new Settings();
+        ControlObjectSettings.Settings settings = new ControlObjectSettings.Settings();
 
         static Form1 form;
         static Log log;
@@ -100,7 +103,7 @@ namespace UCA
         #endregion
 
         #region Конструктор Form1
-        public Form1(Settings settings)
+        public Form1(ControlObjectSettings.Settings settings)
         {
             form = this;
             InitializeComponent();

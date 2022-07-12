@@ -1,17 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using static UCA.ControlObjectSettings.ControlObjectSettings;
+using Checker.Settings;
+using static Checker.Settings.ControlObjectSettings;
 
-namespace UCA.Logging
+namespace Checker.Logging
 {
     class Log
     {
         public string FileName;
         private readonly StreamWriter streamWriter;
-        private Settings settings;
+        private ControlObjectSettings.Settings settings;
 
-        public Log(Settings settings)
+        public Log(ControlObjectSettings.Settings settings)
         {
             this.settings = settings;
             var path = @"C:\NS03\";

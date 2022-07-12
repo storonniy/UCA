@@ -6,16 +6,17 @@ using System.Threading.Tasks;
 using System.IO.Ports;
 using System.Threading;
 using System.Globalization;
-using UPD.DeviceDrivers;
+using Checker.Auxiliary;
+using Checker.DeviceDrivers;
 
-namespace UCA.DeviceDrivers
+namespace Checker.DeviceDrivers
 {
-    public class AKIP_3407
+    public class Akip3407
     {
         private SerialPort serialPort;
         private readonly int delay = 2000;
 
-        public AKIP_3407(SerialPort serialPort)
+        public Akip3407(SerialPort serialPort)
         {
             this.serialPort = serialPort;
             this.serialPort.Open();
@@ -43,14 +44,14 @@ namespace UCA.DeviceDrivers
             var str = voltage.ToString().Replace(",", ".");
             SendCommand($"SOUR1:VOLT {str}");
             SendCommand("SOUR1:VOLT?");
-            return ParseValue();
+            return serialPort.ReadDouble();
         }
 
         public double SetFrequency (string frequency)
         {
             SendCommand($"SOUR1:FREQ {frequency}");
             SendCommand("SOUR1:FREQ?");
-            return ParseValue();
+            return serialPort.ReadDouble();
         }
 
         private double ParseValue()
@@ -80,7 +81,7 @@ namespace UCA.DeviceDrivers
 
         #endregion
 
-        ~AKIP_3407()
+        ~Akip3407()
         {
             if (serialPort.IsOpen)
                 serialPort.Close();

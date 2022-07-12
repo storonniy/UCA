@@ -4,17 +4,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO.Ports;
-using UCA.Devices;
+using Checker.Devices;
 using System.Threading;
-using UPD.DeviceDrivers;
+using Checker.Auxiliary;
+using Checker.DeviceDrivers;
 
-namespace UCA.DeviceDrivers
+namespace Checker.DeviceDrivers
 {
-    class PST_3201
+    class Pst3201
     {
         private readonly SerialPort serialPort;
 
-        public PST_3201(SerialPort serialPort)
+        public Pst3201(SerialPort serialPort)
         {
             this.serialPort = serialPort;
             if (SerialPort.GetPortNames().ToList().Contains(serialPort.PortName))
@@ -105,7 +106,7 @@ namespace UCA.DeviceDrivers
             ChangeOutputState("0");
         }
 
-        ~PST_3201()
+        ~Pst3201()
         {
             if (serialPort.IsOpen)
                 serialPort.Close();

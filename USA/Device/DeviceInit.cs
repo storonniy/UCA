@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Data.Common;
 using System.IO;
-using UCA.Steps;
-using UPD.Device;
-using UPD.Device.DeviceList;
-using UPD.DeviceDrivers;
+using Checker.Steps;
+using Checker.Device;
+using Checker.Device.DeviceList;
+using Checker.DeviceDrivers;
+using Checker.DeviceInterface;
 
-namespace UCA.Devices
+namespace Checker.Devices
 {
     public class DeviceInit
     {

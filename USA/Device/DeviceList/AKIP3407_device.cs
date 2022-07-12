@@ -4,22 +4,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO.Ports;
-using UCA.DeviceDrivers;
 using System.Globalization;
-using UCA.Steps;
-using static UCA.Auxiliary.UnitValuePair;
-using UPD.Device;
+using Checker.Auxiliary;
+using Checker.DeviceDrivers;
+using Checker.Steps;
+using static Checker.Auxiliary.UnitValuePair;
+using Checker.DeviceInterface;
 
-namespace UCA.Devices
+namespace Checker.Devices
 {
     class AKIP3407_device : IDeviceInterface
     {
         int delay = 1000;
-        private AKIP_3407 akip3407;
+        private Akip3407 akip3407;
         public AKIP3407_device (SerialPort serialPort)
         {
             serialPort.NewLine = "\r";
-            akip3407 = new AKIP_3407(serialPort);
+            akip3407 = new Akip3407(serialPort);
         }
         public override DeviceResult DoCommand (Step step)
         {
@@ -29,7 +30,7 @@ namespace UCA.Devices
                     return SetVoltage(step, akip3407.SetVoltage);
                 case DeviceCommands.SetFrequency:
                     var actualFrequency = akip3407.SetFrequency(step.Argument);
-                    return GetResult("Установлена частота", step, UnitType.Frequency, actualFrequency);
+                    return GetResult("Установлена частота", step, UnitValuePair.UnitType.Frequency, actualFrequency);
                 case DeviceCommands.PowerOn:
                     return PowerOn(step, akip3407.PowerOn);
                 case DeviceCommands.PowerOff:

@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 using System.IO.Ports;
 using System.Globalization;
 using System.Threading;
-using UPD.DeviceDrivers;
+using Checker.Auxiliary;
+using Checker.DeviceDrivers;
 
-namespace UCA.DeviceDrivers
+namespace Checker.DeviceDrivers
 {
     public class Keithley2401
     {
@@ -93,7 +94,7 @@ namespace UCA.DeviceDrivers
         private double ParseValue()
         {
             var value = serialPort.ReadExisting();
-            return (double)Decimal.Parse(value.Replace("\r", ""), NumberStyles.Float, CultureInfo.InvariantCulture);
+            return (double)decimal.Parse(value.Replace("\r", ""), NumberStyles.Float, CultureInfo.InvariantCulture);
         }
 
         /// <summary>
@@ -116,7 +117,7 @@ namespace UCA.DeviceDrivers
         public double GetVoltage()
         {
             SendCommand(":SOUR:VOLT:LEV:AMPL?");
-            return ParseValue();
+            return serialPort.ReadDouble();
         }
 
         /// <summary>
@@ -130,7 +131,7 @@ namespace UCA.DeviceDrivers
             SendCommand($":SENS:CURR:PROT {str}");
             SendCommand($":SENS:CURR:RANGE {str}");
             SendCommand($":SENS:CURR:PROT?");
-            return ParseValue();
+            return serialPort.ReadDouble();
         }
 
         /// <summary>

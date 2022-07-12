@@ -7,7 +7,7 @@ using Modbus.Device;
 using System.IO.Ports;
 using System.Threading;
 
-namespace UCA.DeviceDrivers
+namespace Checker.DeviceDrivers
 {
     public abstract class Modbus_device
     {//[01 10 0A 00 00 01 02 00 2B 4C 4F] >> [01 10 0A 00 00 01 02 11]

@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 using System.IO.Ports;
 using System.Threading;
 
-namespace UCA.DeviceDrivers
+namespace Checker.DeviceDrivers
 {
-    public class ATH_8030 : Modbus_device
+    public class Ath8030 : Modbus_device
     {
-        public ATH_8030 (string portName) : base(portName)
+        public Ath8030 (string portName) : base(portName)
         {
 
         }

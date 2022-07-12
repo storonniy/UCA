@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace UPD.Auxiliary
+namespace Checker.Auxiliary
 {
     public static class NumberExtensions
     {

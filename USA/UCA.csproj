@@ -7,8 +7,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{89E2B87A-6250-46C4-9E1E-CB5F2C62E81A}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>UPD</RootNamespace>
-    <AssemblyName>UPD</AssemblyName>
+    <RootNamespace>Checker</RootNamespace>
+    <AssemblyName>Checker</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -33,7 +33,7 @@
     </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>x64</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -114,25 +114,23 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Auxiliary\NumberExtensions.cs" />
+    <Compile Include="Auxiliary\SerialPortExtensions.cs" />
     <Compile Include="Auxiliary\UnitValuePair.cs" />
     <Compile Include="DataBase\DBReader.cs" />
-    <Compile Include="DeviceDrivers\AKIP_3407.cs" />
-    <Compile Include="DeviceDrivers\ASBL.cs" />
-    <Compile Include="DeviceDrivers\ATH_8030.cs" />
+    <Compile Include="DeviceDrivers\Akip3407.cs" />
+    <Compile Include="DeviceDrivers\Asbl.cs" />
+    <Compile Include="DeviceDrivers\Ath8030.cs" />
     <Compile Include="DeviceDrivers\Commutator.cs" />
-    <Compile Include="DeviceDrivers\GDM78261.cs" />
-    <Compile Include="DeviceDrivers\SerialPortExtensions.cs" />
+    <Compile Include="DeviceDrivers\Gdm78261.cs" />
     <Compile Include="DeviceDrivers\Keithley2401.cs" />
     <Compile Include="DeviceDrivers\MK.cs" />
     <Compile Include="DeviceDrivers\Modbus.cs" />
-    <Compile Include="DeviceDrivers\PCI_1762.cs" />
-    <Compile Include="DeviceDrivers\PSH_73610.cs" />
-    <Compile Include="DeviceDrivers\PSP405.cs" />
-    <Compile Include="DeviceDrivers\PST_3201.cs" />
+    <Compile Include="DeviceDrivers\Pci1762.cs" />
+    <Compile Include="DeviceDrivers\Psh73610.cs" />
+    <Compile Include="DeviceDrivers\Psp405.cs" />
+    <Compile Include="DeviceDrivers\Pst3201.cs" />
     <Compile Include="DeviceDrivers\Simulator.cs" />
     <Compile Include="DeviceDrivers\VciCAN\VciCAN.cs" />
-    <Compile Include="Device\Command.cs" />
-    <Compile Include="Device\Commands\PowerOn.cs" />
     <Compile Include="Device\DeviceInit.cs" />
     <Compile Include="Device\Device.cs" />
     <Compile Include="Device\DeviceList\AKIP3407_device.cs" />

@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using UCA.Devices;
-using UCA.Steps;
-using UPD.DeviceDrivers;
-using static UCA.Devices.DeviceResult;
+using Checker.DeviceDrivers;
+using Checker.DeviceInterface;
+using Checker.Devices;
+using Checker.Steps;
+using static Checker.Devices.DeviceResult;
 
-namespace UPD.Device.DeviceList
+namespace Checker.Device.DeviceList
 {
     public class MK_device : IDeviceInterface
     {

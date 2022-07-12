@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using UCA.Devices;
-using UCA.Steps;
-using static UCA.Auxiliary.UnitValuePair;
+using Checker.Devices;
+using Checker.Steps;
+using static Checker.Auxiliary.UnitValuePair;
 
 
-namespace UPD.Device
+namespace Checker.DeviceInterface
 {
     public abstract class IDeviceInterface
     {

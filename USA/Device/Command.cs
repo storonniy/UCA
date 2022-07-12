@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using UCA.Devices;
-using UCA.Steps;
+using Checker.Steps;
 
-namespace UPD.Device
+namespace Checker.Devices
 {
     public abstract class Command
     {

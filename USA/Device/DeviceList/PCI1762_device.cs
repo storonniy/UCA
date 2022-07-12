@@ -3,19 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using UCA.DeviceDrivers;
-using UCA.Steps;
-using UPD.Device;
-using static UCA.Devices.DeviceResult;
+using Checker.DeviceDrivers;
+using Checker.Steps;
+using Checker.Device;
+using Checker.DeviceInterface;
+using static Checker.Devices.DeviceResult;
 
-namespace UCA.Devices
+namespace Checker.Devices
 {
     public class PCI1762_device : IDeviceInterface
     {
-        readonly PCI_1762 pci1762;
+        readonly Pci1762 pci1762;
         public PCI1762_device (string description)
         {
-            pci1762 = new PCI_1762(description);
+            pci1762 = new Pci1762(description);
         }
 
         public override DeviceResult DoCommand(Step step)

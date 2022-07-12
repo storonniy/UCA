@@ -4,9 +4,10 @@ using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using static UCA.ControlObjectSettings.ControlObjectSettings;
+using Checker.Settings;
+using static Checker.Settings.ControlObjectSettings;
 
-namespace UCA
+namespace Checker
 {
     static class Program
     {
@@ -19,7 +20,7 @@ namespace UCA
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             //Application.Run(new SettingsForm());
-            var settings = new Settings()
+            var settings = new ControlObjectSettings.Settings()
             {
                 Comment = "Не указан",
                 FactoryNumber = "Не указан",
