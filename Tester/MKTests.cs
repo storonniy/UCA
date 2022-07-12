@@ -1,17 +1,31 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using Ixxat.Vci4;
-using Ixxat.Vci4.Bal;
-using Ixxat.Vci4.Bal.Can;
-using Checker.DeviceDrivers;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Checker.DeviceDrivers;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Tester
 {
     [TestClass]
     public class MKTests
     {
+        [TestMethod]
+        public void GetRelayNumbersAsBytesTest()
+        {
+            var expected = Enumerable.Range(0, 10).Select(x => (byte)1).ToArray();
+            GetRelayNumbersAsBytesTest(expected, Enumerable.Range(0, 10).Select(x => x * 8).ToArray());
+            expected = Enumerable.Range(0, 10).Select(x => (byte)255).ToArray();
+            GetRelayNumbersAsBytesTest(expected, Enumerable.Range(0, 80).Select(x => x).ToArray());
+            expected = Enumerable.Range(0, 10).Select(x => (byte) (x + 1)).ToArray();
+            GetRelayNumbersAsBytesTest(expected, 0, 9, 16, 17, 26, 32, 34, 41, 42, 48, 49, 50, 59, 64, 67, 73, 75 );
+        }
+
+        private void GetRelayNumbersAsBytesTest(byte[] expected, params int[] relayNumbers)
+        {
+            var actual = MK.GetRelayNumbersAsBytes(relayNumbers).ToArray();
+            CollectionAssert.AreEqual(expected, actual);
+        }
+
         [TestMethod]
         public void GetRelayStatesBytesTest()
         {
@@ -26,15 +40,16 @@ namespace Tester
                 canMsg2[1] = 0x02;
                 for (var i = 2; i < 8; i++)
                 {
-                    canMsg1[i] = (byte)rnd.Next(0, 255);
-                    canMsg2[i] = (byte)rnd.Next(0, 255);
+                    canMsg1[i] = (byte) rnd.Next(0, 255);
+                    canMsg2[i] = (byte) rnd.Next(0, 255);
                 }
+
                 var expected = new byte[10];
                 Array.Copy(canMsg1, 3, expected, 0, 5);
                 Array.Copy(canMsg2, 3, expected, 5, 5);
-                var actual = MK.GetRelayStatesBytes(new List<byte[]> { canMsg1, canMsg2 });
+                var actual = MK.GetRelayStatesBytes(new List<byte[]> {canMsg1, canMsg2});
                 CollectionAssert.AreEqual(expected, actual);
-                var reversedActual = MK.GetRelayStatesBytes(new List<byte[]> { canMsg2, canMsg1 });
+                var reversedActual = MK.GetRelayStatesBytes(new List<byte[]> {canMsg2, canMsg1});
                 CollectionAssert.AreEqual(expected, reversedActual);
             }
         }
@@ -42,19 +57,19 @@ namespace Tester
         [TestMethod]
         public void GetRelayNumbersTest()
         {
-            byte[] canMsg1 = new byte[]{ 0xFB, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01 };
-            byte[] canMsg2 = new byte[]{ 0xFB, 0x02, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01 };
-            var relayNumbers = new int[] { 1, 9, 17, 25, 33, 41, 49, 57, 65, 73 };
-            var actual = MK.GetRelayNumbers(MK.GetRelayStatesBytes(new List<byte[]> { canMsg1, canMsg2 }));
+            byte[] canMsg1 = new byte[] {0xFB, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01};
+            byte[] canMsg2 = new byte[] {0xFB, 0x02, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01};
+            var relayNumbers = new int[] {1, 9, 17, 25, 33, 41, 49, 57, 65, 73};
+            var actual = MK.GetRelayNumbers(MK.GetRelayStatesBytes(new List<byte[]> {canMsg1, canMsg2}));
             CollectionAssert.AreEquivalent(relayNumbers, actual);
-            actual = MK.GetRelayNumbers(MK.GetRelayStatesBytes(new List<byte[]> { canMsg2, canMsg1 }));
+            actual = MK.GetRelayNumbers(MK.GetRelayStatesBytes(new List<byte[]> {canMsg2, canMsg1}));
             CollectionAssert.AreEquivalent(relayNumbers, actual);
-            var byteStates = new byte[] { 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01 };
+            var byteStates = new byte[] {0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01};
             actual = MK.GetRelayNumbers(byteStates);
             CollectionAssert.AreEquivalent(relayNumbers, actual);
         }
 
-        [TestMethod]
+        /*[TestMethod]
         public void BlockDataLambdaSorter()
         {
             var blockDataList = new List<BlockData>()
@@ -79,20 +94,20 @@ namespace Tester
                 new BlockData(711, 7)
             };
             CollectionAssert.AreEqual(expected, blockDataList);
-        }
+        }*/
 
-        public string[] Meow ()
+        public string[] Meow()
         {
-            var blockDataList = new List<string>() { "", "", "", "", "", "", "" };
+            var blockDataList = new List<string>() {"", "", "", "", "", "", ""};
             return Enumerable.Range(0, blockDataList.Count)
-    .Select(blockNumber => blockNumber.ToString())
-    .ToArray();
+                .Select(blockNumber => blockNumber.ToString())
+                .ToArray();
         }
 
         [TestMethod]
         public void GodSaveTheLinq()
         {
-            CollectionAssert.AreEqual(new string[] { "0", "1", "2", "3", "4", "5", "6" }, Meow());
+            CollectionAssert.AreEqual(new string[] {"0", "1", "2", "3", "4", "5", "6"}, Meow());
         }
     }
 }

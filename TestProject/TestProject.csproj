@@ -79,9 +79,9 @@
     <None Include="vci4net4.chm" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\USA\UCA.csproj">
+    <ProjectReference Include="..\Checker\Checker.csproj">
       <Project>{89e2b87a-6250-46c4-9e1e-cb5f2c62e81a}</Project>
-      <Name>UCA</Name>
+      <Name>Checker</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
